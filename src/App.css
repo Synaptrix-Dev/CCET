@@ -1,38 +1,61 @@
-.App {
-  text-align: center;
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+body {
+  font-family: "Tahoma", "Arial", serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+/* Footer */
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.footer {
+  background-color: #666;
+  color: #fff;
+  direction: rtl;
+  padding: 10px 150px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 130px;
+  font-family: Tahoma, Arial, sans-serif;
 }
 
-.App-link {
-  color: #61dafb;
+.footer div {
+  width: 80%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.footer ul {
+  padding: 0;
+}
+
+.footer ul li {
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.footer-links li {
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.footer ul li i {
+  margin-left: 5px;
+}
+
+.footer a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.contact-info {
+  /* line-height: 1.6; */
+}
+
+.social-icons {
+  margin-top: 10px;
+}
+
+.social-icons a {
+  margin-right: 10px;
+  color: #fff;
+  font-size: 15px;
 }
