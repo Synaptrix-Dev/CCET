@@ -7,7 +7,9 @@ const LoginForm = () => {
 
   return (
     <div className="flex flex-col items-end -mt-20 justify-center min-h-screen bg-white ">
-      <h1 className="text-colPrime text-6xl font-semibold mb-2 mx-16 ">تسجيل الدخول</h1>
+      <h1 className="text-colPrime text-6xl font-semibold mb-2 mx-16 ">
+        تسجيل الدخول
+      </h1>
 
       <div className="flex w-full max-w-8xl mx-16">
         {/* Left side - Image */}
@@ -76,13 +78,14 @@ const LoginForm = () => {
               </div>
 
               {/* Submit button */}
-              <button
-              to='/dashboard'
-                // type="submit"
-                className="w-full bg-colPrime text-white p-3  hover:bg-[#7aa526] transition-colors"
-              >
-                تسجيل الدخول
-              </button>
+              <Link to="/dashboard">
+                <button
+                  type="submit"
+                  className="w-full bg-colPrime text-white p-3  hover:bg-[#7aa526] transition-colors"
+                >
+                  تسجيل الدخول
+                </button>
+              </Link>
             </form>
           </div>
 
