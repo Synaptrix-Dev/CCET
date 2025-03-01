@@ -1,6 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mirza:wght@400;500;600;700&display=swap');
+
 body {
-  font-family: "Tahoma", "Arial", serif;
+  font-family: "Mirza", serif;
 }
 
 /* Footer */
@@ -29,10 +32,12 @@ body {
   margin-bottom: 8px;
   font-size: 12px;
 }
+
 .footer-links li {
   margin-bottom: 8px;
   font-size: 12px;
 }
+
 .footer ul li i {
   margin-left: 5px;
 }

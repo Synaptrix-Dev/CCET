@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { Link } from "react-router";
 
 const TestSelect = () => {
   const [currentTest, setCurrentTest] = useState(1);
@@ -17,6 +18,7 @@ const TestSelect = () => {
       id: 2,
       title: "إختبار العمليات الأساسية | الجمع",
       video: "https://www.youtube.com/embed/videoID2",
+      url: "addition-test",
     },
     {
       id: 3,
@@ -137,7 +139,7 @@ const TestSelect = () => {
           <div>
             <div className="rounded-md border-2 border-colPrime">
               {tests.map((test, index) => (
-                <div
+                <Link to={`${test.url}`}
                   key={test.id}
                   className={`flex justify-between rounded-md items-center h-12  ${
                     index % 2 === 1 ? "bg-white" : "bg-[#F1F6D6]"
@@ -174,7 +176,7 @@ const TestSelect = () => {
                       {test.id}
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

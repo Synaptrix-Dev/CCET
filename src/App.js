@@ -8,10 +8,10 @@ import Login from "./pages/Login";
 import Layout from "./pages/Layout";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./pages/ProtectedRoute";
-import Test from "./pages/Test";
 import Home from "./pages/Home";
 import StudentTestSelection from "./pages/StudentTestSelection";
 import TestSelect from "./pages/TestSelect";
+import AdditionContainer from "./pages/Addition/AdditionContainer";
 
 function App() {
   return (
@@ -21,17 +21,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/dashboard"
-            element={<ProtectedRoute Component={Layout} />}
-          >
+          <Route path="/dashboard" element={<ProtectedRoute Component={Layout} />}>
             <Route index element={<Dashboard />} />
-            <Route path="test" element={<Test />} />
             <Route path="testselection" element={<TestSelect />} />
-            <Route
-              path="studentselections"
-              element={<StudentTestSelection />}
-            />
+            <Route path="testselection/addition-test" element={<AdditionContainer />} />
+            <Route path="studentselections" element={<StudentTestSelection />} />
           </Route>
         </Routes>
       </BrowserRouter>
@@ -40,4 +34,3 @@ function App() {
 }
 
 export default App;
-// comented
