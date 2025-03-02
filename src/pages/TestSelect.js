@@ -43,7 +43,7 @@ const TestSelect = () => {
       id: 6,
       title: "إختبار الأكبر والأصغر",
       video: "https://www.youtube.com/embed/videoID6",
-      url: "greater-smaller-test",
+      url: "dashboard/testselection/greater-smaller-test",
     },
     {
       id: 7,

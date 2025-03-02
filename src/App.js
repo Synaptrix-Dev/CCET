@@ -13,6 +13,7 @@ import StudentTestSelection from "./pages/StudentTestSelection";
 import TestSelect from "./pages/TestSelect";
 import AdditionContainer from "./pages/Addition/AdditionContainer";
 import SubtractionGroup from "./pages/Subtraction/SubtractionGroup";
+import NumberComparison from "./pages/NumberComparison/NumberComparison";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
               path="studentselections"
               element={<StudentTestSelection />}
             />
+            <Route path="testselection/greater-smaller-test" element={<NumberComparison />} />
           </Route>
         </Routes>
       </BrowserRouter>
