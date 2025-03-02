@@ -13,47 +13,55 @@ const TestSelect = () => {
       id: 1,
       title: "إستبيان فى التحصيل",
       video: "https://www.youtube.com/embed/O_hXv67BmHg",
+      url: "assessment-test",
     },
     {
       id: 2,
       title: "إختبار العمليات الأساسية | الجمع",
       video: "https://www.youtube.com/embed/videoID2",
-      url: "addition-test",
+      url: "dashboard/testselection/addition-test",
     },
     {
       id: 3,
       title: "إختبار العمليات الأساسية | الطرح",
       video: "https://www.youtube.com/embed/videoID3",
+      url: "dashboard/testselection/subtraction-test",
     },
     {
       id: 4,
       title: "إختبار العمليات الأساسية | الضرب",
       video: "https://www.youtube.com/embed/videoID4",
+      url: "multiplication-test",
     },
     {
       id: 5,
       title: "إختبار العمليات الأساسية | القسمة",
       video: "https://www.youtube.com/embed/videoID5",
+      url: "division-test",
     },
     {
       id: 6,
       title: "إختبار الأكبر والأصغر",
       video: "https://www.youtube.com/embed/videoID6",
+      url: "greater-smaller-test",
     },
     {
       id: 7,
       title: "إختبار تذكر الأرقام",
       video: "https://www.youtube.com/embed/videoID7",
+      url: "number-memory-test",
     },
     {
       id: 8,
       title: "إختبار تقدير المسافة",
       video: "https://www.youtube.com/embed/videoID8",
+      url: "distance-estimation-test",
     },
     {
       id: 9,
       title: "إختبار سرعة قراءة الأرقام",
       video: "https://www.youtube.com/embed/videoID9",
+      url: "number-reading-speed-test",
     },
   ];
 
@@ -139,12 +147,12 @@ const TestSelect = () => {
           <div>
             <div className="rounded-md border-2 border-colPrime">
               {tests.map((test, index) => (
-                <Link to={`${test.url}`}
+                <Link
+                  to={`/${test.url}`} // Ensure all paths are prefixed with "/"
                   key={test.id}
-                  className={`flex justify-between rounded-md items-center h-12  ${
+                  className={`flex justify-between rounded-md items-center h-12 ${
                     index % 2 === 1 ? "bg-white" : "bg-[#F1F6D6]"
                   } overflow-hidden border hover:border-colPrime cursor-pointer`}
-                  onClick={() => handleTestSelect(test.id)}
                 >
                   <button
                     className="bg-colPrime text-white px-4 py-2 h-12 flex items-center"

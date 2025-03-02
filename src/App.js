@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import StudentTestSelection from "./pages/StudentTestSelection";
 import TestSelect from "./pages/TestSelect";
 import AdditionContainer from "./pages/Addition/AdditionContainer";
+import SubtractionGroup from "./pages/Subtraction/SubtractionGroup";
 
 function App() {
   return (
@@ -21,11 +22,24 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<ProtectedRoute Component={Layout} />}>
+          <Route
+            path="/dashboard"
+            element={<ProtectedRoute Component={Layout} />}
+          >
             <Route index element={<Dashboard />} />
             <Route path="testselection" element={<TestSelect />} />
-            <Route path="testselection/addition-test" element={<AdditionContainer />} />
-            <Route path="studentselections" element={<StudentTestSelection />} />
+            <Route
+              path="testselection/addition-test"
+              element={<AdditionContainer />}
+            />
+            <Route
+              path="testselection/subtraction-test"
+              element={<SubtractionGroup />}
+            />
+            <Route
+              path="studentselections"
+              element={<StudentTestSelection />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>
