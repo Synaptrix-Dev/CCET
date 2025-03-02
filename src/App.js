@@ -14,6 +14,9 @@ import TestSelect from "./pages/TestSelect";
 import AdditionContainer from "./pages/Addition/AdditionContainer";
 import SubtractionGroup from "./pages/Subtraction/SubtractionGroup";
 import NumberComparison from "./pages/NumberComparison/NumberComparison";
+import MultiplyGroup from "./pages/MultiplyGroup/MultiplyGroup";
+import NumberRemember from "./pages/NumberRemember/NumberRemember";
+import OralTest from "./pages/OralTest/OralTest";
 
 function App() {
   return (
@@ -41,7 +44,26 @@ function App() {
               path="studentselections"
               element={<StudentTestSelection />}
             />
-            <Route path="testselection/greater-smaller-test" element={<NumberComparison />} />
+            <Route
+              path="testselection/greater-smaller-test"
+              element={<NumberComparison />}
+            />
+            <Route
+              path="studentselections"
+              element={<StudentTestSelection />}
+            />
+            <Route
+              path="testselection/multiplication-test"
+              element={<MultiplyGroup />}
+            />
+            <Route
+              path="testselection/number-remember"
+              element={<NumberRemember />}
+            />
+            <Route
+              path="testselection/oral-test"
+              element={<OralTest />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>

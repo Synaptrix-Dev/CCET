@@ -31,7 +31,7 @@ const TestSelect = () => {
       id: 4,
       title: "إختبار العمليات الأساسية | الضرب",
       video: "https://www.youtube.com/embed/videoID4",
-      url: "multiplication-test",
+      url: "dashboard/testselection/multiplication-test",
     },
     {
       id: 5,
@@ -49,7 +49,7 @@ const TestSelect = () => {
       id: 7,
       title: "إختبار تذكر الأرقام",
       video: "https://www.youtube.com/embed/videoID7",
-      url: "number-memory-test",
+      url: "dashboard/testselection/number-remember",
     },
     {
       id: 8,
@@ -61,7 +61,7 @@ const TestSelect = () => {
       id: 9,
       title: "إختبار سرعة قراءة الأرقام",
       video: "https://www.youtube.com/embed/videoID9",
-      url: "number-reading-speed-test",
+      url: "dashboard/testselection/oral-test",
     },
   ];
 
