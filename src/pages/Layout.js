@@ -11,7 +11,7 @@ const Layout = () => {
   return (
     <div className="relative  flex flex-col">
       {/* Header */}
-      <header className="bg-colPrime text-white p-4 flex justify-between items-center">
+      <header className="bg-colPrime text-white p-2 flex justify-between items-center">
         <span>superadmin</span>
         <div className="flex items-center">
           <span className="mr-2 font-bold">CCET</span>
