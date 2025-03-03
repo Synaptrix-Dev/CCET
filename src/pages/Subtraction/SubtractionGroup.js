@@ -148,7 +148,7 @@ const SubtractionGroup = () => {
           newResults.reduce((a, b) => a + b, 0),
           `/${totalQuestions}`
         );
-        setTimeout(() => navigate("/dashboard/testselection"), 1000);
+        // setTimeout(() => navigate("/dashboard/testselection"), 1000);
         return;
       }
     }
@@ -175,7 +175,7 @@ const SubtractionGroup = () => {
       setShowModal(true);
       setTimeout(() => {
         setShowModal(false);
-        navigate("/dashboard/testselection");
+        // navigate("/dashboard/testselection");
       }, 2000);
     }
   };
@@ -213,7 +213,7 @@ const SubtractionGroup = () => {
               results.reduce((a, b) => a + b, 0),
               `/${totalQuestions}`
             );
-            setTimeout(() => navigate("/dashboard/testselection"), 1000);
+            // setTimeout(() => navigate("/dashboard/testselection"), 1000);
             return;
           }
         }
@@ -221,7 +221,7 @@ const SubtractionGroup = () => {
 
       setTimeout(() => {
         moveToNextQuestion();
-      }, 1500);
+      }, 10);
     } else {
       const newResults = [...results];
       newResults[currentQuestionIndex] = 0;
@@ -252,7 +252,7 @@ const SubtractionGroup = () => {
             newResults.reduce((a, b) => a + b, 0),
             `/${totalQuestions}`
           );
-          setTimeout(() => navigate("/dashboard/testselection"), 1000);
+          // setTimeout(() => navigate("/dashboard/testselection"), 1000);
           return;
         }
       }
@@ -293,7 +293,7 @@ const SubtractionGroup = () => {
       <div className="w-full bg-gray-100 h-10 flex mt-10 items-center">
         <img src={Logo} alt="Logo" className="h-36 w-36" />
         <div
-          className="relative w-[65%] rounded-lg h-8 mx-4 bg-gray-200 overflow-hidden"
+          className="relative  w-[67%] rounded-lg h-8 mx-4 bg-gray-200 overflow-hidden"
           style={{ backgroundColor: "#E1E8CE" }}
         >
           <div
@@ -308,7 +308,7 @@ const SubtractionGroup = () => {
             }}
           ></div>
         </div>
-        <div className="flex w-[33%]">
+        <div className="flex w-[33%] justify-end">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
             <span className="text-black text-xl font-bold">{studentName}</span>
             <span className="ml-1 text-gray-600 text-md font-bold">
@@ -347,7 +347,7 @@ const SubtractionGroup = () => {
                           {currentQuestion.dropzones.map((dropzone, i) => (
                             <div
                               key={`answer-${i}`}
-                              className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
+                              className="w-12 h-12 border-2 text-green-700 border-gray-400 rounded flex items-center justify-center text-5xl"
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleAnswerDrop(i)}
                             >
@@ -409,16 +409,16 @@ const SubtractionGroup = () => {
                           ))}
                           <h1 className="text-3xl  border-t-4  border-black w-4 transform translate-y-5"></h1>
                         </div>
-                        <div className="w-[200px] border-t-2 border-black mb-4"></div>
+                        <div className="w-[300px] border-t-2 border-black mb-4"></div>
                         <div
                           className={`flex space-x-2 rtl:space-x-reverse ${
-                            currentQuestionIndex === 6 ? "ml-[-45px]" : ""
+                            currentQuestionIndex === 6 ? "ml-[-0px]" : ""
                           }`}
                         >
                           {currentQuestion.dropzones.map((dropzone, i) => (
                             <div
                               key={`answer-${i}`}
-                              className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
+                              className="w-12 h-12 border-2 text-green-700 border-gray-400 rounded flex items-center justify-center text-5xl"
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleAnswerDrop(i)}
                             >

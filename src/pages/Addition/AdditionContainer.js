@@ -229,7 +229,7 @@ const ArabicMathQuiz = () => {
 
       setTimeout(() => {
         moveToNextQuestion();
-      }, 1500);
+      }, 10);
     } else {
       const newResults = [...results];
       newResults[currentQuestionIndex] = 0;
@@ -357,7 +357,7 @@ const ArabicMathQuiz = () => {
                           {currentQuestion.dropzones.map((dropzone, i) => (
                             <div
                               key={`answer-${i}`}
-                              className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
+                              className="w-12 h-12 border-2 border-gray-400 text-green-870 rounded flex items-center justify-center text-5xl"
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleAnswerDrop(i)}
                             >
@@ -411,7 +411,7 @@ const ArabicMathQuiz = () => {
                           ))}
                           <h1 className="text-3xl -mr-20 transform">+</h1>
                         </div>
-                        <div className="w-[200px] border-t-2 border-black mb-4"></div>
+                        <div className="w-[300px] border-t-2 border-black mb-4"></div>
                         <div
                           className={`flex space-x-2 rtl:space-x-reverse ${
                             currentQuestionIndex === 6 ? "ml-[-45px]" : ""
@@ -420,7 +420,7 @@ const ArabicMathQuiz = () => {
                           {currentQuestion.dropzones.map((dropzone, i) => (
                             <div
                               key={`answer-${i}`}
-                              className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
+                              className="w-12 h-12 border-2 border-gray-400 text-green-700 rounded flex items-center justify-center text-5xl"
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleAnswerDrop(i)}
                             >
