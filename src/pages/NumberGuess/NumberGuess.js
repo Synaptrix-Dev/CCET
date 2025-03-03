@@ -150,7 +150,7 @@ const NumberGuessComponent = () => {
   };
   const studentName = "مهند كمال داوود"; // Define student name here or pass as prop
   return (
-    <div className=" flex flex-col items-center p-4">
+    <div className=" flex flex-col items-center 4">
       {/* New Header */}
       <div className="w-full bg-gray-100 h-10 flex mt-10 items-center">
         <img src={Logo} alt="Logo" className="h-36 w-36" />

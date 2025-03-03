@@ -72,12 +72,28 @@ const MultiplyGroup = () => {
   const handleAnswerDrop = (index) => {
     if (draggedNumber !== null) {
       const newAnswers = [...userAnswers];
-      const digits = draggedNumber.split("");
-      digits.forEach((digit, i) => {
-        if (index + i < currentQuestion.dropzones.length) {
-          newAnswers[index + i] = digit;
+      const digits = draggedNumber.split(""); // Split the dragged number into digits
+      const dropzoneCount = currentQuestion.dropzones.length;
+
+      // Check if the drop is on the last dropzone and it's a multi-digit number
+      if (index === dropzoneCount - 1 && digits.length > 1) {
+        // Place digits in reverse order starting from the last dropzone
+        for (let i = 0; i < digits.length; i++) {
+          const targetIndex = index - i; // Move backwards from the drop index
+          if (targetIndex >= 0) {
+            // Ensure we don't go out of bounds
+            newAnswers[targetIndex] = digits[digits.length - 1 - i]; // Place digits from right to left
+          }
         }
-      });
+      } else {
+        // Original behavior for other cases: place digits forward
+        digits.forEach((digit, i) => {
+          if (index + i < dropzoneCount) {
+            newAnswers[index + i] = digit;
+          }
+        });
+      }
+
       setUserAnswers(newAnswers);
       setDraggedNumber(null);
     }
