@@ -221,7 +221,7 @@ const MultiplyGroup = () => {
 
       setTimeout(() => {
         moveToNextQuestion();
-      }, 1500);
+      }, 0);
     } else {
       const newResults = [...results];
       newResults[currentQuestionIndex] = 0;
@@ -338,9 +338,9 @@ const MultiplyGroup = () => {
               </button>
             </div>
 
-            <div className="relative w-[60%] h-[500px] px-4 py-10 justify-center transform translate-y-20 items-center">
+            <div className="relative w-[60%] h-96 px-4 py-10 justify-center transform translate-y-20 items-center">
               <div className="mx-auto my-auto">
-                <div className="border-4 border-yellow-400 flex justify-center h-full my-auto rounded-lg p-6">
+                <div className="border-4 border-yellow-400 flex justify-center h-[32rem] my-auto rounded-lg p-6">
                   <div className="flex flex-col items-center my-auto">
                     {!needsCarry ? (
                       <div className="flex items-center space-x-4 text-5xl">
@@ -367,7 +367,7 @@ const MultiplyGroup = () => {
                         {needsCarry && (
                           <div
                             className={`flex mb-2 space-x-2 rtl:space-x-reverse ${
-                              isQuestion17 ? "ml-[70px]" : ""
+                              isQuestion17 ? "ml-[0px]" : ""
                             }`}
                           >
                             {Array.from({ length: maxLength }, (_, i) => (
@@ -387,8 +387,8 @@ const MultiplyGroup = () => {
                           </div>
                         )}
                         <div
-                          className={`flex mb-2 space-x-2 rtl:space-x-reverse items-center ${
-                            isQuestion17 ? "ml-[70px]" : ""
+                          className={`flex mb-2 space-x-2 rtl:space-x-reverse items-center justify-end ${
+                            isQuestion17 ? "text-red-700 ml-[0px]" : ""
                           }`}
                         >
                           {paddedFirst.split("").map((digit, i) => (
@@ -401,8 +401,8 @@ const MultiplyGroup = () => {
                           ))}
                         </div>
                         <div
-                          className={`flex mb-2 -mr-6 space-x-2 rtl:space-x-reverse ${
-                            isQuestion17 ? "ml-[70px]" : ""
+                          className={`flex mb-2 -mr-6 space-x-2 rtl:space-x-reverse items-center justify-end ${
+                            isQuestion17 ? "text-red-700" : ""
                           }`}
                         >
                           {paddedSecond.split("").map((digit, i) => (
@@ -415,13 +415,18 @@ const MultiplyGroup = () => {
                           ))}
                           <h1 className="text-3xl -mr-20 transform">×</h1>
                         </div>
-                        <div className="w-[200px] flex justify-end items-center mb-4">
-                          <div className="w-[180px] border-t-2 border-black"></div>
-                          <span className="text-3xl ml-2">+</span>
+                        <div className="w-[300px] flex justify-end items-center mb-4">
+                          <div className="w-[300px] border-t-2 border-black"></div>
+                          {/* <span className="text-3xl ml-2 relative -top-5 -left-20">+</span> */}
                         </div>
-                        <div className="flex mb-2 space-x-2 rtl:space-x-reverse relative">
+                        {/* First partial product (45 × 6) */}
+                        <div
+                          className={`flex mb-2 space-x-2 rtl:space-x-reverse justify-end -ml-[110px]`}
+                        >
                           <div
-                            className="absolute top-[-40px] left-0 w-12 h-12 border-2 border-green-600 text-green-600 text-3xl rounded-full flex items-center justify-center"
+                            className={`relative top-[-80px] left-14 w-12 h-12 ${
+                              carries[2] ? "border-2 border-green-600" : ""
+                            } text-green-600 text-3xl rounded-full flex items-center justify-center`}
                             onDragOver={(e) => e.preventDefault()}
                             onDrop={() => handleCarryDrop(2)}
                           >
@@ -432,9 +437,7 @@ const MultiplyGroup = () => {
                             .map((dropzone, i) => (
                               <div
                                 key={`answer-${i}`}
-                                className={`w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl ${
-                                  needsCarry ? "ml-[45px]" : ""
-                                }`}
+                                className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={() => handleAnswerDrop(i)}
                               >
@@ -442,19 +445,22 @@ const MultiplyGroup = () => {
                               </div>
                             ))}
                         </div>
-                        <div className="w-[200px] flex justify-end items-center mb-4">
-                          <div className="w-[180px] border-t-2 border-black"></div>
-                          <span className="text-3xl ml-2">+</span>
+                        <div className="w-[300px] flex justify-end items-center mb-4">
+                          <div className="w-[300px] border-t-2 border-black"></div>
+                          <span className="text-3xl ml-2 relative -top-5 -left-16">
+                            +
+                          </span>
                         </div>
-                        <div className="flex mb-2 space-x-2 rtl:space-x-reverse">
+                        {/* Second partial product (45 × 30) */}
+                        <div
+                          className={`flex mb-2 space-x-2 rtl:space-x-reverse justify-end ml-[-100px]`}
+                        >
                           {currentQuestion.dropzones
                             .slice(3, 7)
                             .map((dropzone, i) => (
                               <div
                                 key={`answer-${i + 3}`}
-                                className={`w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl ${
-                                  needsCarry ? "ml-[45px]" : ""
-                                }`}
+                                className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={() => handleAnswerDrop(i + 3)}
                               >
@@ -462,19 +468,22 @@ const MultiplyGroup = () => {
                               </div>
                             ))}
                         </div>
-                        <div className="w-[200px] flex justify-end items-center mb-4">
-                          <div className="w-[180px] border-t-2 border-black"></div>
-                          <span className="text-3xl ml-2">+</span>
+                        <div className="w-[350px] flex justify-end items-center mb-4">
+                          <div className="w-[350px] border-t-2 border-black"></div>
+                          <span className="text-3xl ml-2 relative -top-5 -left-20">
+                            +
+                          </span>
                         </div>
-                        <div className="flex mb-2 space-x-2 rtl:space-x-reverse">
+                        {/* Final sum (1620) */}
+                        <div
+                          className={`flex mb-2 space-x-2 rtl:space-x-reverse justify-end ml-[-100px]`}
+                        >
                           {currentQuestion.dropzones
                             .slice(7, 11)
                             .map((dropzone, i) => (
                               <div
                                 key={`answer-${i + 7}`}
-                                className={`w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl ${
-                                  needsCarry ? "ml-[45px]" : ""
-                                }`}
+                                className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={() => handleAnswerDrop(i + 7)}
                               >
@@ -536,10 +545,10 @@ const MultiplyGroup = () => {
                           ))}
                           <h1 className="text-3xl -mr-20 transform">×</h1>
                         </div>
-                        <div className="w-[200px] border-t-2 border-black mb-4"></div>
+                        <div className="w-[310px] border-t-2 border-black mb-4"></div>
                         <div
                           className={`flex space-x-2 rtl:space-x-reverse ${
-                            needsCarry ? "ml-[45px]" : ""
+                            needsCarry ? "ml-[-45px]" : ""
                           } ${currentQuestionIndex === 6 ? "ml-[-45px]" : ""}`}
                         >
                           {currentQuestion.dropzones.map((dropzone, i) => (
@@ -594,7 +603,7 @@ const MultiplyGroup = () => {
             </div>
           </div>
         </div>
-        <button onClick={nextQuestion} className="-mt-96 ml-44">
+        <button onClick={nextQuestion} className="-mt-[96] ml-32">
           <img
             src={nextBtn}
             className="w-96 transform -translate-y-20"

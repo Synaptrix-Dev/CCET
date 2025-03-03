@@ -199,16 +199,16 @@ const questions = [
     //Q15:52x7
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٧" },
+      { type: "fixed", value: "٥٢" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٥٢" }],
+    operands: [{ type: "fixed", value: "٧" }],
     dropzones: [
       { correct: "٣", type: "regular" },
       { correct: "٦", type: "regular" },
       { correct: "٤", type: "regular" },
     ],
-    needsRemainder: false,
+    needsRemainder: true,
     incorrectAttempts: 0,
   },
   {
