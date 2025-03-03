@@ -17,6 +17,7 @@ import NumberComparison from "./pages/NumberComparison/NumberComparison";
 import MultiplyGroup from "./pages/MultiplyGroup/MultiplyGroup";
 import NumberRemember from "./pages/NumberRemember/NumberRemember";
 import OralTest from "./pages/OralTest/OralTest";
+import DivisionLayout from "./pages/Division/Divisionjs";
 
 function App() {
   return (
@@ -63,6 +64,10 @@ function App() {
             <Route
               path="testselection/oral-test"
               element={<OralTest />}
+            />
+            <Route
+              path="testselection/division-test"
+              element={<DivisionLayout />}
             />
           </Route>
         </Routes>

@@ -37,7 +37,7 @@ const TestSelect = () => {
       id: 5,
       title: "إختبار العمليات الأساسية | القسمة",
       video: "https://www.youtube.com/embed/videoID5",
-      url: "division-test",
+      url: "dashboard/testselection/division-test",
     },
     {
       id: 6,
