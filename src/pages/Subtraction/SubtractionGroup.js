@@ -72,12 +72,28 @@ const SubtractionGroup = () => {
   const handleAnswerDrop = (index) => {
     if (draggedNumber !== null) {
       const newAnswers = [...userAnswers];
-      const digits = draggedNumber.split("");
-      digits.forEach((digit, i) => {
-        if (index + i < currentQuestion.dropzones.length) {
-          newAnswers[index + i] = digit;
+      const digits = draggedNumber.split(""); // Split the dragged number into digits
+      const dropzoneCount = currentQuestion.dropzones.length;
+
+      // Check if the drop is on the last dropzone and it's a multi-digit number
+      if (index === dropzoneCount - 1 && digits.length > 1) {
+        // Place digits in reverse order starting from the last dropzone
+        for (let i = 0; i < digits.length; i++) {
+          const targetIndex = index - i; // Move backwards from the drop index
+          if (targetIndex >= 0) {
+            // Ensure we don't go out of bounds
+            newAnswers[targetIndex] = digits[digits.length - 1 - i]; // Place digits from right to left
+          }
         }
-      });
+      } else {
+        // Original behavior for other cases: place digits forward
+        digits.forEach((digit, i) => {
+          if (index + i < dropzoneCount) {
+            newAnswers[index + i] = digit;
+          }
+        });
+      }
+
       setUserAnswers(newAnswers);
       setDraggedNumber(null);
     }
@@ -148,7 +164,7 @@ const SubtractionGroup = () => {
           newResults.reduce((a, b) => a + b, 0),
           `/${totalQuestions}`
         );
-        // setTimeout(() => navigate("/dashboard/testselection"), 1000);
+        setTimeout(() => navigate("/dashboard/testselection"), 1000);
         return;
       }
     }
@@ -172,10 +188,10 @@ const SubtractionGroup = () => {
         results.reduce((a, b) => a + b, 0),
         `/${totalQuestions}`
       );
-      setShowModal(true);
+      setShowModal(false);
       setTimeout(() => {
         setShowModal(false);
-        // navigate("/dashboard/testselection");
+        navigate("/dashboard/testselection");
       }, 2000);
     }
   };
@@ -213,7 +229,7 @@ const SubtractionGroup = () => {
               results.reduce((a, b) => a + b, 0),
               `/${totalQuestions}`
             );
-            // setTimeout(() => navigate("/dashboard/testselection"), 1000);
+            setTimeout(() => navigate("/dashboard/testselection"), 1000);
             return;
           }
         }
@@ -252,7 +268,7 @@ const SubtractionGroup = () => {
             newResults.reduce((a, b) => a + b, 0),
             `/${totalQuestions}`
           );
-          // setTimeout(() => navigate("/dashboard/testselection"), 1000);
+          setTimeout(() => navigate("/dashboard/testselection"), 1000);
           return;
         }
       }
@@ -409,7 +425,7 @@ const SubtractionGroup = () => {
                           ))}
                           <h1 className="text-3xl  border-t-4  border-black w-4 transform translate-y-5"></h1>
                         </div>
-                        <div className="w-[300px] border-t-2 border-black mb-4"></div>
+                        <div className="w-[230px] border-t-2 border-black mb-4"></div>
                         <div
                           className={`flex space-x-2 rtl:space-x-reverse ${
                             currentQuestionIndex === 6 ? "ml-[-0px]" : ""

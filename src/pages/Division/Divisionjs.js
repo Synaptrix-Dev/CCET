@@ -217,18 +217,18 @@ function DivisionLayout() {
           </div>
 
           <div className="w-full">
-            <div className="max-h-full min-h-[40vh] w-full border-2 border-yellow-400  rounded-lg p-8 text-5xl font-semibold flex justify-center items-center">
+            <div className="max-h-full min-h-[40vh] w-full border-2 border-yellow-400  rounded-lg p-8 text-5xl  flex justify-center items-center">
               {/* Question 1  */}
               {currentQuestionIndex === 0 && (
                 <div className="flex justify-center space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-0")} // Unique ID for this box
                   >
                     {droppedNumbers["box-0"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>٢</span>
                     <span>÷</span>
@@ -241,13 +241,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 1 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-1")} // Unique ID for this box
                   >
                     {droppedNumbers["box-1"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>٦</span>
                     <span>÷</span>
@@ -260,13 +260,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 2 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-2")} // Unique ID for this box
                   >
                     {droppedNumbers["box-2"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>٤</span>
                     <span>÷</span>
@@ -279,13 +279,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 3 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-3")} // Unique ID for this box
                   >
                     {droppedNumbers["box-3"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>٨</span>
                     <span>÷</span>
@@ -298,13 +298,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 4 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-4")} // Unique ID for this box
                   >
                     {droppedNumbers["box-4"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>٣</span>
                     <span>÷</span>
@@ -317,13 +317,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 5 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-5")} // Unique ID for this box
                   >
                     {droppedNumbers["box-5"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>٤</span>
                     <span>÷</span>
@@ -336,13 +336,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 6 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-6")} // Unique ID for this box
                   >
                     {droppedNumbers["box-6"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>٩</span>
                     <span>÷</span>
@@ -355,13 +355,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 7 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-7")} // Unique ID for this box
                   >
                     {droppedNumbers["box-7"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>٩</span>
                     <span>÷</span>
@@ -374,13 +374,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 8 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-8")} // Unique ID for this box
                   >
                     {droppedNumbers["box-8"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>٧</span>
                     <span>÷</span>
@@ -393,13 +393,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 9 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-9")} // Unique ID for this box
                   >
                     {droppedNumbers["box-9"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>٥</span>
                     <span>÷</span>
@@ -417,7 +417,7 @@ function DivisionLayout() {
 
                   <div className="row-start-2 col-start-2 h-16 w-16 flex items-center justify-center">
                     <div
-                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white "
+                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white "
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={() => handleDrop("box-10")} // Unique ID for this box
                     >
@@ -426,7 +426,7 @@ function DivisionLayout() {
                   </div>
                   <div className="row-start-2 col-start-3  h-16 w-16 flex items-center justify-center">
                     <div
-                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white "
+                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white "
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={() => handleDrop("box-11")} // Unique ID for this box
                     >
@@ -445,7 +445,7 @@ function DivisionLayout() {
                   </div>
 
                   <div
-                    className="  row-start-4 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white "
+                    className="  row-start-4 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white "
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-12")} // Unique ID for this box
                   >
@@ -458,14 +458,14 @@ function DivisionLayout() {
                   <div className="row-start-5 border-t-2 border-black col-span-4 -mt-8"></div>
 
                   <div
-                    className="row-start-6 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white  -mt-20"
+                    className="row-start-6 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-20"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-13")} // Unique ID for this box
                   >
                     {droppedNumbers["box-13"] || ""}
                   </div>
                   <div
-                    className="row-start-6 col-start-3 h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white  -mt-20"
+                    className="row-start-6 col-start-3 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-20"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-14")} // Unique ID for this box
                   >
@@ -473,14 +473,14 @@ function DivisionLayout() {
                   </div>
 
                   <div
-                    className="row-start-7 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white  -mt-16"
+                    className="row-start-7 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-16"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-15")} // Unique ID for this box
                   >
                     {droppedNumbers["box-15"] || ""}
                   </div>
                   <div
-                    className="row-start-7 col-start-3 h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white  -mt-16"
+                    className="row-start-7 col-start-3 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-16"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-16")} // Unique ID for this box
                   >
@@ -493,14 +493,14 @@ function DivisionLayout() {
                   <div className="row-start-8 border-t-2 border-black col-span-4 -mt-24"></div>
 
                   <div
-                    className=" row-start-9 col-start-2  h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white  -mt-32"
+                    className=" row-start-9 col-start-2  h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-32"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-17")} // Unique ID for this box
                   >
                     {droppedNumbers["box-17"] || ""}
                   </div>
                   <div
-                    className=" row-start-9 col-start-3  h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white  -mt-32"
+                    className=" row-start-9 col-start-3  h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-32"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-18")} // Unique ID for this box
                   >
@@ -517,7 +517,7 @@ function DivisionLayout() {
                 </div> */}
                   <div className="row-start-2 col-start-2 h-16 w-16 flex items-center justify-center">
                     <div
-                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white "
+                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white "
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={() => handleDrop("box-19")} // Unique ID for this box
                     >
@@ -526,7 +526,7 @@ function DivisionLayout() {
                   </div>
                   <div className="row-start-2 col-start-3  h-16 w-16 flex items-center justify-center">
                     <div
-                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white "
+                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white "
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={() => handleDrop("box-20")} // Unique ID for this box
                     >
@@ -543,7 +543,7 @@ function DivisionLayout() {
                     ٦
                   </div>
                   <div
-                    className=" row-start-4 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white "
+                    className=" row-start-4 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white "
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-21")} // Unique ID for this box
                   >
@@ -554,28 +554,28 @@ function DivisionLayout() {
                   </div>
                   <div className="row-start-5 border-t-2 border-black col-span-4 -mt-8"></div>
                   <div
-                    className="row-start-6 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white  -mt-16"
+                    className="row-start-6 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-16"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-22")} // Unique ID for this box
                   >
                     {droppedNumbers["box-22"] || ""}
                   </div>
                   <div
-                    className="row-start-6 col-start-3 h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white  -mt-16"
+                    className="row-start-6 col-start-3 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-16"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-23")} // Unique ID for this box
                   >
                     {droppedNumbers["box-23"] || ""}
                   </div>
                   <div
-                    className="row-start-7 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white  -mt-16"
+                    className="row-start-7 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-16"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-24")} // Unique ID for this box
                   >
                     {droppedNumbers["box-24"] || ""}
                   </div>
                   <div
-                    className="row-start-7 col-start-3 h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white  -mt-16"
+                    className="row-start-7 col-start-3 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-16"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-25")} // Unique ID for this box
                   >
@@ -586,7 +586,7 @@ function DivisionLayout() {
                   </div>
                   <div className="row-start-8 border-t-2 border-black col-span-4 -mt-24"></div>
                   <div
-                    className="row-start-9 col-start-3 h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white  -mt-32"
+                    className="row-start-9 col-start-3 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-32"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-26")} // Unique ID for this box
                   >
@@ -604,7 +604,7 @@ function DivisionLayout() {
 
                   <div className="row-start-2 col-start-2 h-16 w-16 flex items-center justify-center">
                     <div
-                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white "
+                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white "
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={() => handleDrop("box-27")} // Unique ID for this box
                     >
@@ -613,7 +613,7 @@ function DivisionLayout() {
                   </div>
                   <div className="row-start-2 col-start-3 h-16 w-16 flex items-center justify-center">
                     <div
-                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white "
+                      className="h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white "
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={() => handleDrop("box-28")} // Unique ID for this box
                     >
@@ -703,13 +703,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 13 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-36")} // Unique ID for this box
                   >
                     {droppedNumbers["box-36"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>١٠</span>
                     <span>÷</span>
@@ -722,13 +722,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 14 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-37")} // Unique ID for this box
                   >
                     {droppedNumbers["box-37"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>١٠</span>
                     <span>÷</span>
@@ -741,13 +741,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 15 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-38")} // Unique ID for this box
                   >
                     {droppedNumbers["box-38"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>١٠</span>
                     <span>÷</span>
@@ -760,13 +760,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 16 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-39")} // Unique ID for this box
                   >
                     {droppedNumbers["box-39"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>١٠٠</span>
                     <span>÷</span>
@@ -779,13 +779,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 17 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white -mt-5"
+                    className="h-14 w-14 border border-black flex items-center justify-center text-5xl  bg-white -mt-5"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-40")} // Unique ID for this box
                   >
                     {droppedNumbers["box-40"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>١٠٠٠</span>
                     <span>÷</span>
@@ -798,13 +798,13 @@ function DivisionLayout() {
               {currentQuestionIndex === 18 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
                   <div
-                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl font-semibold bg-white "
+                    className="h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white "
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-41")} // Unique ID for this box
                   >
                     {droppedNumbers["box-41"] || ""}
                   </div>
-                  <div className="flex justify-center space-x-4 items-center h-full -mt-4">
+                  <div className="flex justify-center space-x-4 items-center text-5xl h-full -mt-4">
                     <span>=</span>
                     <span>٩٠٠٠</span>
                     <span>÷</span>
@@ -1035,7 +1035,7 @@ function DivisionLayout() {
                   {row.map((num, colIndex) => (
                     <div
                       key={`${rowIndex}-${colIndex}`}
-                      className="border border-yellow-400 cursor-pointer rounded-md bg-gray-100 p-2 text-center text-2xl font-semibold hover:bg-yellow-50 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                      className="w-20 h-14 flex text-4xl items-center justify-center border-2 border-yellow-400 rounded bg-gray-100 cursor-grab"
                       draggable
                       onDragStart={() => handleDragStart(num)}
                     >

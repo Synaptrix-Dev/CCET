@@ -155,16 +155,16 @@ const OralTest = () => {
       {/* Action Buttons */}
       <div className="flex justify-end mt-6 gap-4 my-6">
         <button
-          onClick={handleStartTimer}
-          className="bg-green-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition"
-        >
-          بدء التوقيت
-        </button>
-        <button
           onClick={handleEndTimer}
           className="bg-green-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-red-600 transition"
         >
           نهاية التوقيت
+        </button>
+        <button
+          onClick={handleStartTimer}
+          className="bg-green-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition"
+        >
+          بدء التوقيت
         </button>
         <button
           onClick={() => setShowModal(true)}
@@ -221,7 +221,6 @@ const OralTest = () => {
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold">تسجيل عدد الاخطاء</h3>
               <button
                 onClick={() => setShowModal(false)}
                 className="text-gray-600 hover:text-gray-800"
@@ -241,6 +240,7 @@ const OralTest = () => {
                   />
                 </svg>
               </button>
+              <h3 className="text-xl font-bold">تسجيل عدد الاخطاء</h3>
             </div>
             <input
               type="text"

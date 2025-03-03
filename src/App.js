@@ -18,7 +18,8 @@ import MultiplyGroup from "./pages/MultiplyGroup/MultiplyGroup";
 import NumberRemember from "./pages/NumberRemember/NumberRemember";
 import OralTest from "./pages/OralTest/OralTest";
 import DivisionLayout from "./pages/Division/Divisionjs";
-
+import Anxiety from "./pages/Anxiety/Anxiety";
+import NumberGuess from "./pages/NumberGuess/NumberGuess";
 function App() {
   return (
     <>
@@ -61,14 +62,13 @@ function App() {
               path="testselection/number-remember"
               element={<NumberRemember />}
             />
-            <Route
-              path="testselection/oral-test"
-              element={<OralTest />}
-            />
+            <Route path="testselection/oral-test" element={<OralTest />} />
             <Route
               path="testselection/division-test"
               element={<DivisionLayout />}
             />
+            <Route path="testselection/assessment-test" element={<Anxiety />} />
+            <Route path="testselection/distance-estimation-test" element={<NumberGuess />} />
           </Route>
         </Routes>
       </BrowserRouter>

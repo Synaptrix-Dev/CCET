@@ -76,12 +76,28 @@ const ArabicMathQuiz = () => {
   const handleAnswerDrop = (index) => {
     if (draggedNumber !== null) {
       const newAnswers = [...userAnswers];
-      const digits = draggedNumber.split("");
-      digits.forEach((digit, i) => {
-        if (index + i < currentQuestion.dropzones.length) {
-          newAnswers[index + i] = digit;
+      const digits = draggedNumber.split(""); // Split the dragged number into digits
+      const dropzoneCount = currentQuestion.dropzones.length;
+
+      // Check if the drop is on the last dropzone and it's a multi-digit number
+      if (index === dropzoneCount - 1 && digits.length > 1) {
+        // Place digits in reverse order starting from the last dropzone
+        for (let i = 0; i < digits.length; i++) {
+          const targetIndex = index - i; // Move backwards from the drop index
+          if (targetIndex >= 0) {
+            // Ensure we don't go out of bounds
+            newAnswers[targetIndex] = digits[digits.length - 1 - i]; // Place digits from right to left
+          }
         }
-      });
+      } else {
+        // Original behavior for other cases: place digits forward
+        digits.forEach((digit, i) => {
+          if (index + i < dropzoneCount) {
+            newAnswers[index + i] = digit;
+          }
+        });
+      }
+
       setUserAnswers(newAnswers);
       setDraggedNumber(null);
     }
@@ -179,7 +195,7 @@ const ArabicMathQuiz = () => {
         results.reduce((a, b) => a + b, 0),
         `/${totalQuestions}`
       );
-      setShowModal(true); // Show modal when all questions are completed
+      setShowModal(false); // Show modal when all questions are completed
       setTimeout(() => {
         setShowModal(false);
         navigate("/dashboard/testselection");
@@ -357,7 +373,7 @@ const ArabicMathQuiz = () => {
                           {currentQuestion.dropzones.map((dropzone, i) => (
                             <div
                               key={`answer-${i}`}
-                              className="w-12 h-12 border-2 border-gray-400 text-green-870 rounded flex items-center justify-center text-5xl"
+                              className="w-12 h-12 border-2 border-gray-400 text-green-700 rounded flex items-center justify-center text-5xl"
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleAnswerDrop(i)}
                             >
@@ -411,7 +427,7 @@ const ArabicMathQuiz = () => {
                           ))}
                           <h1 className="text-3xl -mr-20 transform">+</h1>
                         </div>
-                        <div className="w-[300px] border-t-2 border-black mb-4"></div>
+                        <div className="w-[250px] border-t-2 border-black mb-4"></div>
                         <div
                           className={`flex space-x-2 rtl:space-x-reverse ${
                             currentQuestionIndex === 6 ? "ml-[-45px]" : ""

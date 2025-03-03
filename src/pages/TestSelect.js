@@ -13,7 +13,7 @@ const TestSelect = () => {
       id: 1,
       title: "إستبيان فى التحصيل",
       video: "https://www.youtube.com/embed/O_hXv67BmHg",
-      url: "assessment-test",
+      url: "dashboard/testselection/assessment-test",
     },
     {
       id: 2,
@@ -55,7 +55,7 @@ const TestSelect = () => {
       id: 8,
       title: "إختبار تقدير المسافة",
       video: "https://www.youtube.com/embed/videoID8",
-      url: "distance-estimation-test",
+      url: "dashboard/testselection/distance-estimation-test",
     },
     {
       id: 9,

@@ -338,9 +338,18 @@ const MultiplyGroup = () => {
               </button>
             </div>
 
-            <div className="relative w-[60%] h-96 px-4 py-10 justify-center transform translate-y-20 items-center">
+            <div className="relative w-[60%]  h-96 px-4 py-10 justify-center transform translate-y-20 items-center">
               <div className="mx-auto my-auto">
-                <div className="border-4 border-yellow-400 flex justify-center h-[32rem] my-auto rounded-lg p-6">
+                <div
+                  className={`border-4 bg-[#F3F4F6] border-yellow-400 flex justify-center my-auto rounded-lg p-6`}
+                  style={{
+                    height:
+                      currentQuestionIndex === 16
+                        ? "40rem !important"
+                        : "18rem",
+                    minHeight: "18rem",
+                  }}
+                >
                   <div className="flex flex-col items-center my-auto">
                     {!needsCarry ? (
                       <div className="flex items-center space-x-4 text-5xl">
@@ -415,8 +424,8 @@ const MultiplyGroup = () => {
                           ))}
                           <h1 className="text-3xl -mr-20 transform">×</h1>
                         </div>
-                        <div className="w-[300px] flex justify-end items-center mb-4">
-                          <div className="w-[300px] border-t-2 border-black"></div>
+                        <div className="w-[230px] -translate-x-14 flex justify-end items-center mb-4">
+                          <div className="w-[230px] border-t-2 border-black"></div>
                           {/* <span className="text-3xl ml-2 relative -top-5 -left-20">+</span> */}
                         </div>
                         {/* First partial product (45 × 6) */}
@@ -445,11 +454,11 @@ const MultiplyGroup = () => {
                               </div>
                             ))}
                         </div>
-                        <div className="w-[300px] flex justify-end items-center mb-4">
-                          <div className="w-[300px] border-t-2 border-black"></div>
-                          <span className="text-3xl ml-2 relative -top-5 -left-16">
+                        <div className="w-[230px] flex justify-end items-center mb-4">
+                          {/* <div className="w-[300px] border-t-2 border-black"></div> */}
+                          {/* <span className="text-3xl ml-2 relative -top-5 -left-16">
                             +
-                          </span>
+                          </span> */}
                         </div>
                         {/* Second partial product (45 × 30) */}
                         <div
@@ -468,9 +477,9 @@ const MultiplyGroup = () => {
                               </div>
                             ))}
                         </div>
-                        <div className="w-[350px] flex justify-end items-center mb-4">
-                          <div className="w-[350px] border-t-2 border-black"></div>
-                          <span className="text-3xl ml-2 relative -top-5 -left-20">
+                        <div className="w-[280px] -translate-x-14 flex justify-end items-center mb-4">
+                          <div className="w-[280px] border-t-2 border-black"></div>
+                          <span className="text-3xl  relative -top-5 left-0 ">
                             +
                           </span>
                         </div>

@@ -213,6 +213,14 @@ const NumberComparison = () => {
   );
 
   // Play initial instruction audios after user interaction
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      startQuiz();
+    }, 1000); // 2000 milliseconds = 2 seconds
+
+    return () => clearTimeout(timer); // Cleanup on unmount
+  }, []); // Empty dependency array means it runs once on mount
+
   const startQuiz = () => {
     setHasStarted(true);
     setExamStartTime(new Date());
@@ -229,7 +237,7 @@ const NumberComparison = () => {
         };
       } else {
         setIsInteractive(true);
-        playQuestionAudio(); // Start with the first question audio
+        playQuestionAudio();
       }
     };
 
@@ -281,15 +289,15 @@ const NumberComparison = () => {
   if (!hasStarted) {
     return (
       <div
-        className="min-h-screen bg-gray-100 flex items-center justify-center font-sans"
+        className="min-h-screen  flex items-center justify-center font-sans"
         dir="rtl"
       >
-        <button
+        {/* <button
           onClick={startQuiz}
           className="bg-green-500 text-white px-8 py-4 rounded-lg text-xl hover:bg-green-600"
         >
           ابدأ الاختبار
-        </button>
+        </button> */}
       </div>
     );
   }
@@ -313,7 +321,7 @@ const NumberComparison = () => {
   const question = questionsWithAudio[currentQuestion];
 
   return (
-    <div className="min-h-screen ">
+    <div className="">
       {/* Header with Progress Bar */}
       <div className="w-full bg-gray-100 h-10 flex mt-10 items-center">
         <img src={Logo} alt="Logo" className="h-36 w-36" />
@@ -356,7 +364,7 @@ const NumberComparison = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl text-red-600 font-bold text-right mb-8">
-          حوط رمز القيمة الأكبر:
+          : حوط رمز القيمة الأكبر
         </h1>
 
         <div className="bg-white border-2 border-yellow-400 rounded-2xl p-10 w-[900px] mx-auto min-h-[300px] flex flex-col justify-center">
@@ -364,10 +372,10 @@ const NumberComparison = () => {
             <button
               onClick={() => handleAnswer(question.left)}
               disabled={!isInteractive}
-              className={`w-48 h-48 rounded-full bg-white shadow-md border border-green-500 flex items-center justify-center text-green-500 hover:bg-[#FEF8C6] disabled:opacity-70 disabled:cursor-not-allowed
+              className={`w-48 h-48 rounded-full bg-white shadow-md border border-blue-500 flex items-center justify-center text-green-500 hover:bg-[#FEF8C6] disabled:opacity-70 disabled:cursor-not-allowed
                 ${
                   currentPart === 1 && question.correctAnswer === question.left
-                    ? "text-6xl"
+                    ? "text-4xl"
                     : "text-8xl"
                 }`}
             >
@@ -376,10 +384,10 @@ const NumberComparison = () => {
             <button
               onClick={() => handleAnswer(question.right)}
               disabled={!isInteractive}
-              className={`w-48 h-48 rounded-full bg-white shadow-md border border-green-500 flex items-center justify-center text-green-500 hover:bg-[#FEF8C6] disabled:opacity-70 disabled:cursor-not-allowed
+              className={`w-48 h-48 rounded-full bg-white shadow-md border border-blue-500 flex items-center justify-center text-green-500 hover:bg-[#FEF8C6] disabled:opacity-70 disabled:cursor-not-allowed
                 ${
                   currentPart === 1 && question.correctAnswer === question.right
-                    ? "text-6xl"
+                    ? "text-4xl"
                     : "text-8xl"
                 }`}
             >
