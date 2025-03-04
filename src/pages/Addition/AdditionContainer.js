@@ -427,7 +427,7 @@ const ArabicMathQuiz = () => {
                           ))}
                           <h1 className="text-3xl -mr-20 transform">+</h1>
                         </div>
-                        <div className="w-[250px] border-t-2 border-black mb-4"></div>
+                        <div className="w-[230px] border-t-2 border-black mb-4"></div>
                         <div
                           className={`flex space-x-2 rtl:space-x-reverse ${
                             currentQuestionIndex === 6 ? "ml-[-45px]" : ""

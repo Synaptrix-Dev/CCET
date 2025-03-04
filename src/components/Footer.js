@@ -3,7 +3,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="footer px-20">
+    <footer className="footer mb-10 px-20">
       <div className="discover">
         <h4>استكشف:</h4>
         <div className="">
@@ -33,7 +33,7 @@ const Footer = () => {
             rel="noopener noreferrer"
             aria-label="Instagram"
           >
-            <i className="fab fa-instagram ml-2"></i>
+            <i className="fab fa-instagram text-lg ml-2"></i>
             <span>@ccetkuwait</span>
           </a>
           <a
@@ -42,7 +42,7 @@ const Footer = () => {
             rel="noopener noreferrer"
             aria-label="YouTube"
           >
-            <i className="fa-brands fa-youtube ml-2 mt-2"></i>
+            <i className="fa-brands fa-youtube text-lg  ml-2 mt-2"></i>
             <span>مركز تقويم وتعليم الطفل</span>
           </a>
         </div>
