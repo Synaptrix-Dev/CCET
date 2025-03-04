@@ -64,7 +64,7 @@ const MultiplyGroup = () => {
         }
         return prev - 1;
       });
-    }, 1000);
+    }, 0);
     return () => clearInterval(timerRef.current);
   }, [currentQuestionIndex]);
 
@@ -164,7 +164,7 @@ const MultiplyGroup = () => {
           newResults.reduce((a, b) => a + b, 0),
           `/${totalQuestions}`
         );
-        // setTimeout(() => navigate("/dashboard/testselection"), 1000);
+        setTimeout(() => navigate("/dashboard/testselection"), 0);
         return;
       }
     }
@@ -188,10 +188,10 @@ const MultiplyGroup = () => {
         results.reduce((a, b) => a + b, 0),
         `/${totalQuestions}`
       );
-      setShowModal(true);
+      setShowModal(false);
       setTimeout(() => {
         setShowModal(false);
-        // navigate("/dashboard/testselection");
+        navigate("/dashboard/testselection");
       }, 2000);
     }
   };
@@ -229,7 +229,7 @@ const MultiplyGroup = () => {
               results.reduce((a, b) => a + b, 0),
               `/${totalQuestions}`
             );
-            // setTimeout(() => navigate("/dashboard/testselection"), 1000);
+            setTimeout(() => navigate("/dashboard/testselection"), 0);
             return;
           }
         }
@@ -268,7 +268,7 @@ const MultiplyGroup = () => {
             newResults.reduce((a, b) => a + b, 0),
             `/${totalQuestions}`
           );
-          // setTimeout(() => navigate("/dashboard/testselection"), 1000);
+          setTimeout(() => navigate("/dashboard/testselection"), 0);
           return;
         }
       }
@@ -354,17 +354,10 @@ const MultiplyGroup = () => {
               </button>
             </div>
 
-            <div className="relative w-[60%]  h-96 px-4 py-10 justify-center transform translate-y-20 items-center">
+            <div className="relative w-[60%]  px-4 py-10 justify-center transform translate-y-20 items-center">
               <div className="mx-auto my-auto">
                 <div
-                  className={`border-4 bg-[#F3F4F6] border-yellow-400 flex justify-center my-auto rounded-lg p-6`}
-                  style={{
-                    height:
-                      currentQuestionIndex === 16
-                        ? "40rem !important"
-                        : "18rem",
-                    minHeight: "18rem",
-                  }}
+                  className={`border-4 bg-[#F3F4F6] border-yellow-400 flex justify-center my-auto rounded-lg min-h-[18rem] p-6`}
                 >
                   <div className="flex flex-col items-center my-auto">
                     {!needsCarry ? (
@@ -628,10 +621,10 @@ const MultiplyGroup = () => {
             </div>
           </div>
         </div>
-        <button onClick={nextQuestion} className="-mt-[96] ml-32">
+        <button onClick={nextQuestion} className=" ml-32">
           <img
             src={nextBtn}
-            className="w-96 transform -translate-y-20"
+            className="w-96 transform -translate-y-44"
             alt=""
           />
         </button>

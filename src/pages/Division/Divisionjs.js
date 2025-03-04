@@ -568,13 +568,6 @@ function DivisionLayout() {
                     {droppedNumbers["box-23"] || ""}
                   </div>
                   <div
-                    className="row-start-7 col-start-2 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-16"
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={() => handleDrop("box-24")} // Unique ID for this box
-                  >
-                    {droppedNumbers["box-24"] || ""}
-                  </div>
-                  <div
                     className="row-start-7 col-start-3 h-14 w-14 border border-black flex items-center justify-center text-4xl  bg-white  -mt-16"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-25")} // Unique ID for this box
@@ -682,7 +675,7 @@ function DivisionLayout() {
                   <div className="row-start-8 border-t-2 border-black col-span-4 -mt-24"></div>
 
                   <div
-                    className="row-start-9 col-start-2 h-14 w-14 flex border border-black -mt-16 bg-white"
+                    className="row-start-9 col-start-2 h-14 w-14 flex border border-black -mt-32 bg-white"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-34")} // Unique ID for this box
                   >
@@ -690,7 +683,7 @@ function DivisionLayout() {
                   </div>
 
                   <div
-                    className="row-start-9 col-start-3 h-14 w-14 flex border border-black bg-white -mt-16 text-center"
+                    className="row-start-9 col-start-3 h-14 w-14 flex border border-black bg-white -mt-32 text-center"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-35")} // Unique ID for this box
                   >
