@@ -170,7 +170,7 @@ const ArabicMathQuiz = () => {
           newResults.reduce((a, b) => a + b, 0),
           `/${totalQuestions}`
         );
-        setTimeout(() => navigate("/dashboard/testselection"), 1000);
+        // setTimeout(() => navigate("/dashboard/testselection"), 1000);
         return;
       }
     }
@@ -198,7 +198,7 @@ const ArabicMathQuiz = () => {
       setShowModal(false); // Show modal when all questions are completed
       setTimeout(() => {
         setShowModal(false);
-        navigate("/dashboard/testselection");
+        // navigate("/dashboard/testselection");
       }, 2000); // Redirect after 2 seconds
     }
   };
@@ -237,7 +237,7 @@ const ArabicMathQuiz = () => {
               results.reduce((a, b) => a + b, 0),
               `/${totalQuestions}`
             );
-            setTimeout(() => navigate("/dashboard/testselection"), 1000);
+            // setTimeout(() => navigate("/dashboard/testselection"), 1000);
             return;
           }
         }
@@ -276,7 +276,7 @@ const ArabicMathQuiz = () => {
             newResults.reduce((a, b) => a + b, 0),
             `/${totalQuestions}`
           );
-          setTimeout(() => navigate("/dashboard/testselection"), 1000);
+          // setTimeout(() => navigate("/dashboard/testselection"), 1000);
           return;
         }
       }
@@ -335,18 +335,18 @@ const ArabicMathQuiz = () => {
           ></div>
         </div>
         <div className="flex w-[33%]">
-          <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
+          <div className="px-1 py-2 border-l border-r border-gray-800 flex items-center justify-center">
             <span className="text-black text-xl font-bold">{studentName}</span>
             <span className="ml-1 text-gray-600 text-md font-bold">
               : اسم الطالب
             </span>
           </div>
-          <div className="px-1 py-2 border-r border-gray-300 flex items-center justify-center">
+          <div className="px-1 py-2 border-r border-gray-800 flex items-center justify-center">
             <span className="text-black text-md font-bold">
               إختبار العمليات الأساسية | الجمع
             </span>
           </div>
-          <div className="px-1 py-2 text-right">
+          <div className="px-1 ml-2 py-2 ">
             <span className="text-black text-md font-bold">
               اختبار فرز عسر الحساب
             </span>
@@ -416,7 +416,7 @@ const ArabicMathQuiz = () => {
                             </div>
                           ))}
                         </div>
-                        <div className="flex mb-2 -mr-6 space-x-2 rtl:space-x-reverse">
+                        <div className="flex mb-2 -mr-10 space-x-2 rtl:space-x-reverse">
                           {paddedSecond.split("").map((digit, i) => (
                             <div
                               key={`second-${i}`}
@@ -425,7 +425,7 @@ const ArabicMathQuiz = () => {
                               {digit === " " ? "" : digit}
                             </div>
                           ))}
-                          <h1 className="text-3xl -mr-20 transform">+</h1>
+                          <h1 className="text-5xl -mr-16  translate-x-4  transform">+</h1>
                         </div>
                         <div className="w-[230px] border-t-2 border-black mb-4"></div>
                         <div

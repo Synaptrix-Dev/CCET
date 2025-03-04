@@ -28,6 +28,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/select-student" element={<StudentTestSelection />} />
           <Route
             path="/dashboard"
             element={<ProtectedRoute Component={Layout} />}

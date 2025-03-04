@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="footer mb-10 px-20">
       <div className="discover">
-        <h4>استكشف:</h4>
+        <h4 className="my-2">استكشف:</h4>
         <div className="">
           <p>الموقع الرسمي لمركز تقويم وتعليم الطفل</p>
           <p>برنامج فرز عسر القراءة</p>
@@ -14,7 +14,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="contact-info">
-        <h4>طرق التواصل</h4>
+        <h4 className="my-2">طرق التواصل</h4>
         <p>
           <i className="fa-solid fa-house"></i> العنوان: السرة - ق4 شارع 14 ص ب:
           5453 الصفاة - رمز بريدي 13055 الكويت
@@ -26,7 +26,7 @@ const Footer = () => {
           <i className="fa-solid fa-envelope"></i> بريد إلكتروني:{" "}
           <a href="mailto:info@ccetkuwait.org">info@ccetkuwait.org</a>
         </p>
-        <div className="social-icons">
+        <div className="social-icons transform translate-x-[10px] -translate-y-[15px]">
           <a
             href="https://instagram.com"
             target="_blank"
