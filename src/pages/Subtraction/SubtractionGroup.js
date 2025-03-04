@@ -164,7 +164,7 @@ const SubtractionGroup = () => {
           newResults.reduce((a, b) => a + b, 0),
           `/${totalQuestions}`
         );
-        setTimeout(() => navigate("/dashboard/testselection"), 1000);
+        // setTimeout(() => navigate("/dashboard/testselection"), 1000);
         return;
       }
     }
@@ -191,7 +191,7 @@ const SubtractionGroup = () => {
       setShowModal(false);
       setTimeout(() => {
         setShowModal(false);
-        navigate("/dashboard/testselection");
+        // navigate("/dashboard/testselection");
       }, 2000);
     }
   };
@@ -229,7 +229,7 @@ const SubtractionGroup = () => {
               results.reduce((a, b) => a + b, 0),
               `/${totalQuestions}`
             );
-            setTimeout(() => navigate("/dashboard/testselection"), 1000);
+            // setTimeout(() => navigate("/dashboard/testselection"), 1000);
             return;
           }
         }
@@ -268,7 +268,7 @@ const SubtractionGroup = () => {
             newResults.reduce((a, b) => a + b, 0),
             `/${totalQuestions}`
           );
-          setTimeout(() => navigate("/dashboard/testselection"), 1000);
+          // setTimeout(() => navigate("/dashboard/testselection"), 1000);
           return;
         }
       }
@@ -423,9 +423,9 @@ const SubtractionGroup = () => {
                               {digit === " " ? "" : digit}
                             </div>
                           ))}
-                          <h1 className="text-3xl  border-t-4  border-black w-4 transform translate-y-5"></h1>
+                          <h1 className="text-4xl  border-t-4  border-black w-5 transform translate-x-6 translate-y-5"></h1>
                         </div>
-                        <div className="w-[230px] border-t-2 border-black mb-4"></div>
+                        <div className="w-[230px] border-t-2  border-black mb-4"></div>
                         <div
                           className={`flex space-x-2 rtl:space-x-reverse ${
                             currentQuestionIndex === 6 ? "ml-[-0px]" : ""
