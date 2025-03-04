@@ -363,9 +363,9 @@ const ArabicMathQuiz = () => {
               </button>
             </div>
 
-            <div className="relative w-[60%] h-[400px] px-4 py-10 justify-center transform translate-y-20 items-center">
+            <div className="relative w-[60%]  h-[400px] px-4 py-10 justify-center transform translate-y-20 items-center">
               <div className="mx-auto my-auto">
-                <div className="border-4 border-yellow-400 flex justify-center h-72 my-auto rounded-lg p-6">
+                <div className="border-4 border-yellow-400 bg-[#F3F4F6] flex justify-center h-72 my-auto rounded-lg p-6">
                   <div className="flex flex-col items-center my-auto">
                     {!currentQuestion.needsRemainder ? (
                       <div className="flex items-center space-x-4 text-5xl">

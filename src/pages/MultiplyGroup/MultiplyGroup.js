@@ -164,7 +164,7 @@ const MultiplyGroup = () => {
           newResults.reduce((a, b) => a + b, 0),
           `/${totalQuestions}`
         );
-        setTimeout(() => navigate("/dashboard/testselection"), 0);
+        // setTimeout(() => navigate("/dashboard/testselection"), 0);
         return;
       }
     }
@@ -191,7 +191,7 @@ const MultiplyGroup = () => {
       setShowModal(false);
       setTimeout(() => {
         setShowModal(false);
-        navigate("/dashboard/testselection");
+        // navigate("/dashboard/testselection");
       }, 2000);
     }
   };
@@ -229,7 +229,7 @@ const MultiplyGroup = () => {
               results.reduce((a, b) => a + b, 0),
               `/${totalQuestions}`
             );
-            setTimeout(() => navigate("/dashboard/testselection"), 0);
+            // setTimeout(() => navigate("/dashboard/testselection"), 0);
             return;
           }
         }
@@ -268,7 +268,7 @@ const MultiplyGroup = () => {
             newResults.reduce((a, b) => a + b, 0),
             `/${totalQuestions}`
           );
-          setTimeout(() => navigate("/dashboard/testselection"), 0);
+          // setTimeout(() => navigate("/dashboard/testselection"), 0);
           return;
         }
       }
@@ -406,7 +406,7 @@ const MultiplyGroup = () => {
                         )}
                         <div
                           className={`flex mb-2 space-x-2 rtl:space-x-reverse items-center justify-end ${
-                            isQuestion17 ? "text-red-700 ml-[0px]" : ""
+                            isQuestion17 ? "text-black ml-[0px]" : ""
                           }`}
                         >
                           {paddedFirst.split("").map((digit, i) => (
@@ -420,7 +420,7 @@ const MultiplyGroup = () => {
                         </div>
                         <div
                           className={`flex mb-2 -mr-6 space-x-2 rtl:space-x-reverse items-center justify-end ${
-                            isQuestion17 ? "text-red-700" : ""
+                            isQuestion17 ? "text-black" : ""
                           }`}
                         >
                           {paddedSecond.split("").map((digit, i) => (
@@ -431,9 +431,9 @@ const MultiplyGroup = () => {
                               {digit === " " ? "" : digit}
                             </div>
                           ))}
-                          <h1 className="text-3xl -mr-20 transform">×</h1>
+                          <h1 className="text-4xl -mr-24 translate-x-7 transform">×</h1>
                         </div>
-                        <div className="w-[230px] -translate-x-14 flex justify-end items-center mb-4">
+                        <div className="w-[230px] -translate-x-1 flex justify-end items-center mb-4">
                           <div className="w-[230px] border-t-2 border-black"></div>
                           {/* <span className="text-3xl ml-2 relative -top-5 -left-20">+</span> */}
                         </div>
@@ -471,7 +471,7 @@ const MultiplyGroup = () => {
                         </div>
                         {/* Second partial product (45 × 30) */}
                         <div
-                          className={`flex mb-2 space-x-2 rtl:space-x-reverse justify-end ml-[-100px]`}
+                          className={`flex mb-2 space-x-2 rtl:space-x-reverse -mt-4 justify-end ml-[-100px]`}
                         >
                           {currentQuestion.dropzones
                             .slice(3, 7)
@@ -486,15 +486,15 @@ const MultiplyGroup = () => {
                               </div>
                             ))}
                         </div>
-                        <div className="w-[280px] -translate-x-14 flex justify-end items-center mb-4">
-                          <div className="w-[280px] border-t-2 border-black"></div>
-                          <span className="text-3xl  relative -top-5 left-0 ">
+                        <div className="w-[300px] -translate-x-8 flex justify-end items-center mb-4">
+                          <div className="w-[300px] border-t-2 border-black -mt-6"></div>
+                          <span className="text-4xl  relative -top-12 -left-3 ">
                             +
                           </span>
                         </div>
                         {/* Final sum (1620) */}
                         <div
-                          className={`flex mb-2 space-x-2 rtl:space-x-reverse justify-end ml-[-100px]`}
+                          className={`flex mb-2 space-x-2 rtl:space-x-reverse -mt-10 justify-end ml-[-100px]`}
                         >
                           {currentQuestion.dropzones
                             .slice(7, 11)
@@ -561,12 +561,12 @@ const MultiplyGroup = () => {
                               {digit === " " ? "" : digit}
                             </div>
                           ))}
-                          <h1 className="text-3xl -mr-20 transform">×</h1>
+                          <h1 className="text-4xl -mr-20 translate-x-4 transform">×</h1>
                         </div>
-                        <div className="w-[310px] border-t-2 border-black mb-4"></div>
+                        <div className="w-[280px] border-t-2 border-black mb-4"></div>
                         <div
                           className={`flex space-x-2 rtl:space-x-reverse ${
-                            needsCarry ? "ml-[-45px]" : ""
+                            needsCarry ? "ml-[-50px]" : ""
                           } ${currentQuestionIndex === 6 ? "ml-[-45px]" : ""}`}
                         >
                           {currentQuestion.dropzones.map((dropzone, i) => (

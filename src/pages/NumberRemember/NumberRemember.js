@@ -38,7 +38,7 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
             }}
           ></div>
         </div>
-        <div className="flex w-[33%]">
+        <div className="flex w-[25%]">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
             <span className="text-black text-xl font-bold">{studentName}</span>
             <span className="ml-1 text-gray-600 text-md font-bold">
@@ -62,14 +62,14 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
       <div className="w-[1200px] h-[180px] bg-[#FDFCF7] rounded-[11px] border-4 border-[#99A777] flex flex-col items-center justify-between p-5 shadow-lg mt-[60px] mb-20">
         <div
           id="display"
-          className="w-full h-[350px] bg-[#FDFCF7] rounded-[20px] flex items-center justify-center text-7xl overflow-x-auto text-black"
+          className="w-full h-[350px] bg-[#FDFCF7] tracking-[20px] text-green-700 rounded-[20px] flex items-center justify-center text-7xl overflow-x-auto text-black"
         >
           {displayValue}
         </div>
       </div>
 
       {/* Number Buttons Grid */}
-      <div className="w-3/5 flex flex-wrap justify-center gap-3 mb-36">
+      <div className="w-3/5 flex flex-wrap justify-center flex-row-reverse gap-3 mb-36">
         {["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"].map((num) => (
           <button
             key={num}

@@ -191,9 +191,9 @@ const NumberGuessComponent = () => {
       </div>
 
       {/* Range Container */}
-      <div className="w-4/5 max-w-5xl mt-24 mx-auto bg-white rounded-xl shadow-md border-l-4 border-amber-400  p-8 relative h-64 overflow-hidden">
+      <div className="w-4/5 max-w-5xl mt-24 mx-auto bg-[#F3F4F6] rounded-xl shadow-md   p-8 relative h-64 overflow-hidden">
         {/* Display value */}
-        <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 text-6xl text-gray-800 font-bold">
+        <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 text-8xl text-green-700 -mt-10">
           {questions[currentQuestion]?.displayValue}
         </div>
 
@@ -205,7 +205,7 @@ const NumberGuessComponent = () => {
           {/* 100 marker */}
           <div className="relative">
             <div className="absolute bottom-0 -left-1 w-2 h-6 bg-[#AEC03F] rounded-t-full"></div>
-            <span className="absolute top-8 -left-3 text-xl font-medium text-gray-700">
+            <span className="absolute top-8 -left-3 text-xl font-bold text-gray-700">
               ١٠٠
             </span>
           </div>
@@ -260,7 +260,7 @@ const NumberGuessComponent = () => {
           {/* User selection marker */}
           {clickValue && (
             <div
-              className="absolute w-6 h-6 bg-amber-500 rounded-full border-2 border-white shadow-md transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
+              className="absolute w-6 h-6 bg-amber-500 rounded-full border-2  border-white shadow-md transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
               style={{
                 left: `${(clickValue / 100) * 100}%`,
                 top: "50%",

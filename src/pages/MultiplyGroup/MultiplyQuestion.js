@@ -4,10 +4,10 @@ const questions = [
     // Q1: 2×3
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٣" },
+      { type: "fixed", value: "٢" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٢" }],
+    operands: [{ type: "fixed", value: "٣" }],
     dropzones: [{ correct: "٦", type: "regular" }],
     needsRemainder: false,
     incorrectAttempts: 0,
@@ -16,10 +16,10 @@ const questions = [
     // Q2: 4×5
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٤" },
+      { type: "fixed", value: "٥" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٥" }],
+    operands: [{ type: "fixed", value: "٤" }],
     dropzones: [
       { correct: "٢", type: "regular" },
       { correct: "٠", type: "regular" },
@@ -31,10 +31,10 @@ const questions = [
     // Q3: 6×4
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٦" },
+      { type: "fixed", value: "٤" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٤" }],
+    operands: [{ type: "fixed", value: "٦" }],
     dropzones: [
       { correct: "٢", type: "regular" },
       { correct: "٤", type: "regular" },
@@ -61,10 +61,10 @@ const questions = [
     // Q6: 7×8
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٧" },
+      { type: "fixed", value: "٨" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٨" }],
+    operands: [{ type: "fixed", value: "٧" }],
     dropzones: [
       { correct: "٥", type: "regular" },
       { correct: "٦", type: "regular" },
@@ -76,10 +76,10 @@ const questions = [
     // Q5: 4×7
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٤" },
+      { type: "fixed", value: "٧" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٧" }],
+    operands: [{ type: "fixed", value: "٤" }],
     dropzones: [
       { correct: "٢", type: "regular" },
       { correct: "٨", type: "regular" },
@@ -88,13 +88,28 @@ const questions = [
     incorrectAttempts: 0,
   },
   {
+    // Qn: 6×9
+    grid: [
+      { type: "empty", value: "" },
+      { type: "fixed", value: "٩" },
+    ],
+    operation: "×",
+    operands: [{ type: "fixed", value: "٦" }],
+    dropzones: [
+      { correct: "٥", type: "regular" },
+      { correct: "٤", type: "regular" },
+    ],
+    needsRemainder: false,
+    incorrectAttempts: 0,
+  },
+  {
     // Q7: 8×5
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٨" },
+      { type: "fixed", value: "٥" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٥" }],
+    operands: [{ type: "fixed", value: "٨" }],
     dropzones: [
       { correct: "٤", type: "regular" },
       { correct: "٠", type: "regular" },
@@ -106,10 +121,10 @@ const questions = [
     // Q8: 8×3
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٨" },
+      { type: "fixed", value: "٣" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٣" }],
+    operands: [{ type: "fixed", value: "٨" }],
     dropzones: [
       { correct: "٢", type: "regular" },
       { correct: "٤", type: "regular" },
@@ -121,10 +136,10 @@ const questions = [
     // Q9: 6×7
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٦" },
+      { type: "fixed", value: "٧" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٧" }],
+    operands: [{ type: "fixed", value: "٦" }],
     dropzones: [
       { correct: "٤", type: "regular" },
       { correct: "٢", type: "regular" },
@@ -151,10 +166,10 @@ const questions = [
     // Q12: 3×20
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٢٠" },
+      { type: "fixed", value: "٣" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٣" }],
+    operands: [{ type: "fixed", value: "٢٠" }],
     dropzones: [
       { correct: "٦", type: "regular" },
       { correct: "٠", type: "regular" },
@@ -182,10 +197,10 @@ const questions = [
     // Q14: 5×200
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٢٠٠" },
+      { type: "fixed", value: "٥" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٥" }],
+    operands: [{ type: "fixed", value: "٢٠٠" }],
     dropzones: [
       { correct: "١", type: "regular" },
       { correct: "٠", type: "regular" },
@@ -259,10 +274,10 @@ const questions = [
     //Q18 4*1000
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٤" },
+      { type: "fixed", value: "١٠٠٠" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "١٠٠٠" }],
+    operands: [{ type: "fixed", value: "٤" }],
     dropzones: [
       { correct: "٤", type: "regular" },
       { correct: "٠", type: "regular" },
@@ -276,10 +291,10 @@ const questions = [
     //Q19 5000X7
     grid: [
       { type: "empty", value: "" },
-      { type: "fixed", value: "٥٠٠٠" },
+      { type: "fixed", value: "٧" },
     ],
     operation: "×",
-    operands: [{ type: "fixed", value: "٧" }],
+    operands: [{ type: "fixed", value: "٥٠٠٠" }],
     dropzones: [
       { correct: "٣", type: "regular" },
       { correct: "٥", type: "regular" },
@@ -287,7 +302,7 @@ const questions = [
       { correct: "٠", type: "regular" },
       { correct: "٠", type: "regular" },
     ],
-    needsRemainder: true,
+    needsRemainder: false,
     incorrectAttempts: 0,
   },
 ];

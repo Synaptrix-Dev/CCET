@@ -10,12 +10,7 @@ const AnxietyTest = () => {
   const audioRef = useRef(null);
 
   const questions = [
-    {
-      question:
-        'استمع إلى المقطع الصوتي بعناية، ثم حدد ما إذا كانت الإجابة "موافق" أو "غير موافق" أو "غير متأكد" وذلك بناءً على ما تسمعه.',
-      correctAnswer: "No",
-      audio: "",
-    },
+   
     {
       question:
         "أشعر بالخوف في أثناء امتحان الرياضيات مما يجعلني لا أفهم الأسئلة، ولا أجيب عنها جيداً.",
@@ -139,8 +134,8 @@ const AnxietyTest = () => {
       {/* Main content */}
       <div className="flex-grow flex flex-col items-center justify-between p-6 ">
         {/* Question card with subtle shadow and rounded edges */}
-        <div className="bg-white shadow-md rounded-xl p-8 w-full max-w-5xl mt-8 border-l-8 border-amber-400 transition-all hover:shadow-lg">
-          <p className="text-4xl md:text-5xl leading-tight text-gray-800 font-medium text-right">
+        <div className="bg-[#F3F4F6] shadow-md rounded-xl p-8 w-full max-w-7xl mt-8  transition-all hover:shadow-lg">
+          <p className="text-4xl md:text-6xl leading-tight text-gray-800 font-medium text-right">
             {questions[currentQuestion]?.question}
           </p>
         </div>

@@ -60,18 +60,19 @@ const TestSelect = () => {
     },
     {
       id: 8,
-      title: "إختبار تقدير المسافة",
-      video: "https://www.youtube.com/embed/videoID8",
-      url: "distance-estimation-test",
-      description: "قيّم مهارات التقدير المكاني",
-    },
-    {
-      id: 9,
       title: "إختبار سرعة قراءة الأرقام",
       video: "https://www.youtube.com/embed/videoID9",
       url: "oral-test",
       description: "اختبر سرعة القراءة والإدراك",
     },
+    {
+      id: 9,
+      title: "إختبار تقدير المسافة",
+      video: "https://www.youtube.com/embed/videoID8",
+      url: "distance-estimation-test",
+      description: "قيّم مهارات التقدير المكاني",
+    },
+
   ];
 
   const handleTestSelect = (testId) => {

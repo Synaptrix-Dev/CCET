@@ -9,8 +9,8 @@ import QuestionInstruction from "./Audios/Intro_comparison_1 - twon.wav"; // Gen
 const questions = [
   // Part 1
   {
-    left: "٩",
-    right: "٧",
+    left: "٧",
+    right: "٩",
     symb: "حوط رمز القيمة الأكبر:",
     correctAnswer: "٩",
     part: 1,
@@ -48,7 +48,7 @@ const questions = [
     right: "٢",
     symb: "حوط رمز القيمة الأكبر:",
     correctAnswer: "٢",
-    part: 2,
+    part: 1,
   },
 
   // Part 2
@@ -57,7 +57,7 @@ const questions = [
     right: "٣",
     symb: "حوط رمز القيمة الأكبر:",
     correctAnswer: "٧",
-    part: 1,
+    part: 2,
   },
   {
     left: "٩",
@@ -88,8 +88,8 @@ const questions = [
     part: 2,
   },
   {
-    left: "٧",
-    right: "٦",
+    left: "٦",
+    right: "٧",
     symb: "حوط رمز القيمة الأكبر:",
     correctAnswer: "٧",
     part: 2,
@@ -362,16 +362,16 @@ const NumberComparison = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 ">
         <h1 className="text-4xl text-red-600 font-bold text-right mb-8">
           : حوط رمز القيمة الأكبر
         </h1>
 
-        <div className="bg-white border-2 border-yellow-400 rounded-2xl p-10 w-[900px] mx-auto min-h-[300px] flex flex-col justify-center">
+        <div className="bg-[#F3F4F6] border-2 border-yellow-400 rounded-2xl p-10 w-[900px] mx-auto min-h-[300px] flex flex-col justify-center">
           <div className="flex justify-center gap-24">
             <button
               onClick={() => handleAnswer(question.left)}
-              disabled={!isInteractive}
+              // disabled={!isInteractive}
               className={`w-48 h-48 rounded-full bg-white shadow-md border border-blue-500 flex items-center justify-center text-green-500 hover:bg-[#FEF8C6] disabled:opacity-70 disabled:cursor-not-allowed
                 ${
                   currentPart === 1 && question.correctAnswer === question.left
@@ -383,7 +383,7 @@ const NumberComparison = () => {
             </button>
             <button
               onClick={() => handleAnswer(question.right)}
-              disabled={!isInteractive}
+              // disabled={!isInteractive}
               className={`w-48 h-48 rounded-full bg-white shadow-md border border-blue-500 flex items-center justify-center text-green-500 hover:bg-[#FEF8C6] disabled:opacity-70 disabled:cursor-not-allowed
                 ${
                   currentPart === 1 && question.correctAnswer === question.right

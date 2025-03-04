@@ -154,29 +154,30 @@ const OralTest = () => {
 
       {/* Action Buttons */}
       <div className="flex justify-end mt-6 gap-4 my-6">
+      <button
+          onClick={() => setShowModal(true)}
+          className="bg-green-600 w-36 text-white px-6 py-3 rounded-lg text-lg hover:bg-blue-600 transition"
+        >
+          تسجيل الأخطاء{" "}
+        </button>
         <button
           onClick={handleEndTimer}
-          className="bg-green-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-red-600 transition"
+          className="bg-green-600 w-36 text-white px-6 py-3 rounded-lg text-lg hover:bg-red-600 transition"
         >
           نهاية التوقيت
         </button>
         <button
           onClick={handleStartTimer}
-          className="bg-green-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition"
+          className="bg-green-600 w-36 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition"
         >
           بدء التوقيت
         </button>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-green-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-blue-600 transition"
-        >
-          تسجيل الإجابة
-        </button>
+      
       </div>
 
       {/* Question Display */}
       <div className="flex justify-center ">
-        <div className="w-full max-w-5xl p-8 bg-white rounded-lg border-2 border-yellow-400 shadow-md">
+        <div className="w-full max-w-5xl p-8 bg-[#F3F4F6] rounded-lg border-2 border-yellow-400 shadow-md">
           {currentQuestion < questions.length && (
             <div className="flex flex-col items-center gap-8">
               <div className="text-4xl font-bold text-green-600 tracking-widest flex justify-center w-full">
@@ -187,13 +188,13 @@ const OralTest = () => {
                       {digit}
                     </span>
                   ))}
-                <span className="text-5xl mt-2 -mr-10">←</span>
+                <span className="text-7xl  font-bold -mr-10 ">←</span>
               </div>
-              <div className="text-4xl font-bold text-green-600 tracking-widest flex justify-center w-full">
+              <div className="text-4xl font-bold text-green-600 -ml-5 tracking-widest flex justify-center w-full">
                 {questions[currentQuestion + 1]?.number
                   .split(" ")
                   .map((digit, idx) => (
-                    <span key={idx} className="mx-2 text-8xl">
+                    <span key={idx} className="mx-2 ml-2 text-8xl">
                       {digit}
                     </span>
                   ))}
