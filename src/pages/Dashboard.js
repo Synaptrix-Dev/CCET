@@ -1,76 +1,128 @@
 import React from "react";
 
-function Dashboard() {
+const Dashboard = () => {
+  const statsData = [
+    {
+      title: "إجمالي الاختبارات",
+      value: 7,
+      icon: "chart-line",
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+      percentage: "+12%",
+    },
+    {
+      title: "الطلاب",
+      value: 7,
+      icon: "users",
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+      percentage: "+5%",
+    },
+    {
+      title: "المعلمون",
+      value: 7,
+      icon: "chalkboard-teacher",
+      color: "text-indigo-600",
+      bgColor: "bg-indigo-50",
+      percentage: "+8%",
+    },
+    {
+      title: "المدارس",
+      value: 2,
+      icon: "school",
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+      percentage: "+3%",
+    },
+  ];
+
   return (
-    <div className="">
-      {/* Dashboard Content */}
-      <div className="p-8">
-        {/* Title */}
-        <div className="flex justify-end mb-10">
-          <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
-            لوحة البيانات
-          </h1>
+    <div className=" relative">
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-12">
+          <div className="text-right w-full">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-colPrime tracking-tight">
+              لوحة المتابعة
+            </h1>
+            <p className="text-lg text-white/80 mt-2">
+              رؤية شاملة للمؤشرات التعليمية
+            </p>
+          </div>
         </div>
 
-        {/* Stat Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {/* Total Tests Card */}
-          <div className="relative bg-red-300 rounded-2xl shadow-md p-6 flex flex-col items-center transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-            <div className="absolute top-0 left-0 w-12 h-12 bg-red-200 rounded-full -translate-x-4 -translate-y-4 opacity-50"></div>
-            <div className="text-3xl font-semibold text-gray-800 z-10">7</div>
-            <div className="text-base font-medium text-gray-600 mt-1">
-              Total Tests Taken
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {statsData.map((stat, index) => (
+            <div
+              key={index}
+              className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl transform transition-all hover:scale-105"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div
+                  className={`
+                  w-16 h-16 
+                  rounded-full 
+                  flex 
+                  items-center 
+                  justify-center 
+                  ${stat.color}
+                  bg-white 
+                  shadow-md
+                `}
+                >
+                  <i className={`fas fa-${stat.icon} text-2xl`}></i>
+                </div>
+                <div
+                  className={`
+                  text-sm 
+                  font-semibold 
+                  ${stat.color}
+                  bg-white 
+                  px-2 
+                  py-1 
+                  rounded-full
+                `}
+                >
+                  {stat.percentage}
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-4xl font-bold text-gray-900 mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-base text-gray-600 font-medium">
+                  {stat.title}
+                </div>
+              </div>
             </div>
-            <i className="fa fa-calendar-alt text-red-400 text-xl mt-3 z-10"></i>
-          </div>
-
-          {/* Total Students Card */}
-          <div className="relative bg-green-300 rounded-2xl shadow-md p-6 flex flex-col items-center transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-            <div className="absolute top-0 left-0 w-12 h-12 bg-green-200 rounded-full -translate-x-4 -translate-y-4 opacity-50"></div>
-            <div className="text-3xl font-semibold text-gray-800 z-10">7</div>
-            <div className="text-base font-medium text-gray-600 mt-1">
-              Total Students
-            </div>
-            <i className="fa fa-user-graduate text-green-400 text-xl mt-3 z-10"></i>
-          </div>
-
-          {/* Total Teachers Card */}
-          <div className="relative bg-blue-300 rounded-2xl shadow-md p-6 flex flex-col items-center transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-            <div className="absolute top-0 left-0 w-12 h-12 bg-blue-200 rounded-full -translate-x-4 -translate-y-4 opacity-50"></div>
-            <div className="text-3xl font-semibold text-gray-800 z-10">7</div>
-            <div className="text-base font-medium text-gray-600 mt-1">
-              Total Teachers
-            </div>
-            <i className="fa fa-chalkboard-teacher text-blue-400 text-xl mt-3 z-10"></i>
-          </div>
-
-          {/* Total Schools Card */}
-          <div className="relative bg-indigo-300 rounded-2xl shadow-md p-6 flex flex-col items-center transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-            <div className="absolute top-0 left-0 w-12 h-12 bg-indigo-200 rounded-full -translate-x-4 -translate-y-4 opacity-50"></div>
-            <div className="text-3xl font-semibold text-gray-800 z-10">2</div>
-            <div className="text-base font-medium text-gray-600 mt-1">
-              Total Schools
-            </div>
-            <i className="fa fa-school text-indigo-400 text-xl mt-3 z-10"></i>
-          </div>
+          ))}
         </div>
 
         {/* School Officials Card */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-4">
           <div className="md:col-start-4">
-            <div className="relative  bg-orange-300  rounded-2xl shadow-md p-6 flex flex-col items-center transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-              <div className="absolute top-0 left-0 w-12 h-12 bg-orange-200 rounded-full -translate-x-4 -translate-y-4 opacity-50"></div>
-              <div className="text-3xl font-semibold text-gray-800 z-10">2</div>
-              <div className="text-base font-medium text-gray-600 mt-1">
-                Total School Officials
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center text-orange-600 bg-white shadow-md">
+                  <i className="fas fa-user-tie text-2xl"></i>
+                </div>
+                <div className="text-sm font-semibold text-orange-600 bg-white px-2 py-1 rounded-full">
+                  +2%
+                </div>
               </div>
-              <i className="fa fa-user-tie text-orange-400 text-xl mt-3 z-10"></i>
+              <div className="text-right">
+                <div className="text-4xl font-bold text-gray-900 mb-2">2</div>
+                <div className="text-base text-gray-600 font-medium">
+                  المسؤولون المدرسيون
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Dashboard;
