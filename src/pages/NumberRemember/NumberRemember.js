@@ -58,7 +58,7 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
       </div>
 
       {/* Display Container */}
-      <div className="w-[1200px] h-[180px] bg-[#FDFCF7] rounded-[11px] border-4 border-[#8EA851] flex flex-col items-center justify-between p-5 shadow-lg mt-[60px] mb-20">
+      <div className="w-[1200px] h-[180px] bg-[#FDFCF7] rounded-[11px] border-4 border-[#8EA851] flex flex-col items-center justify-between p-5 shadow-lg mt-[60px] mb-10">
         <div
           id="display"
           className="w-full h-[350px] bg-[#FDFCF7] tracking-[20px] text-green-700 rounded-[20px] flex items-center justify-center text-7xl overflow-x-auto text-black"
@@ -68,7 +68,7 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
       </div>
 
       {/* Number Buttons Grid */}
-      <div className="w-3/5 flex flex-wrap justify-center flex-row-reverse gap-3 mb-36">
+      <div className="w-3/5 flex flex-wrap justify-center flex-row-reverse gap-3 mb-24">
         {["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"].map((num) => (
           <button
             key={num}
