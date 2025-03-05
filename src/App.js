@@ -20,6 +20,7 @@ import OralTest from "./pages/OralTest/OralTest";
 import DivisionLayout from "./pages/Division/Divisionjs";
 import Anxiety from "./pages/Anxiety/Anxiety";
 import NumberGuess from "./pages/NumberGuess/NumberGuess";
+import School from "./pages/School/School";
 function App() {
   return (
     <>
@@ -70,6 +71,7 @@ function App() {
             />
             <Route path="testselection/assessment-test" element={<Anxiety />} />
             <Route path="testselection/distance-estimation-test" element={<NumberGuess />} />
+            <Route path="dashboard/testselection/school" element={<School />} />
           </Route>
         </Routes>
       </BrowserRouter>
