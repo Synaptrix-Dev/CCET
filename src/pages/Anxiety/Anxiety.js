@@ -327,7 +327,7 @@ const AnxietyTest = () => {
 
       <div className="flex-grow flex flex-col items-center justify-between">
         <div className="flex flex-row-reverse mt-10 gap-4">
-          <div className="bg-[#F3F4F6] shadow-md rounded-xl p-8 w-[1200px] mt-8 border-2 border-yellow-400 transition-all hover:shadow-lg">
+          <div className="bg-[#FDF6EA] shadow-md rounded-xl p-8 w-[1200px] mt-8 border-2 border-yellow-400 transition-all hover:shadow-lg">
             <p className="text-4xl md:text-7xl leading-tight text-gray-800 font-medium text-right">
               {questions[currentQuestion]?.question || ""}
             </p>

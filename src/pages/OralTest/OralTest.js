@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Logo from "../../assets/Logo.png"; // Adjust the import path for your logo
-import NextBtn from "../../assets/next-question.png"; // Adjust the import path for your logo
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import Logo from "../../assets/Logo.png";
+import NextBtn from "../../assets/next-question.png";
+import Instruction01 from "./Audios/RapidNaming_Instruction01.wav";
+import Instruction02 from "./Audios/RapidNaming_Instruction02.wav";
+import Instruction03 from "./Audios/RapidNaming_Instruction03.wav";
 
 const OralTest = () => {
   const questions = [
@@ -10,57 +14,59 @@ const OralTest = () => {
     { number: "٥ ٧ ٩ ٤ ٢ ٠ ٣ ٦ ١ ٨", audio: "#APP_FILES#audio2.wav" },
   ];
 
-  const audioFiles = [
-    "#APP_FILES#RapidNaming_Instruction01.wav",
-    "#APP_FILES#RapidNaming_Instruction02.wav",
-    "#APP_FILES#RapidNaming_Instruction03.wav",
-  ];
+  const audioFiles = [Instruction01, Instruction02, Instruction03];
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [currentAudioIndex, setCurrentAudioIndex] = useState(0);
+  const navigate = useNavigate(); // Hook for navigation
+  const [currentPairIndex, setCurrentPairIndex] = useState(0);
+  const [activeQuestion, setActiveQuestion] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [timingLogs, setTimingLogs] = useState([]);
   const [results, setResults] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [answerDetail, setAnswerDetail] = useState("");
-  const [activePairIndex, setActivePairIndex] = useState(0);
-  const [progress, setProgress] = useState(20); // Set initial progress
-  const studentName = "محمد"; // Replace with dynamic value if needed
+  const [progress, setProgress] = useState(0);
+  const studentName = "محمد";
 
+  // Automatically play instructions when the component mounts
   useEffect(() => {
     playInstructions();
-    updateProgress();
   }, []);
 
   const updateProgress = () => {
-    const currentIndex = currentQuestion + activePairIndex;
-    const newProgress = ((currentIndex + 1) / questions.length) * 100;
+    const totalQuestions = questions.length;
+    const completedQuestions = currentPairIndex + activeQuestion + 1;
+    const newProgress = (completedQuestions / totalQuestions) * 100;
     setProgress(newProgress);
   };
 
   const playInstructions = () => {
     setIsPlaying(true);
-    const audio = new Audio(audioFiles[currentAudioIndex]);
-    audio.onended = () => {
-      if (currentAudioIndex < audioFiles.length - 1) {
-        setCurrentAudioIndex(currentAudioIndex + 1);
-        playInstructions();
-      } else {
+    let index = 0;
+    const playNext = () => {
+      if (index >= audioFiles.length) {
         setIsPlaying(false);
-        playQuestionAudio();
+        playQuestionAudio(); // Start the first question audio after instructions
+        return;
       }
+      const audio = new Audio(audioFiles[index]);
+      audio.onended = () => {
+        index++;
+        playNext();
+      };
+      audio.play().catch((error) => {
+        console.error("Audio playback failed:", error);
+        setIsPlaying(false);
+      });
     };
-    audio.play().catch((error) => {
-      console.error("Audio playback failed:", error);
-      setIsPlaying(false);
-    });
+    playNext();
   };
 
   const playQuestionAudio = () => {
-    if (questions[currentQuestion].audio) {
+    const currentQuestion = questions[currentPairIndex + activeQuestion];
+    if (currentQuestion.audio) {
       setIsPlaying(true);
-      const audio = new Audio(questions[currentQuestion].audio);
+      const audio = new Audio(currentQuestion.audio);
       audio.onended = () => setIsPlaying(false);
       audio.play().catch((error) => {
         console.error("Question audio playback failed:", error);
@@ -72,18 +78,23 @@ const OralTest = () => {
   const handleNext = () => {
     if (isPlaying) return;
 
-    if (activePairIndex === 0 && currentQuestion + 1 < questions.length) {
-      setActivePairIndex(1);
-    } else if (currentQuestion < questions.length - 2) {
-      setCurrentQuestion(currentQuestion + 2);
-      setActivePairIndex(0);
+    if (activeQuestion === 0) {
+      setActiveQuestion(1);
+      updateProgress();
+      playQuestionAudio();
+    } else if (currentPairIndex + 2 < questions.length) {
+      setCurrentPairIndex(currentPairIndex + 2);
+      setActiveQuestion(0);
+      updateProgress();
+      playQuestionAudio();
     }
-    updateProgress();
   };
 
   const handleStartTimer = () => {
     setStartTime(new Date());
-    console.log(`Started timing question ${currentQuestion + 1}`);
+    console.log(
+      `Started timing question ${currentPairIndex + activeQuestion + 1}`
+    );
   };
 
   const handleEndTimer = () => {
@@ -92,47 +103,66 @@ const OralTest = () => {
       const timeSpent = (endTime - startTime) / 1000;
       setTimingLogs([
         ...timingLogs,
-        { questionNumber: currentQuestion + 1, timeSpent },
+        { questionNumber: currentPairIndex + activeQuestion + 1, timeSpent },
       ]);
-      console.log(`Question ${currentQuestion + 1} took ${timeSpent} seconds`);
+      console.log(
+        `Question ${
+          currentPairIndex + activeQuestion + 1
+        } took ${timeSpent} seconds`
+      );
       setStartTime(null);
     }
   };
 
   const handleSaveMark = () => {
     const activeQuestionText =
-      questions[currentQuestion + activePairIndex].number;
-    setResults([
+      questions[currentPairIndex + activeQuestion].number;
+    const newResults = [
       ...results,
       { question: activeQuestionText, answer: answerDetail },
-    ]);
-    console.log("Current Results:", results);
+    ];
+    setResults(newResults);
+
+    updateProgress();
     setShowModal(false);
     setAnswerDetail("");
+
+    // Check if this was the last question
+    const totalQuestionsAnswered = newResults.length;
+    if (totalQuestionsAnswered === questions.length) {
+      setProgress(100); // Fill progress bar completely
+      // Redirect to /testselection after a short delay
+      setTimeout(() => {
+        navigate("/testselection");
+      }, 1000); // 1-second delay to allow the progress bar to visually complete
+    } else {
+      // Move to the next question automatically
+      handleNext();
+    }
   };
 
   return (
-    <div dir="" className="">
-      {/* Header */}
-      <div className="w-full bg-gray-100 h-10 flex mt-10 items-center">
+    <div className="">
+      {/* Header Section */}
+      <div className="w-full bg-gray-100 h-10 flex mt-10 items-center justify-between">
         <img src={Logo} alt="Logo" className="h-36 w-36" />
-        <div
-          className="relative w-[65%] rounded-lg h-8 mx-4 bg-gray-200 overflow-hidden"
-          style={{ backgroundColor: "#E1E8CE" }}
-        >
+        <div className="flex-grow mx-4">
           <div
-            className="h-full transition-all duration-500 ease-in-out shadow-inner"
-            style={{
-              width: `${progress}%`,
-              position: "absolute",
-              right: 0,
-              backgroundImage:
-                "linear-gradient(270deg, #AEC03F 0px, #AEC03F 28px, #b7d10f 28px, #b7d10f 30px)",
-              backgroundSize: "30px 100%",
-            }}
-          ></div>
+            className="w-full rounded-lg h-8 bg-gray-200 overflow-hidden flex flex-row-reverse"
+            style={{ backgroundColor: "#E1E8CE" }}
+          >
+            <div
+              className="h-full transition-all duration-500 ease-in-out shadow-inner"
+              style={{
+                width: `${progress}%`,
+                backgroundImage:
+                  "linear-gradient(270deg, #AEC03F 0px, #AEC03F 28px, #b7d10f 28px, #b7d10f 30px)",
+                backgroundSize: "30px 100%",
+              }}
+            ></div>
+          </div>
         </div>
-        <div className="flex w-[30%]">
+        <div className="flex">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
             <span className="text-black text-xl font-bold">{studentName}</span>
             <span className="ml-1 text-gray-600 text-md font-bold">
@@ -141,7 +171,7 @@ const OralTest = () => {
           </div>
           <div className="px-1 py-2 border-r border-gray-300 flex items-center justify-center">
             <span className="text-black text-md font-bold">
-              إختبار سرعة قراءة الأرقام
+              إختبار سرعة قراءة الأرقام{" "}
             </span>
           </div>
           <div className="px-1 py-2 text-right">
@@ -154,7 +184,7 @@ const OralTest = () => {
 
       {/* Action Buttons */}
       <div className="flex justify-end mt-6 gap-4 my-6">
-      <button
+        <button
           onClick={() => setShowModal(true)}
           className="bg-green-600 w-36 text-white px-6 py-3 rounded-lg text-lg hover:bg-blue-600 transition"
         >
@@ -172,33 +202,58 @@ const OralTest = () => {
         >
           بدء التوقيت
         </button>
-      
       </div>
 
       {/* Question Display */}
       <div className="flex justify-center ">
         <div className="w-full max-w-5xl p-8 bg-[#F3F4F6] rounded-lg border-2 border-yellow-400 shadow-md">
-          {currentQuestion < questions.length && (
+          {currentPairIndex < questions.length && (
             <div className="flex flex-col items-center gap-8">
-              <div className="text-4xl font-bold text-green-600 tracking-widest flex justify-center w-full">
-                {questions[currentQuestion].number
-                  .split(" ")
-                  .map((digit, idx) => (
-                    <span key={idx} className="mx-2  text-8xl">
-                      {digit}
-                    </span>
-                  ))}
-                <span className="text-7xl  font-bold -mr-10 ">←</span>
+              {/* First question in pair */}
+              <div
+                className={`flex items-center justify-center w-full ${
+                  activeQuestion === 0 ? "" : ""
+                }`}
+              >
+                <div className="text-4xl font-bold text-green-600 tracking-widest flex justify-center">
+                  {questions[currentPairIndex].number
+                    .split(" ")
+                    .map((digit, idx) => (
+                      <span key={idx} className="mx-2 text-8xl">
+                        {digit}
+                      </span>
+                    ))}
+                </div>
+                {activeQuestion === 0 && (
+                  <span className="text-7xl font-bold -mt-5 text-green-700 -mr-10">
+                    ←
+                  </span>
+                )}
               </div>
-              <div className="text-4xl font-bold text-green-600 -ml-5 tracking-widest flex justify-center w-full">
-                {questions[currentQuestion + 1]?.number
-                  .split(" ")
-                  .map((digit, idx) => (
-                    <span key={idx} className="mx-2 ml-2 text-8xl">
-                      {digit}
+
+              {/* Second question in pair */}
+              {currentPairIndex + 1 < questions.length && (
+                <div
+                  className={`flex items-center justify-center w-full ${
+                    activeQuestion === 1 ? "" : ""
+                  }`}
+                >
+                  <div className="text-4xl font-bold text-green-600 tracking-widest flex justify-center">
+                    {questions[currentPairIndex + 1].number
+                      .split(" ")
+                      .map((digit, idx) => (
+                        <span key={idx} className="mx-2 text-8xl">
+                          {digit}
+                        </span>
+                      ))}
+                  </div>
+                  {activeQuestion === 1 && (
+                    <span className="text-7xl font-bold -mt-5 text-green-700 -mr-10">
+                      ←
                     </span>
-                  ))}
-              </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -209,7 +264,7 @@ const OralTest = () => {
         <button
           onClick={handleNext}
           disabled={isPlaying}
-          className="flex items-center  text-xl text-gray-600 hover:text-gray-800"
+          className="flex items-center text-xl text-gray-600 hover:text-gray-800"
         >
           <div className="rounded-full p-2 mr-2">
             <img src={NextBtn} alt="" />

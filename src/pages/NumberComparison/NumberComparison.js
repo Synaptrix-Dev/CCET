@@ -4,7 +4,7 @@ import Instruction1 from "./Audios/Intro_comparison_1 - twon.wav"; // Initial in
 import Instruction2 from "./Audios/Intro_comparison_2- wewa.wav"; // Initial instruction 2
 import Instruction3 from "./Audios/Intro_comparison_3- cometry.wav"; // Initial instruction 3
 
-import QuestionInstruction from "./Audios/Intro_comparison_1 - twon.wav"; // Generic question audio placeholder
+import QuestionInstruction from "./Audios/Pressgreat.wav"; // Generic question audio placeholder
 
 const questions = [
   // Part 1
@@ -323,25 +323,25 @@ const NumberComparison = () => {
   return (
     <div className="">
       {/* Header with Progress Bar */}
-      <div className="w-full bg-gray-100 h-10 flex mt-10 items-center">
+      <div className="w-full bg-gray-100 h-10 flex mt-10 items-center justify-between">
         <img src={Logo} alt="Logo" className="h-36 w-36" />
-        <div
-          className="relative w-[65%] rounded-lg h-8 mx-4 bg-gray-200 overflow-hidden"
-          style={{ backgroundColor: "#E1E8CE" }}
-        >
+        <div className="flex-grow mx-4">
           <div
-            className="h-full transition-all duration-500 ease-in-out shadow-inner"
-            style={{
-              width: `${progress}%`,
-              position: "absolute",
-              right: 0,
-              backgroundImage:
-                "linear-gradient(270deg, #AEC03F 0px, #AEC03F 28px, #b7d10f 28px, #b7d10f 30px)",
-              backgroundSize: "30px 100%",
-            }}
-          ></div>
+            className="w-full rounded-lg h-8 bg-gray-200 overflow-hidden flex flex-row-reverse"
+            style={{ backgroundColor: "#E1E8CE" }}
+          >
+            <div
+              className="h-full transition-all duration-500  ease-in-out shadow-inner"
+              style={{
+                width: `${progress}%`,
+                backgroundImage:
+                  "linear-gradient(270deg, #AEC03F 0px, #AEC03F 28px, #b7d10f 28px, #b7d10f 30px)",
+                backgroundSize: "30px 100%",
+              }}
+            ></div>
+          </div>
         </div>
-        <div className="flex w-[28%]">
+        <div className="flex">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
             <span className="text-black text-xl font-bold">{studentName}</span>
             <span className="ml-1 text-gray-600 text-md font-bold">
@@ -350,7 +350,7 @@ const NumberComparison = () => {
           </div>
           <div className="px-1 py-2 border-r border-gray-300 flex items-center justify-center">
             <span className="text-black text-md font-bold">
-              إختبار الأكبر والأصغر
+              إختبار الأكبر والأصغر{" "}
             </span>
           </div>
           <div className="px-1 py-2 text-right">
@@ -371,7 +371,7 @@ const NumberComparison = () => {
           <div className="flex justify-center gap-24">
             <button
               onClick={() => handleAnswer(question.left)}
-              // disabled={!isInteractive}
+              disabled={!isInteractive}
               className={`w-48 h-48 rounded-full bg-white shadow-md border border-blue-500 flex items-center justify-center text-green-500 hover:bg-[#FEF8C6] disabled:opacity-70 disabled:cursor-not-allowed
                 ${
                   currentPart === 1 && question.correctAnswer === question.left
@@ -383,7 +383,7 @@ const NumberComparison = () => {
             </button>
             <button
               onClick={() => handleAnswer(question.right)}
-              // disabled={!isInteractive}
+              disabled={!isInteractive}
               className={`w-48 h-48 rounded-full bg-white shadow-md border border-blue-500 flex items-center justify-center text-green-500 hover:bg-[#FEF8C6] disabled:opacity-70 disabled:cursor-not-allowed
                 ${
                   currentPart === 1 && question.correctAnswer === question.right

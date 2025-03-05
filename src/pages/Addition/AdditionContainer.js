@@ -312,48 +312,47 @@ const ArabicMathQuiz = () => {
     )
   );
 
-  const studentName = "محمد";
+  const studentName = "مهند كمال داوود";
 
   return (
     <>
-      <div className="w-full bg-gray-100 h-10 flex mt-10 items-center">
+      <div className="w-full bg-gray-100 h-10 flex mt-10 items-center justify-between">
         <img src={Logo} alt="Logo" className="h-36 w-36" />
-        <div
-          className="relative w-[65%] rounded-lg h-8 mx-4 bg-gray-200 overflow-hidden"
-          style={{ backgroundColor: "#E1E8CE" }}
-        >
+        <div className="flex-grow mx-4">
           <div
-            className="h-full transition-all duration-500 ease-in-out shadow-inner"
-            style={{
-              width: `${progress}%`,
-              position: "absolute", // Ensure it starts from the right
-              right: 0, // Aligns the bar to the right
-              backgroundImage:
-                "linear-gradient(270deg, #AEC03F 0px, #AEC03F 28px, #b7d10f 28px, #b7d10f 30px)",
-              backgroundSize: "30px 100%",
-            }}
-          ></div>
+            className="w-full rounded-lg h-8 bg-gray-200 overflow-hidden flex flex-row-reverse"
+            style={{ backgroundColor: "#E1E8CE" }}
+          >
+            <div
+              className="h-full transition-all duration-500  ease-in-out shadow-inner"
+              style={{
+                width: `${progress}%`,
+                backgroundImage:
+                  "linear-gradient(270deg, #AEC03F 0px, #AEC03F 28px, #b7d10f 28px, #b7d10f 30px)",
+                backgroundSize: "30px 100%",
+              }}
+            ></div>
+          </div>
         </div>
-        <div className="flex w-[33%]">
-          <div className="px-1 py-2 border-l border-r border-gray-800 flex items-center justify-center">
+        <div className="flex">
+          <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
             <span className="text-black text-xl font-bold">{studentName}</span>
             <span className="ml-1 text-gray-600 text-md font-bold">
               : اسم الطالب
             </span>
           </div>
-          <div className="px-1 py-2 border-r border-gray-800 flex items-center justify-center">
+          <div className="px-1 py-2 border-r border-gray-300 flex items-center justify-center">
             <span className="text-black text-md font-bold">
-              إختبار العمليات الأساسية | الجمع
+              إختبار العمليات الأساسية | الجمع{" "}
             </span>
           </div>
-          <div className="px-1 ml-2 py-2 ">
+          <div className="px-1 py-2 text-right">
             <span className="text-black text-md font-bold">
               اختبار فرز عسر الحساب
             </span>
           </div>
         </div>
       </div>
-
       <div className="max-w-8xl">
         <div className="relative flex py-3 sm:mx-auto">
           <div className="flex flex-row w-full">
@@ -425,7 +424,9 @@ const ArabicMathQuiz = () => {
                               {digit === " " ? "" : digit}
                             </div>
                           ))}
-                          <h1 className="text-5xl -mr-16  translate-x-4  transform">+</h1>
+                          <h1 className="text-5xl -mr-16  translate-x-4  transform">
+                            +
+                          </h1>
                         </div>
                         <div className="w-[230px] border-t-2 border-black mb-4"></div>
                         <div

@@ -30,7 +30,7 @@ function DivisionLayout() {
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
 
   const totalQuestions = 20;
-  const studentName = "محمد";
+  const studentName = "مهند كمال داوود";
 
   // Correct answers for each question (in Arabic numerals)
   const correctAnswers = [
@@ -170,25 +170,25 @@ function DivisionLayout() {
   return (
     <div>
       {/* Header with Progress Bar */}
-      <div className="w-full bg-gray-100 h-10 flex mt-10 items-center">
+      <div className="w-full bg-gray-100 h-10 flex mt-10 items-center justify-between">
         <img src={Logo} alt="Logo" className="h-36 w-36" />
-        <div
-          className="relative w-[65%] rounded-lg h-8 mx-4 bg-gray-200 overflow-hidden"
-          style={{ backgroundColor: "#E1E8CE" }}
-        >
+        <div className="flex-grow mx-4">
           <div
-            className="h-full transition-all duration-500 ease-in-out shadow-inner"
-            style={{
-              width: `${progress}%`,
-              position: "absolute",
-              right: 0,
-              backgroundImage:
-                "linear-gradient(270deg, #AEC03F 0px, #AEC03F 28px, #b7d10f 28px, #b7d10f 30px)",
-              backgroundSize: "30px 100%",
-            }}
-          ></div>
+            className="w-full rounded-lg h-8 bg-gray-200 overflow-hidden flex flex-row-reverse"
+            style={{ backgroundColor: "#E1E8CE" }}
+          >
+            <div
+              className="h-full transition-all duration-500  ease-in-out shadow-inner"
+              style={{
+                width: `${progress}%`,
+                backgroundImage:
+                  "linear-gradient(270deg, #AEC03F 0px, #AEC03F 28px, #b7d10f 28px, #b7d10f 30px)",
+                backgroundSize: "30px 100%",
+              }}
+            ></div>
+          </div>
         </div>
-        <div className="flex w-[33%]">
+        <div className="flex">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
             <span className="text-black text-xl font-bold">{studentName}</span>
             <span className="ml-1 text-gray-600 text-md font-bold">
@@ -197,7 +197,7 @@ function DivisionLayout() {
           </div>
           <div className="px-1 py-2 border-r border-gray-300 flex items-center justify-center">
             <span className="text-black text-md font-bold">
-              إختبار العمليات الأساسية | القسمة{" "}
+              إختبار العمليات الأساسية | القسمة
             </span>
           </div>
           <div className="px-1 py-2 text-right">
