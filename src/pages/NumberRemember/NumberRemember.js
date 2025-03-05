@@ -47,7 +47,8 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
           </div>
           <div className="px-1 py-2 border-r border-gray-300 flex items-center justify-center">
             <span className="text-black text-md font-bold">
-            إختبار تذكر الأرقام  </span>
+              إختبار تذكر الأرقام{" "}
+            </span>
           </div>
           <div className="px-1 py-2 text-right">
             <span className="text-black text-md font-bold">
