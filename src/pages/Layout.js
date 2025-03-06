@@ -15,7 +15,9 @@ const Layout = () => {
     e.stopPropagation(); // Prevent event from bubbling up
     setSidebarOpen((prev) => !prev);
   };
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  const toggleSettings = () => setIsSettingsOpen(!isSettingsOpen);
   const handleClickOutside = (event) => {
     if (
       sidebarRef.current &&
@@ -160,18 +162,62 @@ const Layout = () => {
                   </ul>
                 )}
               </li>
-              <li className="p-2  rounded flex items-center justify-start flex-row-reverse gap-2">
-                <i className="fas fa-file-alt"></i>
-                <Link to="studentselections" className="text-white  text-xl">
-                  الاختبارات
-                </Link>
+              <li className="p-2 rounded flex flex-col items-start justify-start gap-2">
+                {/* Main Item with Dropdown Icon */}
+                <div
+                  className="flex items-center justify-between w-full flex-row-reverse cursor-pointer"
+                  onClick={toggleSettings}
+                >
+                  <div className="flex items-center flex-row-reverse gap-2">
+                    <i className="fas fa-cog"></i>
+                    <Link to="/settings" className="text-white text-xl">
+                      الإعدادات
+                    </Link>
+                  </div>
+                  <i
+                    className={`fas fa-chevron-down text-white transition-transform duration-200 ${
+                      isSettingsOpen ? "rotate-180" : ""
+                    }`}
+                  ></i>
+                </div>
+
+                {/* Dropdown Menu */}
+                {isSettingsOpen && (
+                  <ul
+                    className="w-full pr-6 flex flex-col gap-2 transform translate-x-6"
+                    dir="rtl"
+                  >
+                    <li className="flex">
+                      <i className="fas fa-bell text-xl ml-2"></i>
+                      <Link
+                        to="/notifications"
+                        className="block text-white hover:text-gray-300"
+                      >
+                        الإشعارات
+                      </Link>
+                    </li>
+                    <li className="flex">
+                      <i className="fas fa-tools text-xl ml-2"></i>
+                      <Link
+                        to="/tools"
+                        className="block text-white hover:text-gray-300"
+                      >
+                        الأدوات
+                      </Link>
+                    </li>
+                    <li className="flex">
+                      <i className="fas fa-wrench text-xl ml-2"></i>
+                      <Link
+                        to="/manage"
+                        className="block text-white hover:text-gray-300"
+                      >
+                        الإدارة
+                      </Link>
+                    </li>
+                  </ul>
+                )}
               </li>
-              <li className="p-2  rounded flex items-center justify-start flex-row-reverse gap-2">
-                <i className="fas fa-cog"></i>
-                <Link to="/settings" className="text-white  text-xl">
-                  الإعدادات
-                </Link>
-              </li>
+              
               <li className="p-2  rounded flex items-center justify-start flex-row-reverse gap-2">
                 <i className="fas fa-file"></i>
                 <Link to="/reports" className="text-white  text-xl">
