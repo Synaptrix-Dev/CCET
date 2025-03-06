@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import LogoImg from "../../assets/Logo.png";
 import Reset from "../../assets/num_reset.png";
 import NextBtn from "../../assets/num_confirm.png";
@@ -25,23 +25,25 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
   const [displayValue, setDisplayValue] = useState("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentDigitIndex, setCurrentDigitIndex] = useState(0);
-  const [isInstructionPlaying, setIsInstructionPlaying] = useState(true);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isQuestionPlaying, setIsQuestionPlaying] = useState(false);
+  const [isResetDisabled, setIsResetDisabled] = useState(false);
+  const [sequenceStarted, setSequenceStarted] = useState(false); // New state to track if sequence has started
+  const audioRef = useRef(null);
 
-  // Define the questions based on the image
   const questions = [
-    ["3", "5"], // Question 1
-    ["9", "4", "7"], // Question 2
-    ["2", "0", "6", "8"], // Question 3
-    ["8", "5", "7", "2", "9"], // Question 4
-    ["4", "8", "6", "3", "5"], // Question 5
-    ["3", "6", "1", "7", "0", "4"], // Question 6
-    ["6", "5", "7", "2", "3", "1"], // Question 7
-    ["7", "5", "0", "8", "6", "4", "2"], // Question 8
-    ["1", "3", "9", "7", "6", "8", "2", "5"], // Question 9
-    ["2", "4", "5", "6", "7", "8", "9", "0", "1"], // Question 10
+    ["5", "3"],
+    ["7", "4", "9"],
+    ["8", "6", "0", "2"],
+    ["9", "2", "7", "5", "8"],
+    ["5", "3", "6", "8", "4"],
+    ["4", "0", "7", "1", "6", "3"],
+    ["1", "3", "2", "7", "5", "6"],
+    ["2", "4", "6", "8", "0", "5", "7"],
+    ["5", "2", "8", "6", "7", "9", "3", "1"],
+    ["1", "0", "9", "8", "7", "6", "5", "4", "2"],
   ];
 
-  // Map numbers to their audio files
   const numberAudios = {
     0: Number_0,
     1: Number_1,
@@ -55,7 +57,6 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
     9: Number_9,
   };
 
-  // Instruction audio sequence
   const instructionAudios = [
     NumberInstruction1,
     NumberInstruction2,
@@ -63,75 +64,111 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
     NumberInstruction4,
   ];
 
-  // Play audio function
-  const playAudio = (audioSrc) => {
+  const playAudio = (audioSrc, onEnd) => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+
     const audio = new Audio(audioSrc);
-    audio.play().catch((error) => console.log("Audio play error:", error));
+    audioRef.current = audio;
+    setIsAudioPlaying(true);
+
+    console.log(`Playing audio: ${audioSrc.split("/").pop()}`);
+
+    audio.play().catch((error) => {
+      console.log("Audio play error:", error);
+      setIsAudioPlaying(false);
+    });
+
     audio.onended = () => {
-      if (isInstructionPlaying) {
-        // If instructions are playing, move to the next instruction
-        const nextInstructionIndex = instructionAudios.indexOf(audioSrc) + 1;
-        if (nextInstructionIndex < instructionAudios.length) {
-          playAudio(instructionAudios[nextInstructionIndex]);
-        } else {
-          // Instructions finished, start the first question
-          setIsInstructionPlaying(false);
-          playQuestionDigit();
-        }
-      }
+      setIsAudioPlaying(false);
+      if (onEnd) onEnd();
     };
   };
 
-  // Play the current digit of the current question
-  const playQuestionDigit = () => {
+  const playInstructions = () => {
+    let index = 0;
+    const playNext = () => {
+      if (index < instructionAudios.length) {
+        playAudio(instructionAudios[index], () => {
+          index++;
+          playNext();
+        });
+      } else {
+        // Start question sequence after instructions
+        setSequenceStarted(true); // Mark that initial sequence has started
+        playQuestionSequence();
+      }
+    };
+    playNext();
+  };
+
+  const playQuestionSequence = () => {
     if (currentQuestionIndex >= questions.length) return;
 
+    setIsQuestionPlaying(true);
     const currentQuestion = questions[currentQuestionIndex];
-    if (currentDigitIndex < currentQuestion.length) {
-      const digit =
-        currentQuestion[currentQuestion.length - 1 - currentDigitIndex]; // Play in reverse order
-      playAudio(numberAudios[digit]);
-    }
+    let digitIndex = 0;
+
+    const playNextDigit = () => {
+      if (digitIndex < currentQuestion.length) {
+        const digit = currentQuestion[digitIndex];
+        playAudio(numberAudios[digit], () => {
+          digitIndex++;
+          setCurrentDigitIndex(digitIndex);
+          playNextDigit();
+        });
+      } else {
+        setIsQuestionPlaying(false); // Allow user input after sequence
+      }
+    };
+
+    playNextDigit();
   };
 
-  // Play instruction audio when the page loads
+  // Only play instructions when component mounts
   useEffect(() => {
-    playAudio(instructionAudios[0]); // Start with the first instruction audio
+    playInstructions();
   }, []);
 
-  // Handle number button click
-  const displayNumber = (e, number) => {
-    if (isInstructionPlaying) return; // Don't allow input during instructions
-
-    setDisplayValue((prev) => prev + number);
-    setCurrentDigitIndex((prev) => prev + 1);
-
-    // Play the next digit if available
-    if (currentDigitIndex + 1 < questions[currentQuestionIndex].length) {
-      playQuestionDigit();
+  // When currentQuestionIndex changes, play the next sequence
+  // but only after the initial sequence has started
+  useEffect(() => {
+    if (sequenceStarted && currentQuestionIndex > 0) {
+      playQuestionSequence();
     }
+  }, [currentQuestionIndex]);
+
+  const displayNumber = (e, number) => {
+    if (isAudioPlaying || isQuestionPlaying) return; // Disable input during playback
+
+    const digitValue =
+      number === "٠" ? "0" : String.fromCharCode(number.charCodeAt(0) - 1632);
+    setDisplayValue((prev) => prev + number);
   };
 
-  // Reset the display
   const resetDisplay = () => {
+    if (isAudioPlaying || isQuestionPlaying || isResetDisabled) return;
     setDisplayValue("");
     setCurrentDigitIndex(0);
-    playQuestionDigit(); // Replay the current question from the start
+    playQuestionSequence(); // Replay the current sequence
   };
 
-  // Move to the next question
   const confirmValue = () => {
-    if (isInstructionPlaying) return;
+    if (isAudioPlaying || isQuestionPlaying) return;
 
     console.log("Confirmed value:", displayValue);
-    setDisplayValue(""); // Clear the display
-    setCurrentDigitIndex(0); // Reset digit index
-    setCurrentQuestionIndex((prev) => prev + 1); // Move to the next question
+    setDisplayValue("");
+    setCurrentDigitIndex(0);
+    setIsResetDisabled(true); // Disable reset button
 
-    // Play the first digit of the next question
-    if (currentQuestionIndex + 1 < questions.length) {
-      setTimeout(() => playQuestionDigit(), 500); // Small delay to ensure state updates
-    }
+    // Increment to next question index
+    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+
+    // Re-enable reset after a short delay
+    setTimeout(() => {
+      setIsResetDisabled(false);
+    }, 500);
   };
 
   return (
@@ -191,8 +228,8 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
           <button
             key={num}
             onClick={(e) => displayNumber(e, num)}
-            className="w-[72px] h-[69px] text-5xl text-green-600 border-4 border-[#8EA851] rounded-2xl bg-transparent flex items-center justify-center cursor-pointer hover:bg-green-50 transition-colors"
-            disabled={isInstructionPlaying}
+            className="w-[72px] h-[69px] text-5xl text-green-600 border-4 border-[#8EA851] rounded-2xl bg-transparent flex items-center justify-center cursor-pointer hover:bg-green-50 transition-colors disabled:opacity-50"
+            disabled={isAudioPlaying || isQuestionPlaying} // Disable during playback
           >
             {num}
           </button>
@@ -203,17 +240,17 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
       <div className="w-full flex justify-center gap-52 bg-[#757575] py-10">
         <button
           onClick={confirmValue}
-          className="w-[180px] h-[100px] bg-gray-300 rounded-md flex items-center justify-center bg-transparent"
-          disabled={isInstructionPlaying}
+          className="w-[180px] h-[100px] bg-gray-300 rounded-md flex items-center justify-center bg-transparent disabled:opacity-50"
+          disabled={isAudioPlaying || isQuestionPlaying}
         >
-          <img src={NextBtn} alt="Pen" />
+          <img src={NextBtn} alt="Next" />
         </button>
         <button
           onClick={resetDisplay}
-          className="w-[180px] h-[100px] rounded-md flex items-center justify-center bg-transparent"
-          disabled={isInstructionPlaying}
+          className="w-[180px] h-[100px] rounded-md flex items-center justify-center bg-transparent disabled:opacity-50"
+          disabled={isAudioPlaying || isQuestionPlaying || isResetDisabled}
         >
-          <img src={Reset} className="" alt="إعادة تعيين" />
+          <img src={Reset} alt="Reset" />
         </button>
       </div>
     </div>
