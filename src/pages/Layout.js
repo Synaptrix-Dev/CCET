@@ -162,7 +162,7 @@ const Layout = () => {
               </li>
               <li className="p-2  rounded flex items-center justify-start flex-row-reverse gap-2">
                 <i className="fas fa-file-alt"></i>
-                <Link to="testselection" className="text-white  text-xl">
+                <Link to="studentselections" className="text-white  text-xl">
                   الاختبارات
                 </Link>
               </li>

@@ -32,7 +32,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/select-student" element={<StudentTestSelection />} />
+         
           <Route
             path="/dashboard"
             element={<ProtectedRoute Component={Layout} />}
@@ -89,6 +89,10 @@ function App() {
             <Route
               path="dashboard/testselection/school/student-management-panel"
               element={<StudentManagementPanel />}
+            />
+            <Route
+              path="dashboard/studentselections"
+              element={<StudentTestSelection />}
             />
           </Route>
         </Routes>

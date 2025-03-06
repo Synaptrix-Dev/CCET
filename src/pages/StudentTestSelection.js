@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router";
 
 function StudentTestSelection() {
   return (
@@ -20,9 +21,11 @@ function StudentTestSelection() {
           <div className="flex justify-end items-center mb-8 gap-3">
             <div className="w-full max-w-2xl">
               <div className="relative">
-                <select className="appearance-none bg-[#E5EEB2] border-0 w-full py-3 px-4 rounded text-right">
-                  <option value="" disabled selected hidden></option>
-                  {/* Add student options here */}
+                <select className="appearance-none bg-[#E5EEB2] text-2xl border-0 w-full py-3 px-4 rounded text-right">
+                  <option value="" disabled selected hidden cn></option>
+                  <option value="مهند كمال داوود" className="text-2xl">
+                    مهند كمال داوود
+                  </option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center px-3">
                   <i className="fas fa-chevron-down text-gray-500"></i>
@@ -38,10 +41,11 @@ function StudentTestSelection() {
               <span>إضافة طالب</span>
               <i className="fas fa-plus ml-2"></i>
             </button>
-
-            <button className="bg-colPrime hover:bg-colPrime text-black py-2 px-28 text-2xl font-extrabold mr-24  rounded">
-              إختبار
-            </button>
+            <Link to="/dashboard/testselection">
+              <button className="bg-colPrime hover:bg-colPrime text-black py-2 px-28 text-2xl font-extrabold mr-24  rounded">
+                إختبار
+              </button>
+            </Link>
           </div>
         </div>
       </div>
