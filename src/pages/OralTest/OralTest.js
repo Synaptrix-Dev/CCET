@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/Logo.png";
 import NextBtn from "../../assets/next-question.png";
 import Instruction01 from "./Audios/RapidNaming_Instruction01.wav";
@@ -16,7 +16,7 @@ const OralTest = () => {
 
   const audioFiles = [Instruction01, Instruction02, Instruction03];
 
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
   const [currentPairIndex, setCurrentPairIndex] = useState(0);
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -28,7 +28,6 @@ const OralTest = () => {
   const [progress, setProgress] = useState(0);
   const studentName = "محمد";
 
-  // Automatically play instructions when the component mounts
   useEffect(() => {
     playInstructions();
   }, []);
@@ -46,7 +45,7 @@ const OralTest = () => {
     const playNext = () => {
       if (index >= audioFiles.length) {
         setIsPlaying(false);
-        playQuestionAudio(); // Start the first question audio after instructions
+        playQuestionAudio();
         return;
       }
       const audio = new Audio(audioFiles[index]);
@@ -87,6 +86,11 @@ const OralTest = () => {
       setActiveQuestion(0);
       updateProgress();
       playQuestionAudio();
+    } else {
+      setProgress(100);
+      setTimeout(() => {
+        navigate("/dashboard/testselection"); // Absolute path with leading slash
+      }, 1000);
     }
   };
 
@@ -127,16 +131,13 @@ const OralTest = () => {
     setShowModal(false);
     setAnswerDetail("");
 
-    // Check if this was the last question
     const totalQuestionsAnswered = newResults.length;
     if (totalQuestionsAnswered === questions.length) {
-      setProgress(100); // Fill progress bar completely
-      // Redirect to /testselection after a short delay
+      setProgress(100);
       setTimeout(() => {
-        navigate("/testselection");
-      }, 1000); // 1-second delay to allow the progress bar to visually complete
+        navigate("/dashboard/testselection"); // Absolute path with leading slash
+      }, 1000);
     } else {
-      // Move to the next question automatically
       handleNext();
     }
   };
@@ -209,14 +210,10 @@ const OralTest = () => {
         <div className="w-full max-w-5xl p-8 bg-[#F3F4F6] rounded-lg border-2 border-yellow-400 shadow-md">
           {currentPairIndex < questions.length && (
             <div className="flex flex-col items-center gap-8">
-              {/* First question in pair */}
-              <div
-                className={`flex items-center justify-center w-full ${
-                  activeQuestion === 0 ? "" : ""
-                }`}
-              >
+              {/* Active Question (Always on top with arrow) */}
+              <div className="flex items-center justify-center w-full">
                 <div className="text-4xl font-bold text-green-600 tracking-widest flex justify-center">
-                  {questions[currentPairIndex].number
+                  {questions[currentPairIndex + activeQuestion].number
                     .split(" ")
                     .map((digit, idx) => (
                       <span key={idx} className="mx-2 text-8xl">
@@ -224,22 +221,18 @@ const OralTest = () => {
                       </span>
                     ))}
                 </div>
-                {activeQuestion === 0 && (
-                  <span className="text-7xl font-bold -mt-5 text-green-700 -mr-10">
-                    ←
-                  </span>
-                )}
+                <span className="text-7xl font-bold -mt-5 text-green-700 -mr-10">
+                  ←
+                </span>
               </div>
 
-              {/* Second question in pair */}
+              {/* Paired Question (Always shown below) */}
               {currentPairIndex + 1 < questions.length && (
-                <div
-                  className={`flex items-center justify-center w-full ${
-                    activeQuestion === 1 ? "" : ""
-                  }`}
-                >
+                <div className="flex items-center justify-center w-full">
                   <div className="text-4xl font-bold text-green-600 tracking-widest flex justify-center">
-                    {questions[currentPairIndex + 1].number
+                    {questions[
+                      currentPairIndex + (activeQuestion === 0 ? 1 : 0)
+                    ].number
                       .split(" ")
                       .map((digit, idx) => (
                         <span key={idx} className="mx-2 text-8xl">
@@ -247,11 +240,6 @@ const OralTest = () => {
                         </span>
                       ))}
                   </div>
-                  {activeQuestion === 1 && (
-                    <span className="text-7xl font-bold -mt-5 text-green-700 -mr-10">
-                      ←
-                    </span>
-                  )}
                 </div>
               )}
             </div>

@@ -1,20 +1,137 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LogoImg from "../../assets/Logo.png";
 import Reset from "../../assets/num_reset.png";
 import NextBtn from "../../assets/num_confirm.png";
+
+// Instruction audios
+import NumberInstruction1 from "./Audios/NUM_Remember_Intruction_1.wav";
+import NumberInstruction2 from "./Audios/NUM_Remember_Intruction_2.wav";
+import NumberInstruction3 from "./Audios/NUM_Remember_Intruction_3.wav";
+import NumberInstruction4 from "./Audios/NUM_Remember_Intruction_4.wav";
+
+// Question Audio
+import Number_0 from "./Audios/N_0.wav";
+import Number_1 from "./Audios/N_1.wav";
+import Number_2 from "./Audios/N_2.wav";
+import Number_3 from "./Audios/N_3.wav";
+import Number_4 from "./Audios/N_4.wav";
+import Number_5 from "./Audios/N_5.wav";
+import Number_6 from "./Audios/N_6.wav";
+import Number_7 from "./Audios/N_7.wav";
+import Number_8 from "./Audios/N_8.wav";
+import Number_9 from "./Audios/N_9.wav";
+
 const NumberRemember = ({ Logo, progress, studentName }) => {
   const [displayValue, setDisplayValue] = useState("");
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentDigitIndex, setCurrentDigitIndex] = useState(0);
+  const [isInstructionPlaying, setIsInstructionPlaying] = useState(true);
 
+  // Define the questions based on the image
+  const questions = [
+    ["3", "5"], // Question 1
+    ["9", "4", "7"], // Question 2
+    ["2", "0", "6", "8"], // Question 3
+    ["8", "5", "7", "2", "9"], // Question 4
+    ["4", "8", "6", "3", "5"], // Question 5
+    ["3", "6", "1", "7", "0", "4"], // Question 6
+    ["6", "5", "7", "2", "3", "1"], // Question 7
+    ["7", "5", "0", "8", "6", "4", "2"], // Question 8
+    ["1", "3", "9", "7", "6", "8", "2", "5"], // Question 9
+    ["2", "4", "5", "6", "7", "8", "9", "0", "1"], // Question 10
+  ];
+
+  // Map numbers to their audio files
+  const numberAudios = {
+    0: Number_0,
+    1: Number_1,
+    2: Number_2,
+    3: Number_3,
+    4: Number_4,
+    5: Number_5,
+    6: Number_6,
+    7: Number_7,
+    8: Number_8,
+    9: Number_9,
+  };
+
+  // Instruction audio sequence
+  const instructionAudios = [
+    NumberInstruction1,
+    NumberInstruction2,
+    NumberInstruction3,
+    NumberInstruction4,
+  ];
+
+  // Play audio function
+  const playAudio = (audioSrc) => {
+    const audio = new Audio(audioSrc);
+    audio.play().catch((error) => console.log("Audio play error:", error));
+    audio.onended = () => {
+      if (isInstructionPlaying) {
+        // If instructions are playing, move to the next instruction
+        const nextInstructionIndex = instructionAudios.indexOf(audioSrc) + 1;
+        if (nextInstructionIndex < instructionAudios.length) {
+          playAudio(instructionAudios[nextInstructionIndex]);
+        } else {
+          // Instructions finished, start the first question
+          setIsInstructionPlaying(false);
+          playQuestionDigit();
+        }
+      }
+    };
+  };
+
+  // Play the current digit of the current question
+  const playQuestionDigit = () => {
+    if (currentQuestionIndex >= questions.length) return;
+
+    const currentQuestion = questions[currentQuestionIndex];
+    if (currentDigitIndex < currentQuestion.length) {
+      const digit =
+        currentQuestion[currentQuestion.length - 1 - currentDigitIndex]; // Play in reverse order
+      playAudio(numberAudios[digit]);
+    }
+  };
+
+  // Play instruction audio when the page loads
+  useEffect(() => {
+    playAudio(instructionAudios[0]); // Start with the first instruction audio
+  }, []);
+
+  // Handle number button click
   const displayNumber = (e, number) => {
+    if (isInstructionPlaying) return; // Don't allow input during instructions
+
     setDisplayValue((prev) => prev + number);
+    setCurrentDigitIndex((prev) => prev + 1);
+
+    // Play the next digit if available
+    if (currentDigitIndex + 1 < questions[currentQuestionIndex].length) {
+      playQuestionDigit();
+    }
   };
 
-  const resetDisplay = (e) => {
+  // Reset the display
+  const resetDisplay = () => {
     setDisplayValue("");
+    setCurrentDigitIndex(0);
+    playQuestionDigit(); // Replay the current question from the start
   };
 
-  const confirmValue = (e) => {
+  // Move to the next question
+  const confirmValue = () => {
+    if (isInstructionPlaying) return;
+
     console.log("Confirmed value:", displayValue);
+    setDisplayValue(""); // Clear the display
+    setCurrentDigitIndex(0); // Reset digit index
+    setCurrentQuestionIndex((prev) => prev + 1); // Move to the next question
+
+    // Play the first digit of the next question
+    if (currentQuestionIndex + 1 < questions.length) {
+      setTimeout(() => playQuestionDigit(), 500); // Small delay to ensure state updates
+    }
   };
 
   return (
@@ -28,7 +145,7 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
             style={{ backgroundColor: "#E1E8CE" }}
           >
             <div
-              className="h-full transition-all duration-500  ease-in-out shadow-inner"
+              className="h-full transition-all duration-500 ease-in-out shadow-inner"
               style={{
                 width: `${progress}%`,
                 backgroundImage:
@@ -75,6 +192,7 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
             key={num}
             onClick={(e) => displayNumber(e, num)}
             className="w-[72px] h-[69px] text-5xl text-green-600 border-4 border-[#8EA851] rounded-2xl bg-transparent flex items-center justify-center cursor-pointer hover:bg-green-50 transition-colors"
+            disabled={isInstructionPlaying}
           >
             {num}
           </button>
@@ -86,12 +204,14 @@ const NumberRemember = ({ Logo, progress, studentName }) => {
         <button
           onClick={confirmValue}
           className="w-[180px] h-[100px] bg-gray-300 rounded-md flex items-center justify-center bg-transparent"
+          disabled={isInstructionPlaying}
         >
           <img src={NextBtn} alt="Pen" />
         </button>
         <button
           onClick={resetDisplay}
           className="w-[180px] h-[100px] rounded-md flex items-center justify-center bg-transparent"
+          disabled={isInstructionPlaying}
         >
           <img src={Reset} className="" alt="إعادة تعيين" />
         </button>

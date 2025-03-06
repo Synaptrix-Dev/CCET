@@ -6,7 +6,11 @@ const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
   const toggleButtonRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
 
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
   const toggleSidebar = (e) => {
     e.stopPropagation(); // Prevent event from bubbling up
     setSidebarOpen((prev) => !prev);
@@ -76,35 +80,84 @@ const Layout = () => {
         >
           <div className="p-4 border-b border-gray-600 flex justify-end items-center">
             <span className="font-bold">
-              <Link to="/dashboard" className="text-3xl text-white">
-                لوحة البيانات
+              <Link to="/dashboard" className="text-xl text-white">
+                نظام عصر العمليات الحسابية
               </Link>
+              <i className="fas fa-home ml-2"></i>
             </span>
           </div>
           <nav className="p-4">
             <ul className="space-y-2">
-              <li className="p-2 hover:bg-gray-600 rounded flex items-center justify-start flex-row-reverse gap-2">
-                <i className="fas fa-school"></i>
-                <Link
-                  to="dashboard/testselection/school"
-                  className="text-white  text-xl"
-                >
-                  إدارة المدارس
+              <li className="p-2  rounded flex items-center justify-start flex-row-reverse gap-2">
+                <Link to="/dashboard" className="text-xl text-white">
+                  لوحة البيانات
                 </Link>
               </li>
-              <li className="p-2 hover:bg-gray-600 rounded flex items-center justify-start flex-row-reverse gap-2">
+              <li className="p-2  rounded flex flex-col items-start justify-start gap-2">
+                {/* Main Item with Dropdown Icon */}
+                <div
+                  className="flex items-center justify-between w-full flex-row-reverse cursor-pointer"
+                  onClick={toggleDropdown}
+                >
+                  <div className="flex items-center flex-row-reverse gap-2">
+                    <i className="fas fa-school"></i>
+                    <Link
+                      to="dashboard/testselection/school"
+                      className="text-white text-xl"
+                    >
+                      إدارة المدارس
+                    </Link>
+                  </div>
+                  <i
+                    className={`fas fa-chevron-down text-white transition-transform duration-200 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  ></i>
+                </div>
+
+                {/* Dropdown Menu */}
+                {isOpen && (
+                  <ul className="w-full pr-6 flex flex-col  gap-2 transform translate-x-28" >
+                    <li>
+                      <Link
+                        to="dashboard/testselection/school/add"
+                        className="block text-white hover:text-gray-300"
+                      >
+                        إضافة مدرسة
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="dashboard/testselection/school/manage"
+                        className="block text-white hover:text-gray-300"
+                      >
+                        إدارة المدارس
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="dashboard/testselection/school/reports"
+                        className="block text-white hover:text-gray-300 -ml-2"
+                      >
+                        تقارير المدارس
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </li>
+              <li className="p-2  rounded flex items-center justify-start flex-row-reverse gap-2">
                 <i className="fas fa-file-alt"></i>
                 <Link to="testselection" className="text-white  text-xl">
                   الاختبارات
                 </Link>
               </li>
-              <li className="p-2 hover:bg-gray-600 rounded flex items-center justify-start flex-row-reverse gap-2">
+              <li className="p-2  rounded flex items-center justify-start flex-row-reverse gap-2">
                 <i className="fas fa-cog"></i>
                 <Link to="/settings" className="text-white  text-xl">
                   الإعدادات
                 </Link>
               </li>
-              <li className="p-2 hover:bg-gray-600 rounded flex items-center justify-start flex-row-reverse gap-2">
+              <li className="p-2  rounded flex items-center justify-start flex-row-reverse gap-2">
                 <i className="fas fa-file"></i>
                 <Link to="/reports" className="text-white  text-xl">
                   report page
