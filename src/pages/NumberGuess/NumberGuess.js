@@ -1,27 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import Logo from "../../assets/Logo.png";
+// Starter audio files
 import Distance_Instruction01 from "./Audios/Distance_Instruction01.wav";
 import Distance_Instruction02 from "./Audios/Distance_Instruction02.wav";
 import Distance_Instruction03 from "./Audios/Distance_Instruction03.wav";
 import Distance_Instruction04 from "./Audios/Distance_Instruction04.wav";
-import Distance_Instruction05 from "./Audios/Distance_Instruction05.wav";
-import Distance_Instruction06 from "./Audios/Distance_Instruction06.wav";
-import Distance_Instruction07 from "./Audios/Distance_Instruction07.wav";
-import Distance_Instruction08 from "./Audios/Distance_Instruction08.wav";
-import Distance_Instruction09 from "./Audios/Distance_Instruction09.wav";
-import Distance_Instruction10 from "./Audios/Distance_Instruction010.wav";
-import Value011 from "./Audios/Value011.wav";
-import Value063 from "./Audios/Value063.wav";
-import Value021 from "./Audios/Value021.wav";
+// Quarter Audio files
+import Show_Quarter_25 from "./Audios/Quareter-25.wav";
+import Hide_Quarter_25 from "./Audios/Quarter-25-hidden.wav";
+import Show_Quarter_50 from "./Audios/Quareter-50.wav";
+import Hide_Quarter_50 from "./Audios/Disappaear-50.wav";
+import Show_All_Quarter from "./Audios/All-Quarter.wav";
+import Hide_All_Quarter from "./Audios/All-Quarter-hidden.wav";
+// Question Audio files
 import Value06 from "./Audios/Value06.wav";
+import Value011 from "./Audios/Value011.wav";
+import Value021 from "./Audios/Value021.wav";
+import Value063 from "./Audios/Value063.wav";
 import Value075 from "./Audios/Value075.wav";
 import Value088 from "./Audios/Value088.wav";
-
-const NumberGuess = [
-  { displayValue: "٥", answerValue: "5", audioValue: Distance_Instruction01 },
-  { displayValue: "٤٠", answerValue: "40", audioValue: Distance_Instruction01 },
-  { displayValue: "٧٥", answerValue: "75", audioValue: Distance_Instruction01 },
-];
 
 const mainQuestions = [
   { displayValue: "١١", answerValue: "11", audioValue: Value011 },
@@ -37,25 +34,88 @@ const audioInstructions = [
   Distance_Instruction02,
   Distance_Instruction03,
   Distance_Instruction04,
-  Distance_Instruction05,
-  Distance_Instruction06,
-  Distance_Instruction07,
-  Distance_Instruction08,
-  Distance_Instruction09,
-  Distance_Instruction10,
 ];
 
 const NumberGuessComponent = () => {
-  const [questions] = useState([...NumberGuess, ...mainQuestions]);
+  const [questions] = useState(mainQuestions);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [currentAudioIndex, setCurrentAudioIndex] = useState(0);
   const [isPlayingInstructions, setIsPlayingInstructions] = useState(true);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [clickValue, setClickValue] = useState(null);
-  const [hasShown25Marker, setHasShown25Marker] = useState(false);
+  const [visibleQuarters, setVisibleQuarters] = useState({
+    show25: false,
+    show50: false,
+    show75: false,
+    showAll: false,
+  });
   const [progress, setProgress] = useState(0);
   const audioRef = useRef(null);
   const isMounted = useRef(false);
+
+  // Sequence of quarter audio demonstrations
+  const quarterSequence = [
+    {
+      audio: Show_Quarter_25,
+      action: () =>
+        setVisibleQuarters({
+          show25: true,
+          show50: false,
+          show75: false,
+          showAll: false,
+        }),
+    },
+    {
+      audio: Hide_Quarter_25,
+      action: () =>
+        setVisibleQuarters({
+          show25: false,
+          show50: false,
+          show75: false,
+          showAll: false,
+        }),
+    },
+    {
+      audio: Show_Quarter_50,
+      action: () =>
+        setVisibleQuarters({
+          show25: false,
+          show50: true,
+          show75: false,
+          showAll: false,
+        }),
+    },
+    {
+      audio: Hide_Quarter_50,
+      action: () =>
+        setVisibleQuarters({
+          show25: false,
+          show50: false,
+          show75: false,
+          showAll: false,
+        }),
+    },
+    {
+      audio: Show_All_Quarter,
+      action: () =>
+        setVisibleQuarters({
+          show25: true,
+          show50: true,
+          show75: true,
+          showAll: true,
+        }),
+    },
+    {
+      audio: Hide_All_Quarter,
+      action: () =>
+        setVisibleQuarters({
+          show25: false,
+          show50: false,
+          show75: false,
+          showAll: false,
+        }),
+    },
+  ];
 
   useEffect(() => {
     if (currentQuestion > 0) {
@@ -125,10 +185,16 @@ const NumberGuessComponent = () => {
       await playAudio(audioInstructions[i]);
       setCurrentAudioIndex(i + 1);
     }
+  };
 
-    if (isMounted.current) {
-      setIsPlayingInstructions(false);
-      await playQuestionAudio();
+  const playQuarterSequence = async () => {
+    for (const step of quarterSequence) {
+      if (!isMounted.current) return;
+      await playAudio(step.audio);
+      if (isMounted.current) {
+        step.action();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     }
   };
 
@@ -182,10 +248,21 @@ const NumberGuessComponent = () => {
     setTimeout(nextQuestion, 1000);
   };
 
-  const initializeTest = () => {
+  const initializeTest = async () => {
+    if (!isMounted.current) return;
+
+    console.log("Initializing test");
+
+    // Play all instruction audios first
+    await playInstructionsSequentially();
+
+    // Then play the quarter demonstration sequence
+    await playQuarterSequence();
+
+    // Finally start the questions
     if (isMounted.current) {
-      console.log("Initializing test");
-      playInstructionsSequentially();
+      setIsPlayingInstructions(false);
+      await playQuestionAudio();
     }
   };
 
@@ -201,7 +278,7 @@ const NumberGuessComponent = () => {
             style={{ backgroundColor: "#E1E8CE" }}
           >
             <div
-              className="h-full transition-all duration-500  ease-in-out shadow-inner"
+              className="h-full transition-all duration-500 ease-in-out shadow-inner"
               style={{
                 width: `${progress}%`,
                 backgroundImage:
@@ -248,45 +325,53 @@ const NumberGuessComponent = () => {
               ١٠٠
             </span>
           </div>
+
           <div className="relative">
             <div className="absolute bottom-0 -left-1 w-2 h-4 bg-[#AEC03F] rounded-t-full"></div>
             <span
               className={`absolute top-6 -left-2 text-xl font-medium text-gray-700 transition-opacity duration-300 ${
-                currentQuestion === 2 ? "opacity-100" : "opacity-0"
+                visibleQuarters.show75 || visibleQuarters.showAll
+                  ? "opacity-100"
+                  : "opacity-0"
               }`}
             >
               ٧٥
             </span>
           </div>
+
           <div className="relative">
             <div className="absolute bottom-0 -left-1 w-2 h-4 bg-[#AEC03F] rounded-t-full"></div>
             <span
               className={`absolute top-6 -left-2 text-xl font-medium text-gray-700 transition-opacity duration-300 ${
-                currentQuestion === 1 ? "opacity-100" : "opacity-0"
+                visibleQuarters.show50 || visibleQuarters.showAll
+                  ? "opacity-100"
+                  : "opacity-0"
               }`}
             >
               ٥٠
             </span>
           </div>
+
           <div className="relative">
             <div className="absolute bottom-0 -left-1 w-2 h-4 bg-[#AEC03F] rounded-t-full"></div>
             <span
               className={`absolute top-6 -left-2 text-xl font-medium text-gray-700 transition-opacity duration-300 ${
-                currentQuestion === 0 && !hasShown25Marker
+                visibleQuarters.show25 || visibleQuarters.showAll
                   ? "opacity-100"
                   : "opacity-0"
               }`}
-              onClick={() => setHasShown25Marker(true)}
             >
               ٢٥
             </span>
           </div>
+
           <div className="relative">
             <div className="absolute bottom-0 -left-1 w-2 h-6 bg-[#AEC03F] rounded-t-full"></div>
             <span className="absolute top-8 -left-2 text-xl font-medium text-gray-700">
               ٠
             </span>
           </div>
+
           {clickValue && (
             <div
               className="absolute w-6 h-6 bg-amber-500 rounded-full border-2 border-white shadow-md transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
@@ -296,14 +381,6 @@ const NumberGuessComponent = () => {
             </div>
           )}
         </div>
-
-        {/* <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-gray-500 text-center w-full">
-          <p className="text-sm">
-            {isAudioPlaying
-              ? "جاري تشغيل الصوت..."
-              : "انقر على المقياس لتحديد إجابتك"}
-          </p>
-        </div> */}
       </div>
 
       {currentQuestion >= questions.length && (
