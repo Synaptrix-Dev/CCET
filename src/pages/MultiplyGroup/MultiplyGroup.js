@@ -8,7 +8,6 @@ import Questions from "./MultiplyQuestion";
 const MultiplyGroup = () => {
   const questions = Questions;
   const navigate = useNavigate();
-  const dragNumberRef = useRef(null);
   const timerRef = useRef(null);
 
   const arabicNumerals = {
@@ -40,7 +39,12 @@ const MultiplyGroup = () => {
   const [draggedNumber, setDraggedNumber] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [timer, setTimer] = useState(120000);
-  const [totalIncorrect, setTotalIncorrect] = useState(0);
+  const [partIncorrect, setPartIncorrect] = useState({
+    part1: 0, // q1, q2 (indices 0-1)
+    part2: 0, // q3-q10 (indices 2-9)
+    part3: 0, // q11-q17 (indices 10-16)
+    part4: 0, // q18-q19 (indices 17-18)
+  });
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [results, setResults] = useState(Array(questions.length).fill(0));
@@ -48,6 +52,15 @@ const MultiplyGroup = () => {
   const currentQuestion = questions[currentQuestionIndex];
   const totalQuestions = questions.length;
   const progress = (currentQuestionIndex / totalQuestions) * 100;
+
+  // Define parts and their allowed incorrect attempts
+  const getPartForQuestion = (index) => {
+    if (index <= 1) return { part: "part1", maxIncorrect: 2 }; // Part 1: q1-q2
+    if (index <= 9) return { part: "part2", maxIncorrect: 2 }; // Part 2: q3-q10
+    if (index <= 16) return { part: "part3", maxIncorrect: 2 }; // Part 3: q11-q17
+    if (index <= 18) return { part: "part4", maxIncorrect: 2 }; // Part 4: q18-q19
+    return { part: "unknown", maxIncorrect: 0 };
+  };
 
   useEffect(() => {
     setStartTime(new Date());
@@ -64,7 +77,7 @@ const MultiplyGroup = () => {
         }
         return prev - 1;
       });
-    }, 0);
+    }, 1000); // Adjusted from 0ms to 1000ms (1 second)
     return () => clearInterval(timerRef.current);
   }, [currentQuestionIndex]);
 
@@ -72,21 +85,17 @@ const MultiplyGroup = () => {
   const handleAnswerDrop = (index) => {
     if (draggedNumber !== null) {
       const newAnswers = [...userAnswers];
-      const digits = draggedNumber.split(""); // Split the dragged number into digits
+      const digits = draggedNumber.split("");
       const dropzoneCount = currentQuestion.dropzones.length;
 
-      // Check if the drop is on the last dropzone and it's a multi-digit number
       if (index === dropzoneCount - 1 && digits.length > 1) {
-        // Place digits in reverse order starting from the last dropzone
         for (let i = 0; i < digits.length; i++) {
-          const targetIndex = index - i; // Move backwards from the drop index
+          const targetIndex = index - i;
           if (targetIndex >= 0) {
-            // Ensure we don't go out of bounds
-            newAnswers[targetIndex] = digits[digits.length - 1 - i]; // Place digits from right to left
+            newAnswers[targetIndex] = digits[digits.length - 1 - i];
           }
         }
       } else {
-        // Original behavior for other cases: place digits forward
         digits.forEach((digit, i) => {
           if (index + i < dropzoneCount) {
             newAnswers[index + i] = digit;
@@ -138,6 +147,28 @@ const MultiplyGroup = () => {
     return isCorrect;
   };
 
+  // Log results by part
+  const logResultsByPart = () => {
+    const partResults = {
+      part1: results.slice(0, 2), // q1-q2
+      part2: results.slice(2, 10), // q3-q10
+      part3: results.slice(10, 17), // q11-q17
+      part4: results.slice(17, 19), // q18-q19
+    };
+
+    console.log("Results by Part:");
+    Object.keys(partResults).forEach((part) => {
+      const partScore = partResults[part].reduce((a, b) => a + b, 0);
+      const totalInPart = partResults[part].length;
+      console.log(`${part}: ${partScore}/${totalInPart}`);
+    });
+    console.log(
+      "Total Score:",
+      results.reduce((a, b) => a + b, 0),
+      `/${totalQuestions}`
+    );
+  };
+
   const handleTimerTimeout = () => {
     const newResults = [...results];
     newResults[currentQuestionIndex] = 0;
@@ -146,34 +177,49 @@ const MultiplyGroup = () => {
       `Question ${currentQuestionIndex + 1} Result: Incorrect (Timer, 0 marks)`
     );
 
+    const { part, maxIncorrect } = getPartForQuestion(currentQuestionIndex);
     const newIncorrectAttempts = (currentQuestion.incorrectAttempts || 0) + 1;
     questions[currentQuestionIndex].incorrectAttempts = newIncorrectAttempts;
 
     if (newIncorrectAttempts === 1) {
-      const newTotalIncorrect = totalIncorrect + 1;
-      setTotalIncorrect(newTotalIncorrect);
-      console.log("Total Incorrect Attempts:", newTotalIncorrect);
+      setPartIncorrect((prev) => {
+        const newPartIncorrect = { ...prev, [part]: prev[part] + 1 };
+        console.log(`Incorrect Attempts in ${part}:`, newPartIncorrect[part]);
 
-      if (newTotalIncorrect >= 2) {
-        setFeedback("لقد أجبت على سؤالين بشكل غير صحيح، سيتم إعادة توجيهك...");
-        setEndTime(new Date());
-        console.log("Test End Time (Redirect):", new Date().toLocaleString());
-        console.log("Final Results:", newResults);
-        console.log(
-          "Total Score:",
-          newResults.reduce((a, b) => a + b, 0),
-          `/${totalQuestions}`
-        );
-        // setTimeout(() => navigate("/dashboard/testselection"), 0);
-        return;
-      }
+        if (newPartIncorrect[part] >= maxIncorrect) {
+          setFeedback(
+            "لقد أجبت على عدد كافٍ من الأسئلة بشكل غير صحيح في هذا الجزء، سيتم إعادة توجيهك..."
+          );
+          setEndTime(new Date());
+          console.log("Test End Time (Redirect):", new Date().toLocaleString());
+          logResultsByPart();
+          setTimeout(() => navigate("/dashboard/testselection"), 1000);
+          return newPartIncorrect;
+        }
+
+        moveToNextQuestion();
+        return newPartIncorrect;
+      });
+    } else {
+      moveToNextQuestion();
     }
-    moveToNextQuestion();
   };
 
   const moveToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      const nextIndex = currentQuestionIndex + 1;
+      const currentPart = getPartForQuestion(currentQuestionIndex).part;
+      const nextPart = getPartForQuestion(nextIndex).part;
+
+      if (currentPart !== nextPart) {
+        setPartIncorrect((prev) => ({
+          ...prev,
+          [nextPart]: 0,
+        }));
+        console.log(`Reset incorrect attempts for ${nextPart}`);
+      }
+
+      setCurrentQuestionIndex(nextIndex);
       setUserAnswers([]);
       setCarries([]);
       setFeedback("");
@@ -182,16 +228,11 @@ const MultiplyGroup = () => {
       setFeedback("أحسنت! لقد أكملت جميع الأسئلة");
       setEndTime(new Date());
       console.log("Test End Time:", new Date().toLocaleString());
-      console.log("Final Results:", results);
-      console.log(
-        "Total Score:",
-        results.reduce((a, b) => a + b, 0),
-        `/${totalQuestions}`
-      );
-      setShowModal(false);
+      logResultsByPart();
+      setShowModal(true);
       setTimeout(() => {
         setShowModal(false);
-        // navigate("/dashboard/testselection");
+        navigate("/dashboard/testselection");
       }, 2000);
     }
   };
@@ -204,40 +245,43 @@ const MultiplyGroup = () => {
       setFeedback(isCorrect ? "صحيح!" : "غير صحيح");
 
       if (!isCorrect) {
+        const { part, maxIncorrect } = getPartForQuestion(currentQuestionIndex);
         const newIncorrectAttempts =
           (currentQuestion.incorrectAttempts || 0) + 1;
         questions[currentQuestionIndex].incorrectAttempts =
           newIncorrectAttempts;
 
         if (newIncorrectAttempts === 1) {
-          const newTotalIncorrect = totalIncorrect + 1;
-          setTotalIncorrect(newTotalIncorrect);
-          console.log("Total Incorrect Attempts:", newTotalIncorrect);
+          setPartIncorrect((prev) => {
+            const newPartIncorrect = { ...prev, [part]: prev[part] + 1 };
+            console.log(
+              `Incorrect Attempts in ${part}:`,
+              newPartIncorrect[part]
+            );
 
-          if (newTotalIncorrect >= 2) {
-            setFeedback(
-              "لقد أجبت على سؤالين بشكل غير صحيح، سيتم إعادة توجيهك..."
-            );
-            setEndTime(new Date());
-            console.log(
-              "Test End Time (Redirect):",
-              new Date().toLocaleString()
-            );
-            console.log("Final Results:", results);
-            console.log(
-              "Total Score:",
-              results.reduce((a, b) => a + b, 0),
-              `/${totalQuestions}`
-            );
-            // setTimeout(() => navigate("/dashboard/testselection"), 0);
-            return;
-          }
+            if (newPartIncorrect[part] >= maxIncorrect) {
+              setFeedback(
+                "لقد أجبت على عدد كافٍ من الأسئلة بشكل غير صحيح في هذا الجزء، سيتم إعادة توجيهك..."
+              );
+              setEndTime(new Date());
+              console.log(
+                "Test End Time (Redirect):",
+                new Date().toLocaleString()
+              );
+              logResultsByPart();
+              setTimeout(() => navigate("/dashboard/testselection"), 1000);
+              return newPartIncorrect;
+            }
+
+            setTimeout(() => moveToNextQuestion(), 10);
+            return newPartIncorrect;
+          });
+        } else {
+          setTimeout(() => moveToNextQuestion(), 10);
         }
+      } else {
+        setTimeout(() => moveToNextQuestion(), 10);
       }
-
-      setTimeout(() => {
-        moveToNextQuestion();
-      }, 0);
     } else {
       const newResults = [...results];
       newResults[currentQuestionIndex] = 0;
@@ -248,31 +292,35 @@ const MultiplyGroup = () => {
         } Result: Incorrect (Skipped, 0 marks)`
       );
 
+      const { part, maxIncorrect } = getPartForQuestion(currentQuestionIndex);
       const newIncorrectAttempts = (currentQuestion.incorrectAttempts || 0) + 1;
       questions[currentQuestionIndex].incorrectAttempts = newIncorrectAttempts;
 
       if (newIncorrectAttempts === 1) {
-        const newTotalIncorrect = totalIncorrect + 1;
-        setTotalIncorrect(newTotalIncorrect);
-        console.log("Total Incorrect Attempts:", newTotalIncorrect);
+        setPartIncorrect((prev) => {
+          const newPartIncorrect = { ...prev, [part]: prev[part] + 1 };
+          console.log(`Incorrect Attempts in ${part}:`, newPartIncorrect[part]);
 
-        if (newTotalIncorrect >= 2) {
-          setFeedback(
-            "لقد أجبت على سؤالين بشكل غير صحيح، سيتم إعادة توجيهك..."
-          );
-          setEndTime(new Date());
-          console.log("Test End Time (Redirect):", new Date().toLocaleString());
-          console.log("Final Results:", newResults);
-          console.log(
-            "Total Score:",
-            newResults.reduce((a, b) => a + b, 0),
-            `/${totalQuestions}`
-          );
-          // setTimeout(() => navigate("/dashboard/testselection"), 0);
-          return;
-        }
+          if (newPartIncorrect[part] >= maxIncorrect) {
+            setFeedback(
+              "لقد أجبت على عدد كافٍ من الأسئلة بشكل غير صحيح في هذا الجزء، سيتم إعادة توجيهك..."
+            );
+            setEndTime(new Date());
+            console.log(
+              "Test End Time (Redirect):",
+              new Date().toLocaleString()
+            );
+            logResultsByPart();
+            setTimeout(() => navigate("/dashboard/testselection"), 1000);
+            return newPartIncorrect;
+          }
+
+          moveToNextQuestion();
+          return newPartIncorrect;
+        });
+      } else {
+        moveToNextQuestion();
       }
-      moveToNextQuestion();
     }
   };
 
@@ -288,7 +336,7 @@ const MultiplyGroup = () => {
   const needsCarry = currentQuestion.needsRemainder;
   const paddedFirst = firstOperand.padStart(maxLength, " ");
   const paddedSecond = secondOperand.padStart(maxLength, " ");
-  const isQuestion17 = currentQuestionIndex === 16; // Question 17 (index 16)
+  const isQuestion17 = currentQuestionIndex === 16;
 
   const numberButtons = Array.from({ length: 19 }, (_, i) => i + 1).map(
     (num) => (
@@ -366,7 +414,7 @@ const MultiplyGroup = () => {
                           {currentQuestion.dropzones.map((dropzone, i) => (
                             <div
                               key={`answer-${i}`}
-                              className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
+                              className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl"
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleAnswerDrop(i)}
                             >
@@ -437,9 +485,7 @@ const MultiplyGroup = () => {
                         </div>
                         <div className="w-[230px] -translate-x-1 flex justify-end items-center mb-4">
                           <div className="w-[230px] border-t-2 border-black"></div>
-                          {/* <span className="text-3xl ml-2 relative -top-5 -left-20">+</span> */}
                         </div>
-                        {/* First partial product (45 × 6) */}
                         <div
                           className={`flex mb-2 space-x-2 rtl:space-x-reverse justify-end -ml-[110px]`}
                         >
@@ -457,7 +503,7 @@ const MultiplyGroup = () => {
                             .map((dropzone, i) => (
                               <div
                                 key={`answer-${i}`}
-                                className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
+                                className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl"
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={() => handleAnswerDrop(i)}
                               >
@@ -465,13 +511,7 @@ const MultiplyGroup = () => {
                               </div>
                             ))}
                         </div>
-                        <div className="w-[230px] flex justify-end items-center mb-4">
-                          {/* <div className="w-[300px] border-t-2 border-black"></div> */}
-                          {/* <span className="text-3xl ml-2 relative -top-5 -left-16">
-                            +
-                          </span> */}
-                        </div>
-                        {/* Second partial product (45 × 30) */}
+                        <div className="w-[230px] flex justify-end items-center mb-4"></div>
                         <div
                           className={`flex mb-2 space-x-2 rtl:space-x-reverse -mt-4 justify-end ml-[-100px]`}
                         >
@@ -480,7 +520,7 @@ const MultiplyGroup = () => {
                             .map((dropzone, i) => (
                               <div
                                 key={`answer-${i + 3}`}
-                                className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
+                                className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl"
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={() => handleAnswerDrop(i + 3)}
                               >
@@ -490,11 +530,10 @@ const MultiplyGroup = () => {
                         </div>
                         <div className="w-[300px] -translate-x-8 flex justify-end items-center mb-4">
                           <div className="w-[300px] border-t-2 border-black -mt-6"></div>
-                          <span className="text-4xl  relative -top-12 -left-3 ">
+                          <span className="text-4xl relative -top-12 -left-3">
                             +
                           </span>
                         </div>
-                        {/* Final sum (1620) */}
                         <div
                           className={`flex mb-2 space-x-2 rtl:space-x-reverse -mt-10 justify-end ml-[-100px]`}
                         >
@@ -503,7 +542,7 @@ const MultiplyGroup = () => {
                             .map((dropzone, i) => (
                               <div
                                 key={`answer-${i + 7}`}
-                                className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
+                                className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl"
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={() => handleAnswerDrop(i + 7)}
                               >
@@ -576,7 +615,7 @@ const MultiplyGroup = () => {
                           {currentQuestion.dropzones.map((dropzone, i) => (
                             <div
                               key={`answer-${i}`}
-                              className="w-12 h-12 border-2 border-gray-400 rounded flex items-center justify-center text-5xl"
+                              className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl"
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleAnswerDrop(i)}
                             >

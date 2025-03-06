@@ -8,7 +8,6 @@ import Questions from "./QuestionData";
 const SubtractionGroup = () => {
   const questions = Questions;
   const navigate = useNavigate();
-  const dragNumberRef = useRef(null);
   const timerRef = useRef(null);
 
   const arabicNumerals = {
@@ -40,7 +39,12 @@ const SubtractionGroup = () => {
   const [draggedNumber, setDraggedNumber] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [timer, setTimer] = useState(120000);
-  const [totalIncorrect, setTotalIncorrect] = useState(0);
+  const [partIncorrect, setPartIncorrect] = useState({
+    part1: 0, // q1, q2, q3, q4, q5 (indices 0-4)
+    part2: 0, // q6, q7 (indices 5-6)
+    part3: 0, // q8 (index 7)
+    part4: 0, // q9 (index 8)
+  });
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [results, setResults] = useState(Array(questions.length).fill(0));
@@ -48,6 +52,15 @@ const SubtractionGroup = () => {
   const currentQuestion = questions[currentQuestionIndex];
   const totalQuestions = questions.length;
   const progress = (currentQuestionIndex / totalQuestions) * 100;
+
+  // Define parts and their allowed incorrect attempts
+  const getPartForQuestion = (index) => {
+    if (index <= 4) return { part: "part1", maxIncorrect: 2 }; // Part 1: q1-q5
+    if (index <= 6) return { part: "part2", maxIncorrect: 2 }; // Part 2: q6-q7
+    if (index === 7) return { part: "part3", maxIncorrect: 1 }; // Part 3: q8
+    if (index === 8) return { part: "part4", maxIncorrect: 1 }; // Part 4: q9
+    return { part: "unknown", maxIncorrect: 0 };
+  };
 
   useEffect(() => {
     setStartTime(new Date());
@@ -72,21 +85,17 @@ const SubtractionGroup = () => {
   const handleAnswerDrop = (index) => {
     if (draggedNumber !== null) {
       const newAnswers = [...userAnswers];
-      const digits = draggedNumber.split(""); // Split the dragged number into digits
+      const digits = draggedNumber.split("");
       const dropzoneCount = currentQuestion.dropzones.length;
 
-      // Check if the drop is on the last dropzone and it's a multi-digit number
       if (index === dropzoneCount - 1 && digits.length > 1) {
-        // Place digits in reverse order starting from the last dropzone
         for (let i = 0; i < digits.length; i++) {
-          const targetIndex = index - i; // Move backwards from the drop index
+          const targetIndex = index - i;
           if (targetIndex >= 0) {
-            // Ensure we don't go out of bounds
-            newAnswers[targetIndex] = digits[digits.length - 1 - i]; // Place digits from right to left
+            newAnswers[targetIndex] = digits[digits.length - 1 - i];
           }
         }
       } else {
-        // Original behavior for other cases: place digits forward
         digits.forEach((digit, i) => {
           if (index + i < dropzoneCount) {
             newAnswers[index + i] = digit;
@@ -138,6 +147,28 @@ const SubtractionGroup = () => {
     return isCorrect;
   };
 
+  // Log results by part
+  const logResultsByPart = () => {
+    const partResults = {
+      part1: results.slice(0, 5), // q1-q5
+      part2: results.slice(5, 7), // q6-q7
+      part3: results.slice(7, 8), // q8
+      part4: results.slice(8, 9), // q9
+    };
+
+    console.log("Results by Part:");
+    Object.keys(partResults).forEach((part) => {
+      const partScore = partResults[part].reduce((a, b) => a + b, 0);
+      const totalInPart = partResults[part].length;
+      console.log(`${part}: ${partScore}/${totalInPart}`);
+    });
+    console.log(
+      "Total Score:",
+      results.reduce((a, b) => a + b, 0),
+      `/${totalQuestions}`
+    );
+  };
+
   const handleTimerTimeout = () => {
     const newResults = [...results];
     newResults[currentQuestionIndex] = 0;
@@ -146,34 +177,49 @@ const SubtractionGroup = () => {
       `Question ${currentQuestionIndex + 1} Result: Incorrect (Timer, 0 marks)`
     );
 
+    const { part, maxIncorrect } = getPartForQuestion(currentQuestionIndex);
     const newIncorrectAttempts = (currentQuestion.incorrectAttempts || 0) + 1;
     questions[currentQuestionIndex].incorrectAttempts = newIncorrectAttempts;
 
     if (newIncorrectAttempts === 1) {
-      const newTotalIncorrect = totalIncorrect + 1;
-      setTotalIncorrect(newTotalIncorrect);
-      console.log("Total Incorrect Attempts:", newTotalIncorrect);
+      setPartIncorrect((prev) => {
+        const newPartIncorrect = { ...prev, [part]: prev[part] + 1 };
+        console.log(`Incorrect Attempts in ${part}:`, newPartIncorrect[part]);
 
-      if (newTotalIncorrect >= 2) {
-        setFeedback("لقد أجبت على سؤالين بشكل غير صحيح، سيتم إعادة توجيهك...");
-        setEndTime(new Date());
-        console.log("Test End Time (Redirect):", new Date().toLocaleString());
-        console.log("Final Results:", newResults);
-        console.log(
-          "Total Score:",
-          newResults.reduce((a, b) => a + b, 0),
-          `/${totalQuestions}`
-        );
-        // setTimeout(() => navigate("/dashboard/testselection"), 1000);
-        return;
-      }
+        if (newPartIncorrect[part] >= maxIncorrect) {
+          setFeedback(
+            "لقد أجبت على عدد كافٍ من الأسئلة بشكل غير صحيح في هذا الجزء، سيتم إعادة توجيهك..."
+          );
+          setEndTime(new Date());
+          console.log("Test End Time (Redirect):", new Date().toLocaleString());
+          logResultsByPart();
+          setTimeout(() => navigate("/dashboard/testselection"), 1000);
+          return newPartIncorrect;
+        }
+
+        moveToNextQuestion();
+        return newPartIncorrect;
+      });
+    } else {
+      moveToNextQuestion();
     }
-    moveToNextQuestion();
   };
 
   const moveToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      const nextIndex = currentQuestionIndex + 1;
+      const currentPart = getPartForQuestion(currentQuestionIndex).part;
+      const nextPart = getPartForQuestion(nextIndex).part;
+
+      if (currentPart !== nextPart) {
+        setPartIncorrect((prev) => ({
+          ...prev,
+          [nextPart]: 0,
+        }));
+        console.log(`Reset incorrect attempts for ${nextPart}`);
+      }
+
+      setCurrentQuestionIndex(nextIndex);
       setUserAnswers([]);
       setCarries([]);
       setFeedback("");
@@ -182,16 +228,11 @@ const SubtractionGroup = () => {
       setFeedback("أحسنت! لقد أكملت جميع الأسئلة");
       setEndTime(new Date());
       console.log("Test End Time:", new Date().toLocaleString());
-      console.log("Final Results:", results);
-      console.log(
-        "Total Score:",
-        results.reduce((a, b) => a + b, 0),
-        `/${totalQuestions}`
-      );
-      setShowModal(false);
+      logResultsByPart();
+      setShowModal(true);
       setTimeout(() => {
         setShowModal(false);
-        // navigate("/dashboard/testselection");
+        navigate("/dashboard/testselection");
       }, 2000);
     }
   };
@@ -204,40 +245,43 @@ const SubtractionGroup = () => {
       setFeedback(isCorrect ? "صحيح!" : "غير صحيح");
 
       if (!isCorrect) {
+        const { part, maxIncorrect } = getPartForQuestion(currentQuestionIndex);
         const newIncorrectAttempts =
           (currentQuestion.incorrectAttempts || 0) + 1;
         questions[currentQuestionIndex].incorrectAttempts =
           newIncorrectAttempts;
 
         if (newIncorrectAttempts === 1) {
-          const newTotalIncorrect = totalIncorrect + 1;
-          setTotalIncorrect(newTotalIncorrect);
-          console.log("Total Incorrect Attempts:", newTotalIncorrect);
+          setPartIncorrect((prev) => {
+            const newPartIncorrect = { ...prev, [part]: prev[part] + 1 };
+            console.log(
+              `Incorrect Attempts in ${part}:`,
+              newPartIncorrect[part]
+            );
 
-          if (newTotalIncorrect >= 2) {
-            setFeedback(
-              "لقد أجبت على سؤالين بشكل غير صحيح، سيتم إعادة توجيهك..."
-            );
-            setEndTime(new Date());
-            console.log(
-              "Test End Time (Redirect):",
-              new Date().toLocaleString()
-            );
-            console.log("Final Results:", results);
-            console.log(
-              "Total Score:",
-              results.reduce((a, b) => a + b, 0),
-              `/${totalQuestions}`
-            );
-            // setTimeout(() => navigate("/dashboard/testselection"), 1000);
-            return;
-          }
+            if (newPartIncorrect[part] >= maxIncorrect) {
+              setFeedback(
+                "لقد أجبت على عدد كافٍ من الأسئلة بشكل غير صحيح في هذا الجزء، سيتم إعادة توجيهك..."
+              );
+              setEndTime(new Date());
+              console.log(
+                "Test End Time (Redirect):",
+                new Date().toLocaleString()
+              );
+              logResultsByPart();
+              setTimeout(() => navigate("/dashboard/testselection"), 1000);
+              return newPartIncorrect;
+            }
+
+            setTimeout(() => moveToNextQuestion(), 10);
+            return newPartIncorrect;
+          });
+        } else {
+          setTimeout(() => moveToNextQuestion(), 10);
         }
+      } else {
+        setTimeout(() => moveToNextQuestion(), 10);
       }
-
-      setTimeout(() => {
-        moveToNextQuestion();
-      }, 10);
     } else {
       const newResults = [...results];
       newResults[currentQuestionIndex] = 0;
@@ -248,31 +292,35 @@ const SubtractionGroup = () => {
         } Result: Incorrect (Skipped, 0 marks)`
       );
 
+      const { part, maxIncorrect } = getPartForQuestion(currentQuestionIndex);
       const newIncorrectAttempts = (currentQuestion.incorrectAttempts || 0) + 1;
       questions[currentQuestionIndex].incorrectAttempts = newIncorrectAttempts;
 
       if (newIncorrectAttempts === 1) {
-        const newTotalIncorrect = totalIncorrect + 1;
-        setTotalIncorrect(newTotalIncorrect);
-        console.log("Total Incorrect Attempts:", newTotalIncorrect);
+        setPartIncorrect((prev) => {
+          const newPartIncorrect = { ...prev, [part]: prev[part] + 1 };
+          console.log(`Incorrect Attempts in ${part}:`, newPartIncorrect[part]);
 
-        if (newTotalIncorrect >= 2) {
-          setFeedback(
-            "لقد أجبت على سؤالين بشكل غير صحيح، سيتم إعادة توجيهك..."
-          );
-          setEndTime(new Date());
-          console.log("Test End Time (Redirect):", new Date().toLocaleString());
-          console.log("Final Results:", newResults);
-          console.log(
-            "Total Score:",
-            newResults.reduce((a, b) => a + b, 0),
-            `/${totalQuestions}`
-          );
-          // setTimeout(() => navigate("/dashboard/testselection"), 1000);
-          return;
-        }
+          if (newPartIncorrect[part] >= maxIncorrect) {
+            setFeedback(
+              "لقد أجبت على عدد كافٍ من الأسئلة بشكل غير صحيح في هذا الجزء، سيتم إعادة توجيهك..."
+            );
+            setEndTime(new Date());
+            console.log(
+              "Test End Time (Redirect):",
+              new Date().toLocaleString()
+            );
+            logResultsByPart();
+            setTimeout(() => navigate("/dashboard/testselection"), 1000);
+            return newPartIncorrect;
+          }
+
+          moveToNextQuestion();
+          return newPartIncorrect;
+        });
+      } else {
+        moveToNextQuestion();
       }
-      moveToNextQuestion();
     }
   };
 
@@ -326,7 +374,9 @@ const SubtractionGroup = () => {
         </div>
         <div className="flex">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
-            <span className="text-black text-xl font-bold">{studentName}</span>
+            <span className="text-black text-xl font-bold">
+              {studentName}
+            </span>
             <span className="ml-1 text-gray-600 text-md font-bold">
               : اسم الطالب
             </span>
@@ -422,9 +472,9 @@ const SubtractionGroup = () => {
                               {digit === " " ? "" : digit}
                             </div>
                           ))}
-                          <h1 className="text-4xl  border-t-4  border-black w-5 transform translate-x-6 translate-y-5"></h1>
+                          <h1 className="text-4xl border-t-4 border-black w-5 transform translate-x-6 translate-y-5"></h1>
                         </div>
-                        <div className="w-[230px] border-t-2  border-black mb-4"></div>
+                        <div className="w-[230px] border-t-2 border-black mb-4"></div>
                         <div
                           className={`flex space-x-2 rtl:space-x-reverse ${
                             currentQuestionIndex === 6 ? "ml-[-0px]" : ""

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import eraser from "../../assets/eraser.png";
 import nq from "../../assets/next-question.png";
 import Logo from "../../assets/Logo.png";
-
+import { useNavigate } from 'react-router-dom';
 const numbers = [
   ["١", "٠"],
   ["٣", "٢"],
@@ -17,7 +17,6 @@ const numbers = [
 ];
 
 function DivisionLayout() {
-  const [selectedAnswer] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [draggedNumber, setDraggedNumber] = useState(null);
   const [droppedNumbers, setDroppedNumbers] = useState({});
@@ -27,12 +26,12 @@ function DivisionLayout() {
   const [questionStartTime, setQuestionStartTime] = useState(null);
   const [results, setResults] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
-
+  const [timeLeft, setTimeLeft] = useState(120);
+  const [incorrectAttempts, setIncorrectAttempts] = useState({});
+  const navigate = useNavigate();
   const totalQuestions = 20;
   const studentName = "مهند كمال داوود";
 
-  // Correct answers for each question (in Arabic numerals)
   const correctAnswers = [
     "٤",
     "٧",
@@ -43,26 +42,30 @@ function DivisionLayout() {
     "٣",
     "٥",
     "٩",
-    "٧", // Questions 1-10
+    "٧", // Part 1 (Q1-Q10)
     "٦",
     "٣",
-    "٧",
+    "٧", // Part 2 (Q11-Q13)
     "٦",
     "٣٤",
     "٨٠",
     "٥١",
     "٧",
     "٥",
-    "١", // Questions 11-20 (simplified)
+    "١", // Part 3 (Q14-Q20)
   ];
 
-  // Initialize test
+  const parts = [
+    { name: "part1", start: 0, end: 9, maxIncorrect: 2 },
+    { name: "part2", start: 10, end: 12, maxIncorrect: 2 },
+    { name: "part3", start: 13, end: 19, maxIncorrect: 2 },
+  ];
+
   useEffect(() => {
     setStartTime(new Date());
     setQuestionStartTime(new Date());
   }, []);
 
-  // Question timer
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -73,22 +76,49 @@ function DivisionLayout() {
         return prev - 1;
       });
     }, 1000);
-
     return () => clearInterval(timer);
   }, [currentQuestionIndex]);
 
+  const getCurrentPart = () => {
+    return parts.find(
+      (part) =>
+        currentQuestionIndex >= part.start && currentQuestionIndex <= part.end
+    );
+  };
+
   const handleTimeout = () => {
-    // Mark as wrong if no answer or incorrect
+    checkAnswer(false);
+  };
+
+  const checkAnswer = (isManual = true) => {
     const currentAnswer = droppedNumbers[`box-${currentQuestionIndex}`] || "";
     const isCorrect = currentAnswer === correctAnswers[currentQuestionIndex];
-    setResults([
-      ...results,
+    const timeTaken = Math.floor((new Date() - questionStartTime) / 1000);
+    const currentPart = getCurrentPart();
+
+    setResults((prev) => [
+      ...prev,
       {
         question: currentQuestionIndex + 1,
         isCorrect,
-        timeTaken: 120,
+        timeTaken,
+        part: currentPart.name,
       },
     ]);
+
+    if (!isCorrect && isManual) {
+      setIncorrectAttempts((prev) => ({
+        ...prev,
+        [currentPart.name]: (prev[currentPart.name] || 0) + 1,
+      }));
+    }
+
+    const partIncorrect = incorrectAttempts[currentPart.name] || 0;
+    if (partIncorrect >= currentPart.maxIncorrect) {
+      endTestEarly(currentPart.name);
+      return;
+    }
+
     goToNextQuestion();
   };
 
@@ -105,30 +135,35 @@ function DivisionLayout() {
   };
 
   const nextQuestion = () => {
-    const currentAnswer = droppedNumbers[`box-${currentQuestionIndex}`] || "";
-    const isCorrect = currentAnswer === correctAnswers[currentQuestionIndex];
-    const timeTaken = Math.floor((new Date() - questionStartTime) / 1000);
+    checkAnswer();
+  };
 
-    setResults([
-      ...results,
-      {
-        question: currentQuestionIndex + 1,
-        isCorrect,
-        timeTaken,
-      },
-    ]);
-    goToNextQuestion();
+  const endTestEarly = (partName) => {
+    setEndTime(new Date());
+    logResults();
+    navigate("/dashboard/testselection");
   };
 
   const finishTest = () => {
     setEndTime(new Date());
     setShowModal(true);
+    logResults();
+  };
+
+  const logResults = () => {
+    const partResults = parts.map((part) => {
+      const partQuestions = results.filter((r) => r.part === part.name);
+      const correctCount = partQuestions.filter((r) => r.isCorrect).length;
+      const totalCount = part.end - part.start + 1;
+      return `${part.name}: ${correctCount}/${totalCount}`;
+    });
+
     console.log({
-      startTime,
-      endTime: new Date(),
-      results,
-      totalCorrect: results.filter((r) => r.isCorrect).length,
-      totalQuestions,
+      "Test End Time (Redirect)": endTime?.toLocaleString(),
+      "Results by Part:": partResults,
+      "Total Score": `${
+        results.filter((r) => r.isCorrect).length
+      }/${totalQuestions}`,
     });
   };
 
@@ -149,7 +184,6 @@ function DivisionLayout() {
       setDraggedNumber(null);
     }
   };
-
   const Modal = () => (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg">
@@ -160,7 +194,9 @@ function DivisionLayout() {
         </p>
         <button
           className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-          onClick={() => (window.location.href = "/dashboard/testselection")}
+          onClick={() =>
+            (window.location.href = "/dashboard/dashboard/testselectionion")
+          }
         >
           العودة إلى لوحة التحكم
         </button>

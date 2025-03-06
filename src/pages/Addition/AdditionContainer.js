@@ -8,8 +8,7 @@ import Questions from "./QuestionData";
 const ArabicMathQuiz = () => {
   const questions = Questions;
   const navigate = useNavigate();
-  const dragNumberRef = useRef(null);
-  const timerRef = useRef(null); // Ref to store timer ID
+  const timerRef = useRef(null);
 
   const arabicNumerals = {
     0: "٠",
@@ -41,14 +40,30 @@ const ArabicMathQuiz = () => {
   const [draggedNumber, setDraggedNumber] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [timer, setTimer] = useState(120000);
-  const [totalIncorrect, setTotalIncorrect] = useState(0);
+  const [partIncorrect, setPartIncorrect] = useState({
+    part1: 0, // q1, q2 (index 0-1)
+    part2: 0, // q3, q4, q5 (index 2-4)
+    part3: 0, // q6, q7 (index 5-6)
+    part4: 0, // q7 (index 6, assuming overlap)
+    part5: 0, // q8 (index 7)
+  });
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [results, setResults] = useState(Array(questions.length).fill(0));
-  const [showModal, setShowModal] = useState(false); // New state for modal
+  const [showModal, setShowModal] = useState(false);
   const currentQuestion = questions[currentQuestionIndex];
   const totalQuestions = questions.length;
   const progress = (currentQuestionIndex / totalQuestions) * 100;
+
+  // Define parts and their allowed incorrect attempts
+  const getPartForQuestion = (index) => {
+    if (index <= 1) return { part: "part1", maxIncorrect: 2 }; // Part 1: q1, q2
+    if (index <= 4) return { part: "part2", maxIncorrect: 2 }; // Part 2: q3, q4, q5
+    if (index <= 5) return { part: "part3", maxIncorrect: 2 }; // Part 3: q6, q7 (adjusted to end at 5)
+    if (index === 6) return { part: "part4", maxIncorrect: 1 }; // Part 4: q7
+    if (index === 7) return { part: "part5", maxIncorrect: 1 }; // Part 5: q8
+    return { part: "unknown", maxIncorrect: 0 };
+  };
 
   // Set start time when component mounts
   useEffect(() => {
@@ -76,21 +91,17 @@ const ArabicMathQuiz = () => {
   const handleAnswerDrop = (index) => {
     if (draggedNumber !== null) {
       const newAnswers = [...userAnswers];
-      const digits = draggedNumber.split(""); // Split the dragged number into digits
+      const digits = draggedNumber.split("");
       const dropzoneCount = currentQuestion.dropzones.length;
 
-      // Check if the drop is on the last dropzone and it's a multi-digit number
       if (index === dropzoneCount - 1 && digits.length > 1) {
-        // Place digits in reverse order starting from the last dropzone
         for (let i = 0; i < digits.length; i++) {
-          const targetIndex = index - i; // Move backwards from the drop index
+          const targetIndex = index - i;
           if (targetIndex >= 0) {
-            // Ensure we don't go out of bounds
-            newAnswers[targetIndex] = digits[digits.length - 1 - i]; // Place digits from right to left
+            newAnswers[targetIndex] = digits[digits.length - 1 - i];
           }
         }
       } else {
-        // Original behavior for other cases: place digits forward
         digits.forEach((digit, i) => {
           if (index + i < dropzoneCount) {
             newAnswers[index + i] = digit;
@@ -143,6 +154,29 @@ const ArabicMathQuiz = () => {
     return isCorrect;
   };
 
+  // Log results by part
+  const logResultsByPart = () => {
+    const partResults = {
+      part1: results.slice(0, 2), // q1, q2
+      part2: results.slice(2, 5), // q3, q4, q5
+      part3: results.slice(5, 7), // q6, q7
+      part4: results.slice(7, 8), // q8
+      part5: results.slice(8, 9), // q9
+    };
+
+    console.log("Results by Part:");
+    Object.keys(partResults).forEach((part) => {
+      const partScore = partResults[part].reduce((a, b) => a + b, 0);
+      const totalInPart = partResults[part].length;
+      console.log(`${part}: ${partScore}/${totalInPart}`);
+    });
+    console.log(
+      "Total Score:",
+      results.reduce((a, b) => a + b, 0),
+      `/${totalQuestions}`
+    );
+  };
+
   // Handle timer timeout
   const handleTimerTimeout = () => {
     const newResults = [...results];
@@ -152,35 +186,51 @@ const ArabicMathQuiz = () => {
       `Question ${currentQuestionIndex + 1} Result: Incorrect (Timer, 0 marks)`
     );
 
+    const { part, maxIncorrect } = getPartForQuestion(currentQuestionIndex);
     const newIncorrectAttempts = (currentQuestion.incorrectAttempts || 0) + 1;
     questions[currentQuestionIndex].incorrectAttempts = newIncorrectAttempts;
 
     if (newIncorrectAttempts === 1) {
-      const newTotalIncorrect = totalIncorrect + 1;
-      setTotalIncorrect(newTotalIncorrect);
-      console.log("Total Incorrect Attempts:", newTotalIncorrect);
+      setPartIncorrect((prev) => {
+        const newPartIncorrect = { ...prev, [part]: prev[part] + 1 };
+        console.log(`Incorrect Attempts in ${part}:`, newPartIncorrect[part]);
 
-      if (newTotalIncorrect >= 2) {
-        setFeedback("لقد أجبت على سؤالين بشكل غير صحيح، سيتم إعادة توجيهك...");
-        setEndTime(new Date());
-        console.log("Test End Time (Redirect):", new Date().toLocaleString());
-        console.log("Final Results:", newResults);
-        console.log(
-          "Total Score:",
-          newResults.reduce((a, b) => a + b, 0),
-          `/${totalQuestions}`
-        );
-        // setTimeout(() => navigate("/dashboard/testselection"), 1000);
-        return;
-      }
+        if (newPartIncorrect[part] >= maxIncorrect) {
+          setFeedback(
+            "لقد أجبت على عدد كافٍ من الأسئلة بشكل غير صحيح في هذا الجزء، سيتم إعادة توجيهك..."
+          );
+          setEndTime(new Date());
+          console.log("Test End Time (Redirect):", new Date().toLocaleString());
+          logResultsByPart();
+          setTimeout(() => navigate("/dashboard/testselection"), 1000);
+          return newPartIncorrect;
+        }
+
+        moveToNextQuestion();
+        return newPartIncorrect;
+      });
+    } else {
+      moveToNextQuestion();
     }
-    moveToNextQuestion();
   };
 
-  // Move to next question helper
+  // Move to next question helper with reset logic
   const moveToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      const nextIndex = currentQuestionIndex + 1;
+      const currentPart = getPartForQuestion(currentQuestionIndex).part;
+      const nextPart = getPartForQuestion(nextIndex).part;
+
+      // Reset incorrect attempts if moving to a new part
+      if (currentPart !== nextPart) {
+        setPartIncorrect((prev) => ({
+          ...prev,
+          [nextPart]: 0, // Reset the next part's incorrect count
+        }));
+        console.log(`Reset incorrect attempts for ${nextPart}`);
+      }
+
+      setCurrentQuestionIndex(nextIndex);
       setUserAnswers([]);
       setCarries([]);
       setFeedback("");
@@ -189,63 +239,61 @@ const ArabicMathQuiz = () => {
       setFeedback("أحسنت! لقد أكملت جميع الأسئلة");
       setEndTime(new Date());
       console.log("Test End Time:", new Date().toLocaleString());
-      console.log("Final Results:", results);
-      console.log(
-        "Total Score:",
-        results.reduce((a, b) => a + b, 0),
-        `/${totalQuestions}`
-      );
-      setShowModal(false); // Show modal when all questions are completed
+      logResultsByPart();
+      setShowModal(true);
       setTimeout(() => {
         setShowModal(false);
-        // navigate("/dashboard/testselection");
-      }, 2000); // Redirect after 2 seconds
+        navigate("/dashboard/testselection");
+      }, 2000);
     }
   };
 
   // Handle next question button click
   const nextQuestion = () => {
-    clearInterval(timerRef.current); // Stop timer to prevent overlap
+    clearInterval(timerRef.current);
 
     if (userAnswers.length > 0) {
       const isCorrect = checkAnswer();
       setFeedback(isCorrect ? "صحيح!" : "غير صحيح");
 
       if (!isCorrect) {
+        const { part, maxIncorrect } = getPartForQuestion(currentQuestionIndex);
         const newIncorrectAttempts =
           (currentQuestion.incorrectAttempts || 0) + 1;
         questions[currentQuestionIndex].incorrectAttempts =
           newIncorrectAttempts;
 
         if (newIncorrectAttempts === 1) {
-          const newTotalIncorrect = totalIncorrect + 1;
-          setTotalIncorrect(newTotalIncorrect);
-          console.log("Total Incorrect Attempts:", newTotalIncorrect);
+          setPartIncorrect((prev) => {
+            const newPartIncorrect = { ...prev, [part]: prev[part] + 1 };
+            console.log(
+              `Incorrect Attempts in ${part}:`,
+              newPartIncorrect[part]
+            );
 
-          if (newTotalIncorrect >= 2) {
-            setFeedback(
-              "لقد أجبت على سؤالين بشكل غير صحيح، سيتم إعادة توجيهك..."
-            );
-            setEndTime(new Date());
-            console.log(
-              "Test End Time (Redirect):",
-              new Date().toLocaleString()
-            );
-            console.log("Final Results:", results);
-            console.log(
-              "Total Score:",
-              results.reduce((a, b) => a + b, 0),
-              `/${totalQuestions}`
-            );
-            // setTimeout(() => navigate("/dashboard/testselection"), 1000);
-            return;
-          }
+            if (newPartIncorrect[part] >= maxIncorrect) {
+              setFeedback(
+                "لقد أجبت على عدد كافٍ من الأسئلة بشكل غير صحيح في هذا الجزء، سيتم إعادة توجيهك..."
+              );
+              setEndTime(new Date());
+              console.log(
+                "Test End Time (Redirect):",
+                new Date().toLocaleString()
+              );
+              logResultsByPart();
+              setTimeout(() => navigate("/dashboard/testselection"), 1000);
+              return newPartIncorrect;
+            }
+
+            setTimeout(() => moveToNextQuestion(), 10);
+            return newPartIncorrect;
+          });
+        } else {
+          setTimeout(() => moveToNextQuestion(), 10);
         }
+      } else {
+        setTimeout(() => moveToNextQuestion(), 10);
       }
-
-      setTimeout(() => {
-        moveToNextQuestion();
-      }, 10);
     } else {
       const newResults = [...results];
       newResults[currentQuestionIndex] = 0;
@@ -256,31 +304,35 @@ const ArabicMathQuiz = () => {
         } Result: Incorrect (Skipped, 0 marks)`
       );
 
+      const { part, maxIncorrect } = getPartForQuestion(currentQuestionIndex);
       const newIncorrectAttempts = (currentQuestion.incorrectAttempts || 0) + 1;
       questions[currentQuestionIndex].incorrectAttempts = newIncorrectAttempts;
 
       if (newIncorrectAttempts === 1) {
-        const newTotalIncorrect = totalIncorrect + 1;
-        setTotalIncorrect(newTotalIncorrect);
-        console.log("Total Incorrect Attempts:", newTotalIncorrect);
+        setPartIncorrect((prev) => {
+          const newPartIncorrect = { ...prev, [part]: prev[part] + 1 };
+          console.log(`Incorrect Attempts in ${part}:`, newPartIncorrect[part]);
 
-        if (newTotalIncorrect >= 2) {
-          setFeedback(
-            "لقد أجبت على سؤالين بشكل غير صحيح، سيتم إعادة توجيهك..."
-          );
-          setEndTime(new Date());
-          console.log("Test End Time (Redirect):", new Date().toLocaleString());
-          console.log("Final Results:", newResults);
-          console.log(
-            "Total Score:",
-            newResults.reduce((a, b) => a + b, 0),
-            `/${totalQuestions}`
-          );
-          // setTimeout(() => navigate("/dashboard/testselection"), 1000);
-          return;
-        }
+          if (newPartIncorrect[part] >= maxIncorrect) {
+            setFeedback(
+              "لقد أجبت على عدد كافٍ من الأسئلة بشكل غير صحيح في هذا الجزء، سيتم إعادة توجيهك..."
+            );
+            setEndTime(new Date());
+            console.log(
+              "Test End Time (Redirect):",
+              new Date().toLocaleString()
+            );
+            logResultsByPart();
+            setTimeout(() => navigate("/dashboard/testselection"), 1000);
+            return newPartIncorrect;
+          }
+
+          moveToNextQuestion();
+          return newPartIncorrect;
+        });
+      } else {
+        moveToNextQuestion();
       }
-      moveToNextQuestion();
     }
   };
 
@@ -324,7 +376,7 @@ const ArabicMathQuiz = () => {
             style={{ backgroundColor: "#E1E8CE" }}
           >
             <div
-              className="h-full transition-all duration-500  ease-in-out shadow-inner"
+              className="h-full transition-all duration-500 ease-in-out shadow-inner"
               style={{
                 width: `${progress}%`,
                 backgroundImage:
@@ -362,7 +414,7 @@ const ArabicMathQuiz = () => {
               </button>
             </div>
 
-            <div className="relative w-[60%]  h-[400px] px-4 py-10 justify-center transform translate-y-20 items-center">
+            <div className="relative w-[60%] h-[400px] px-4 py-10 justify-center transform translate-y-20 items-center">
               <div className="mx-auto my-auto">
                 <div className="border-4 border-yellow-400 bg-[#F3F4F6] flex justify-center h-72 my-auto rounded-lg p-6">
                   <div className="flex flex-col items-center my-auto">
@@ -424,7 +476,7 @@ const ArabicMathQuiz = () => {
                               {digit === " " ? "" : digit}
                             </div>
                           ))}
-                          <h1 className="text-5xl -mr-16  translate-x-4  transform">
+                          <h1 className="text-5xl -mr-16 translate-x-4 transform">
                             +
                           </h1>
                         </div>
@@ -493,7 +545,6 @@ const ArabicMathQuiz = () => {
             alt=""
           />
         </button>
-        {/* Modal Dialog */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg">
