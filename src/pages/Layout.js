@@ -117,29 +117,44 @@ const Layout = () => {
 
                 {/* Dropdown Menu */}
                 {isOpen && (
-                  <ul className="w-full pr-6 flex flex-col  gap-2 transform translate-x-28" >
-                    <li>
+                  <ul
+                    className="w-full pr-6 flex flex-col gap-2 transform translate-x-6"
+                    dir="rtl"
+                  >
+                    <li className="flex ">
+                      <i className="fa-solid text-xl fa-building-columns ml-2"></i>
                       <Link
-                        to="dashboard/testselection/school/add"
+                        to="dashboard/testselection/school"
                         className="block text-white hover:text-gray-300"
                       >
-                        إضافة مدرسة
+                        المدارس
                       </Link>
                     </li>
-                    <li>
+                    <li className="flex ">
+                      <i className="fa-light text-xl fa-money-check-pen ml-2"></i>
                       <Link
                         to="dashboard/testselection/school/manage"
                         className="block text-white hover:text-gray-300"
                       >
-                        إدارة المدارس
+                        مسئولي المدارس
                       </Link>
                     </li>
-                    <li>
+                    <li className="flex ">
+                      <i className="fa-solid text-xl fa-user-tie-hair ml-2"></i>
                       <Link
-                        to="dashboard/testselection/school/reports"
-                        className="block text-white hover:text-gray-300 -ml-2"
+                        to="dashboard/testselection/school/supervisor-management-panel"
+                        className="block text-white hover:text-gray-300"
                       >
-                        تقارير المدارس
+                        المشرفين
+                      </Link>
+                    </li>
+                    <li className="flex ">
+                      <i className="fa-solid text-xl fa-users ml-2"></i>
+                      <Link
+                        to="dashboard/testselection/school/student-management-panel"
+                        className="block text-white hover:text-gray-300"
+                      >
+                        الطلاب
                       </Link>
                     </li>
                   </ul>

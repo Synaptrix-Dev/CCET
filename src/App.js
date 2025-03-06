@@ -21,6 +21,9 @@ import DivisionLayout from "./pages/Division/Divisionjs";
 import Anxiety from "./pages/Anxiety/Anxiety";
 import NumberGuess from "./pages/NumberGuess/NumberGuess";
 import School from "./pages/School/School";
+import SchoolAdminPanel from "./pages/School/SchoolAdminPanel";
+import SupervisorManagementPanel from "./pages/School/SupervisorManagementPanel";
+import StudentManagementPanel from "./pages/School/StudentManagementPanel";
 function App() {
   return (
     <>
@@ -70,8 +73,23 @@ function App() {
               element={<DivisionLayout />}
             />
             <Route path="testselection/assessment-test" element={<Anxiety />} />
-            <Route path="testselection/distance-estimation-test" element={<NumberGuess />} />
+            <Route
+              path="testselection/distance-estimation-test"
+              element={<NumberGuess />}
+            />
             <Route path="dashboard/testselection/school" element={<School />} />
+            <Route
+              path="dashboard/testselection/school/manage"
+              element={<SchoolAdminPanel />}
+            />
+            <Route
+              path="dashboard/testselection/school/supervisor-management-panel"
+              element={<SupervisorManagementPanel />}
+            />
+            <Route
+              path="dashboard/testselection/school/student-management-panel"
+              element={<StudentManagementPanel />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>
