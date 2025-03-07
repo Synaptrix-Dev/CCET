@@ -162,6 +162,14 @@ const Layout = () => {
                   </ul>
                 )}
               </li>
+
+              <li className="p-2  rounded flex items-center justify-start flex-row-reverse gap-2">
+                <i className="fas fa-clip"></i>
+                <Link to="/dashboard/studentselections" className="text-white  text-xl">
+                للإختبارات
+                </Link>
+              </li>
+
               <li className="p-2 rounded flex flex-col items-start justify-start gap-2">
                 {/* Main Item with Dropdown Icon */}
                 <div
@@ -217,7 +225,7 @@ const Layout = () => {
                   </ul>
                 )}
               </li>
-              
+
               <li className="p-2  rounded flex items-center justify-start flex-row-reverse gap-2">
                 <i className="fas fa-file"></i>
                 <Link to="/reports" className="text-white  text-xl">
