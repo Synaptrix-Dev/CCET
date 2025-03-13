@@ -6,10 +6,13 @@ import Distance_Instruction02 from "./Audios/Distance_Instruction02.wav";
 import Distance_Instruction03 from "./Audios/Distance_Instruction03.wav";
 import Distance_Instruction04 from "./Audios/Distance_Instruction04.wav";
 // Quarter Audio files
+//2nd show this
 import Show_Quarter_25 from "./Audios/Quareter-25.wav";
 import Hide_Quarter_25 from "./Audios/Quarter-25-hidden.wav";
+// 1st show this
 import Show_Quarter_50 from "./Audios/Quareter-50.wav";
 import Hide_Quarter_50 from "./Audios/Disappaear-50.wav";
+//3rd show this
 import Show_All_Quarter from "./Audios/All-Quarter.wav";
 import Hide_All_Quarter from "./Audios/All-Quarter-hidden.wav";
 // Question Audio files

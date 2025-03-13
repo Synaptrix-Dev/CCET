@@ -583,3 +583,12 @@ const StudentManagementPanel = () => {
 };
 
 export default StudentManagementPanel;
+
+
+
+// https://farm.synaptrixsol.com/create-student
+// https://farm.synaptrixsol.com/get-all-student
+// https://farm.synaptrixsol.com/get-student
+// https://farm.synaptrixsol.com/update-student
+// https://farm.synaptrixsol.com/delete-student
+

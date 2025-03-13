@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/Logo.png";
 import Listen from "../../assets/listen_btn.png";
 import NotSure from "../../assets/unsureBtn.png";
 import AgreeBtn from "../../assets/agree.png";
 import DisagreeBtn from "../../assets/disagreepng.png";
-// /////////////////////////////////////////////////////Insturction Audios
+// /////////////////////////////////////////////////////Instruction Audios
 import Anxiety_Intruction_1 from "./Audios/Anxiety_Intruction_1.wav";
 import Anxiety_Intruction_2 from "./Audios/Anxiety_Intruction_2.wav";
 import Anxiety_Intruction_3 from "./Audios/Anxiety_Intruction_3.wav";
@@ -41,7 +42,9 @@ const AnxietyTest = () => {
   const [isIntroComplete, setIsIntroComplete] = useState(false);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(120); // 120 seconds = 2 minutes
   const audioRef = useRef(null);
+  const navigate = useNavigate();
 
   const instructionAudios = [
     Anxiety_Intruction_1,
@@ -188,57 +191,22 @@ const AnxietyTest = () => {
     playInstructionSequence();
   }, []);
 
-  const playInstructionSequence = async () => {
-    setLoading(true);
-    for (let i = 0; i < instructionAudios.length; i++) {
-      await playAudioFile(instructionAudios[i]);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    }
-    await playAudioFile(questionAudios[0]); // Play first question audio after instructions
-    setIsIntroComplete(true);
-    setLoading(false);
-    setAudioPlayed(true);
-  };
+  useEffect(() => {
+    if (!isIntroComplete || loading || currentQuestion >= questions.length)
+      return;
 
-  const playAudioFile = (audioSrc) => {
-    return new Promise((resolve) => {
-      if (!audioRef.current) {
-        console.error("Audio element not found.");
-        resolve();
-        return;
-      }
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          handleNextQuestion();
+          return 120;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
-      audioRef.current.src = audioSrc;
-      audioRef.current.muted = false; // Ensure audio is not muted
-      const playPromise = audioRef.current.play();
-
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            audioRef.current.onended = () => resolve();
-          })
-          .catch((error) => {
-            console.error("Autoplay failed:", error);
-            // Fallback: Retry after a short delay
-            setTimeout(() => {
-              audioRef.current
-                .play()
-                .then(() => {
-                  audioRef.current.onended = () => resolve();
-                })
-                .catch((err) => {
-                  console.error("Retry failed:", err);
-                  resolve(); // Continue even if it fails
-                });
-            }, 1000);
-          });
-      } else {
-        // For older browsers without promise support
-        audioRef.current.onended = () => resolve();
-        resolve();
-      }
-    });
-  };
+    return () => clearInterval(timer);
+  }, [currentQuestion, isIntroComplete, loading]);
 
   useEffect(() => {
     if (isIntroComplete && currentQuestion < questions.length) {
@@ -264,6 +232,56 @@ const AnxietyTest = () => {
     }
   }, [currentQuestion]);
 
+  const playInstructionSequence = async () => {
+    setLoading(true);
+    for (let i = 0; i < instructionAudios.length; i++) {
+      await playAudioFile(instructionAudios[i]);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+    await playAudioFile(questionAudios[0]);
+    setIsIntroComplete(true);
+    setLoading(false);
+    setAudioPlayed(true);
+  };
+
+  const playAudioFile = (audioSrc) => {
+    return new Promise((resolve) => {
+      if (!audioRef.current) {
+        console.error("Audio element not found.");
+        resolve();
+        return;
+      }
+
+      audioRef.current.src = audioSrc;
+      audioRef.current.muted = false;
+      const playPromise = audioRef.current.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            audioRef.current.onended = () => resolve();
+          })
+          .catch((error) => {
+            console.error("Autoplay failed:", error);
+            setTimeout(() => {
+              audioRef.current
+                .play()
+                .then(() => {
+                  audioRef.current.onended = () => resolve();
+                })
+                .catch((err) => {
+                  console.error("Retry failed:", err);
+                  resolve();
+                });
+            }, 1000);
+          });
+      } else {
+        audioRef.current.onended = () => resolve();
+        resolve();
+      }
+    });
+  };
+
   const playAudio = () => {
     if (isIntroComplete && currentQuestion < questions.length) {
       setLoading(true);
@@ -274,12 +292,85 @@ const AnxietyTest = () => {
     }
   };
 
+  const logAnswerDetails = (updatedAnswers) => {
+    const agreeCount = updatedAnswers.filter(
+      (ans) => ans.answer === "موافق"
+    ).length;
+    const disagreeCount = updatedAnswers.filter(
+      (ans) => ans.answer === "غير موافق"
+    ).length;
+    const skipCount = updatedAnswers.filter(
+      (ans) => ans.answer === "غير متأكد"
+    ).length;
+
+    const score = agreeCount * 1 + disagreeCount * -1 + skipCount * 0;
+
+    console.log(`After Question ${updatedAnswers.length}:`);
+    console.log(`- Agree (موافق): ${agreeCount}`);
+    console.log(`- Disagree (غير موافق): ${disagreeCount}`);
+    console.log(`- Skip (غير متأكد): ${skipCount}`);
+    console.log(`- Current Score: ${score}`);
+    console.log("-------------------");
+  };
+
+  const handleNextQuestion = () => {
+    if (currentQuestion + 1 < questions.length) {
+      const newAnswers = [
+        ...answers,
+        { question: currentQuestion, answer: "غير متأكد" },
+      ];
+      setAnswers(newAnswers);
+      logAnswerDetails(newAnswers);
+      setCurrentQuestion(currentQuestion + 1);
+      setAudioPlayed(false);
+      setTimeLeft(120);
+    } else {
+      const finalAnswers = [
+        ...answers,
+        { question: currentQuestion, answer: "غير متأكد" },
+      ];
+      setAnswers(finalAnswers);
+      logAnswerDetails(finalAnswers);
+      calculateFinalScore(finalAnswers);
+      navigate("/dashboard/testselection/");
+    }
+  };
+
   const handleAnswer = (answer) => {
     if (!audioPlayed || loading) return;
 
-    setAnswers([...answers, { question: currentQuestion, answer }]);
-    setCurrentQuestion(currentQuestion + 1);
-    setAudioPlayed(false);
+    const newAnswers = [...answers, { question: currentQuestion, answer }];
+    setAnswers(newAnswers);
+    logAnswerDetails(newAnswers);
+
+    if (currentQuestion + 1 < questions.length) {
+      setCurrentQuestion(currentQuestion + 1);
+      setAudioPlayed(false);
+      setTimeLeft(120);
+    } else {
+      calculateFinalScore(newAnswers);
+      navigate("/dashboard/testselection/");
+    }
+  };
+
+  const calculateFinalScore = (finalAnswers) => {
+    const agreeCount = finalAnswers.filter(
+      (ans) => ans.answer === "موافق"
+    ).length;
+    const disagreeCount = finalAnswers.filter(
+      (ans) => ans.answer === "غير موافق"
+    ).length;
+    const skipCount = finalAnswers.filter(
+      (ans) => ans.answer === "غير متأكد"
+    ).length;
+    const score = agreeCount * 1 + disagreeCount * -1 + skipCount * 0;
+    console.log(`Final Score: ${score}`);
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? "0" + secs : secs}`;
   };
 
   const studentName = "مهند كمال داوود";
@@ -295,7 +386,7 @@ const AnxietyTest = () => {
             style={{ backgroundColor: "#E1E8CE" }}
           >
             <div
-              className="h-full transition-all duration-500  ease-in-out shadow-inner"
+              className="h-full transition-all duration-500 ease-in-out shadow-inner"
               style={{
                 width: `${progress}%`,
                 backgroundImage:
@@ -317,9 +408,12 @@ const AnxietyTest = () => {
               استبيان في التحصيل
             </span>
           </div>
-          <div className="px-1 py-2 text-right">
+          <div className="px-1 py-2 text-right flex items-center">
             <span className="text-black text-md font-bold">
               اختبار فرز عسر الحساب
+            </span>
+            <span className="mr-4 text-black text-md font-bold">
+              الوقت المتبقي: {formatTime(timeLeft)}
             </span>
           </div>
         </div>
