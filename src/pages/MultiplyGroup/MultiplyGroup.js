@@ -68,17 +68,25 @@ const MultiplyGroup = () => {
   }, []);
 
   useEffect(() => {
-    timerRef.current = setInterval(() => {
+    console.log("useEffect triggered for question:", currentQuestionIndex);
+    setTimer(120); // Set to 5 seconds for testing (instead of 1200)
+    const intervalId = setInterval(() => {
       setTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current);
+        console.log("Timer tick:", prev);
+        if (prev <= 0) {
+          console.log("Timer reached zero");
+          clearInterval(intervalId);
           handleTimerTimeout();
-          return 120000;
+          return 5; // Reset for next question
         }
         return prev - 1;
       });
-    }, 1000); // Adjusted from 0ms to 1000ms (1 second)
-    return () => clearInterval(timerRef.current);
+    }, 1000);
+
+    return () => {
+      console.log("Cleaning up timer for question:", currentQuestionIndex);
+      clearInterval(intervalId);
+    };
   }, [currentQuestionIndex]);
 
   const handleDragStart = (number) => setDraggedNumber(number);
@@ -144,6 +152,18 @@ const MultiplyGroup = () => {
       `Result: ${isCorrect ? "Correct (1 mark)" : "Incorrect (0 marks)"}`
     );
 
+    // Calculate and log total marks and Z-scores for all grades
+    const totalMarks = newResults.reduce((sum, mark) => sum + mark, 0);
+    const zScoreGrade3 = (totalMarks - 10.11) / 4.78;
+    const zScoreGrade4 = (totalMarks - 15.68) / 9.98;
+    const zScoreGrade5 = (totalMarks - 30.36) / 13.12;
+
+    console.log("Updated Results:", newResults);
+    console.log("Total Marks:", totalMarks);
+    console.log("Grade 3 Z-Score:", zScoreGrade3.toFixed(2));
+    console.log("Grade 4 Z-Score:", zScoreGrade4.toFixed(2));
+    console.log("Grade 5 Z-Score:", zScoreGrade5.toFixed(2));
+
     return isCorrect;
   };
 
@@ -162,11 +182,18 @@ const MultiplyGroup = () => {
       const totalInPart = partResults[part].length;
       console.log(`${part}: ${partScore}/${totalInPart}`);
     });
-    console.log(
-      "Total Score:",
-      results.reduce((a, b) => a + b, 0),
-      `/${totalQuestions}`
-    );
+
+    const totalScore = results.reduce((a, b) => a + b, 0);
+    console.log("Total Score:", totalScore, `/${totalQuestions}`);
+
+    // Calculate and log Z-scores for all grades
+    const zScoreGrade3 = (totalScore - 10.11) / 4.78;
+    const zScoreGrade4 = (totalScore - 15.68) / 9.98;
+    const zScoreGrade5 = (totalScore - 30.36) / 13.12;
+
+    console.log("Grade 3 Z-Score:", zScoreGrade3.toFixed(2));
+    console.log("Grade 4 Z-Score:", zScoreGrade4.toFixed(2));
+    console.log("Grade 5 Z-Score:", zScoreGrade5.toFixed(2));
   };
 
   const handleTimerTimeout = () => {
@@ -375,8 +402,8 @@ const MultiplyGroup = () => {
         </div>
         <div className="flex">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
-            <span className="text-black text-xl font-bold">{studentName}</span>
-            <span className="ml-1 text-gray-600 text-md font-bold">
+            <span className="text-black text-md font-bold">{studentName}</span>
+            <span className="ml-1 text-black text-md font-bold">
               : اسم الطالب
             </span>
           </div>
@@ -414,7 +441,7 @@ const MultiplyGroup = () => {
                           {currentQuestion.dropzones.map((dropzone, i) => (
                             <div
                               key={`answer-${i}`}
-                              className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl"
+                              className="w-12 h-12 border-2 border-gray-400 bg-white rounded flex text-green-700 items-center justify-center text-5xl"
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleAnswerDrop(i)}
                             >
@@ -503,7 +530,7 @@ const MultiplyGroup = () => {
                             .map((dropzone, i) => (
                               <div
                                 key={`answer-${i}`}
-                                className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl"
+                                className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl bg-white"
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={() => handleAnswerDrop(i)}
                               >
@@ -513,14 +540,14 @@ const MultiplyGroup = () => {
                         </div>
                         <div className="w-[230px] flex justify-end items-center mb-4"></div>
                         <div
-                          className={`flex mb-2 space-x-2 rtl:space-x-reverse -mt-4 justify-end ml-[-100px]`}
+                          className={`flex mb-2 space-x-2 rtl:space-x-reverse -mt-4 justify-end ml-[-110px]`}
                         >
                           {currentQuestion.dropzones
                             .slice(3, 7)
                             .map((dropzone, i) => (
                               <div
                                 key={`answer-${i + 3}`}
-                                className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl"
+                                className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl bg-white"
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={() => handleAnswerDrop(i + 3)}
                               >
@@ -535,14 +562,14 @@ const MultiplyGroup = () => {
                           </span>
                         </div>
                         <div
-                          className={`flex mb-2 space-x-2 rtl:space-x-reverse -mt-10 justify-end ml-[-100px]`}
+                          className={`flex mb-2 space-x-2 rtl:space-x-reverse -mt-10 justify-end ml-[-110px]`}
                         >
                           {currentQuestion.dropzones
                             .slice(7, 11)
                             .map((dropzone, i) => (
                               <div
                                 key={`answer-${i + 7}`}
-                                className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl"
+                                className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl bg-white"
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={() => handleAnswerDrop(i + 7)}
                               >
@@ -615,7 +642,7 @@ const MultiplyGroup = () => {
                           {currentQuestion.dropzones.map((dropzone, i) => (
                             <div
                               key={`answer-${i}`}
-                              className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl"
+                              className="w-12 h-12 border-2 border-gray-400 rounded flex text-green-700 items-center justify-center text-5xl bg-white"
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleAnswerDrop(i)}
                             >
@@ -636,7 +663,10 @@ const MultiplyGroup = () => {
                   const startNum = rowIndex * 2;
                   const endNum = startNum + 1;
                   return (
-                    <div key={rowIndex} className="flex justify-between">
+                    <div
+                      key={rowIndex}
+                      className="flex flex-row-reverse justify-between"
+                    >
                       <div
                         className="w-20 h-14 flex text-4xl items-center justify-center border-2 border-yellow-400 rounded bg-gray-100 cursor-grab"
                         draggable

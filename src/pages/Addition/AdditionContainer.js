@@ -93,6 +93,53 @@ const ArabicMathQuiz = () => {
       clearInterval(intervalId);
     };
   }, [currentQuestionIndex]);
+  // Log the number of correct answers and calculate Z-score for Addition problems fluency after 60 seconds
+useEffect(() => {
+  if (!startTime) {
+    console.log("startTime is not set yet");
+    return;
+  }
+
+  console.log("Setting up 60-second timeout at:", new Date().toLocaleString());
+
+  const timeoutId = setTimeout(() => {
+    console.log("60-second timeout triggered at:", new Date().toLocaleString());
+    const correctAnswers = results.reduce((sum, mark) => sum + mark, 0);
+    const X = correctAnswers; // Total marks within the first 60 seconds
+    const gradeLevel = 5; // Hardcoded to Grade 5 (as per your existing code)
+
+    let zScoreFluency;
+    switch (gradeLevel) {
+      case 3:
+        zScoreFluency = (X - 1.31) / 0.74;
+        console.log(
+          `After 60 seconds, total correct answers: ${correctAnswers}, Grade 3 Addition problems fluency Z-Score: ${zScoreFluency.toFixed(2)}`
+        );
+        break;
+      case 4:
+        zScoreFluency = (X - 1.37) / 0.74;
+        console.log(
+          `After 60 seconds, total correct answers: ${correctAnswers}, Grade 4 Addition problems fluency Z-Score: ${zScoreFluency.toFixed(2)}`
+        );
+        break;
+      case 5:
+        zScoreFluency = (X - 1.83) / 0.71;
+        console.log(
+          `After 60 seconds, total correct answers: ${correctAnswers}, Grade 5 Addition problems fluency Z-Score: ${zScoreFluency.toFixed(2)}`
+        );
+        break;
+      default:
+        console.log(
+          `After 60 seconds, total correct answers: ${correctAnswers}, Invalid grade level - No fluency Z-Score calculated`
+        );
+    }
+  }, 60 * 1000); // 60 seconds
+
+  return () => {
+    console.log("Cleaning up 60-second timeout");
+    clearTimeout(timeoutId);
+  };
+}, [startTime, results]);
   // Handle drag and drop
   const handleDragStart = (number) => setDraggedNumber(number);
   const handleAnswerDrop = (index) => {

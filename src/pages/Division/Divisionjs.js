@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import eraser from "../../assets/eraser.png";
 import nq from "../../assets/next-question.png";
 import Logo from "../../assets/Logo.png";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 const numbers = [
   ["١", "٠"],
   ["٣", "٢"],
@@ -116,7 +116,7 @@ function DivisionLayout() {
     const partIncorrect = incorrectAttempts[currentPart.name] || 0;
     if (partIncorrect >= currentPart.maxIncorrect) {
       endTestEarly(currentPart.name);
-      return;
+      // return;
     }
 
     goToNextQuestion();
@@ -141,7 +141,7 @@ function DivisionLayout() {
   const endTestEarly = (partName) => {
     setEndTime(new Date());
     logResults();
-    navigate("/dashboard/testselection");
+    // navigate("/dashboard/testselection");
   };
 
   const finishTest = () => {
@@ -158,13 +158,22 @@ function DivisionLayout() {
       return `${part.name}: ${correctCount}/${totalCount}`;
     });
 
+    const totalScore = results.filter((r) => r.isCorrect).length;
+
     console.log({
       "Test End Time (Redirect)": endTime?.toLocaleString(),
       "Results by Part:": partResults,
-      "Total Score": `${
-        results.filter((r) => r.isCorrect).length
-      }/${totalQuestions}`,
+      "Total Score": `${totalScore}/${totalQuestions}`,
     });
+
+    // Calculate and log Z-scores for all grades
+    const zScoreGrade3 = (totalScore - 10.11) / 4.78;
+    const zScoreGrade4 = (totalScore - 15.68) / 9.98;
+    const zScoreGrade5 = (totalScore - 30.36) / 13.12;
+
+    console.log("Grade 3 Z-Score:", zScoreGrade3.toFixed(2));
+    console.log("Grade 4 Z-Score:", zScoreGrade4.toFixed(2));
+    console.log("Grade 5 Z-Score:", zScoreGrade5.toFixed(2));
   };
 
   const handleDragStart = (number) => {
@@ -194,9 +203,9 @@ function DivisionLayout() {
         </p>
         <button
           className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-          onClick={() =>
-            (window.location.href = "/dashboard/dashboard/testselectionion")
-          }
+          // onClick={() =>
+          //   // (window.location.href = "/dashboard/dashboard/testselectionion")
+          // }
         >
           العودة إلى لوحة التحكم
         </button>
@@ -226,8 +235,8 @@ function DivisionLayout() {
         </div>
         <div className="flex">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
-            <span className="text-black text-xl font-bold">{studentName}</span>
-            <span className="ml-1 text-gray-600 text-md font-bold">
+            <span className="text-black text-md font-bold">{studentName}</span>
+            <span className="ml-1 text-black text-md font-bold">
               : اسم الطالب
             </span>
           </div>
@@ -661,7 +670,7 @@ function DivisionLayout() {
                   </div>
 
                   <div
-                    className="row-start-4 col-start-2 h-14 w-14 flex border border-black bg-white"
+                    className="row-start-4 col-start-2 h-14 w-14 flex border border-black text-green-700 justify-center items-cente rounded text-green-700 justtify-center items-center text-green-700 bg-white"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-29")} // Unique ID for this box
                   >
@@ -675,7 +684,7 @@ function DivisionLayout() {
                   <div className="row-start-5 border-t-2 border-black col-span-4 -mt-8"></div>
 
                   <div
-                    className="row-start-6 col-start-2 h-14 w-14 flex border border-black -mt-16 bg-white"
+                    className="row-start-6 col-start-2 h-14 w-14 flex border border-black text-green-700 justify-center items-cente rounded text-green-700 justtify-center items-center -mt-16 bg-white"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-30")} // Unique ID for this box
                   >
@@ -683,21 +692,21 @@ function DivisionLayout() {
                   </div>
 
                   <div
-                    className="row-start-6 col-start-3 h-14 w-14 flex border border-black -mt-16 bg-white"
+                    className="row-start-6 col-start-3 h-14 w-14 flex border border-black text-green-700 justify-center items-cente rounded text-green-700 justtify-center items-center -mt-16 bg-white"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-31")} // Unique ID for this box
                   >
                     {droppedNumbers["box-31"] || ""}
                   </div>
                   <div
-                    className="row-start-7 col-start-2 h-14 w-14 flex border border-black -mt-16 bg-white"
+                    className="row-start-7 col-start-2 h-14 w-14 flex border border-black text-green-700 justify-center items-cente rounded text-green-700 justtify-center items-center -mt-16 bg-white"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-32")} // Unique ID for this box
                   >
                     {droppedNumbers["box-32"] || ""}
                   </div>
                   <div
-                    className="row-start-7 col-start-3 h-14 w-14 flex border border-black -mt-16 bg-white"
+                    className="row-start-7 col-start-3 h-14 w-14 flex border border-black text-green-700 justify-center items-cente rounded text-green-700 justtify-center items-center -mt-16 bg-white"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-33")} // Unique ID for this box
                   >
@@ -711,7 +720,7 @@ function DivisionLayout() {
                   <div className="row-start-8 border-t-2 border-black col-span-4 -mt-24"></div>
 
                   <div
-                    className="row-start-9 col-start-2 h-14 w-14 flex border border-black -mt-32 bg-white"
+                    className="row-start-9 col-start-2 h-14 w-14 flex border border-black text-green-700 justify-center items-cente rounded text-green-700 justtify-center items-center -mt-32 bg-white"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-34")} // Unique ID for this box
                   >
@@ -719,7 +728,7 @@ function DivisionLayout() {
                   </div>
 
                   <div
-                    className="row-start-9 col-start-3 h-14 w-14 flex border border-black bg-white -mt-32 text-center"
+                    className="row-start-9 col-start-3 h-14 w-14 flex border border-black text-green-700 justify-center items-cente rounded text-green-700 justtify-center items-center bg-white -mt-32 text-center"
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={() => handleDrop("box-35")} // Unique ID for this box
                   >
@@ -765,7 +774,7 @@ function DivisionLayout() {
                   </div>
                 </div>
               )}
-
+            {/* add an extra box */}
               {/* Question 16  */}
               {currentQuestionIndex === 15 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
@@ -784,7 +793,7 @@ function DivisionLayout() {
                   </div>
                 </div>
               )}
-
+            {/* add an extra box */}
               {/* Question 17  */}
               {currentQuestionIndex === 16 && (
                 <div className="flex justify-center h-16 space-x-4 items-center">
@@ -1057,8 +1066,8 @@ function DivisionLayout() {
             </button>
           </div>
 
-          <div className="flex-none w-64 px-4 border-2 border-yellow-400 rounded-lg ">
-            <div className="grid grid-cols-2 gap-2 px-5 mt-4">
+          <div className="flex-none w-64 px-4 border-2  border-yellow-400 rounded-lg ">
+            <div className="grid grid-cols-2 gap-2 px-5 my-4">
               {numbers.map((row, rowIndex) => (
                 <React.Fragment key={rowIndex}>
                   {row.map((num, colIndex) => (

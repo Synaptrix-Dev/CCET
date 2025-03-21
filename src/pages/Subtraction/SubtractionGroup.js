@@ -436,7 +436,7 @@ const SubtractionGroup = () => {
                           {currentQuestion.dropzones.map((dropzone, i) => (
                             <div
                               key={`answer-${i}`}
-                              className="w-12 h-12 border-2 text-green-700 border-gray-400 rounded flex items-center justify-center text-5xl"
+                              className="w-12 h-12 border-2 text-green-700 bg-white border-gray-400 rounded flex items-center justify-center text-5xl"
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleAnswerDrop(i)}
                             >
@@ -528,7 +528,7 @@ const SubtractionGroup = () => {
                   const startNum = rowIndex * 2;
                   const endNum = startNum + 1;
                   return (
-                    <div key={rowIndex} className="flex justify-between">
+                    <div key={rowIndex} className="flex flex-row-reverse justify-between">
                       <div
                         className="w-20 h-14 flex text-4xl items-center justify-center border-2 border-yellow-400 rounded bg-gray-100 cursor-grab"
                         draggable
