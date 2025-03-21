@@ -68,17 +68,25 @@ const SubtractionGroup = () => {
   }, []);
 
   useEffect(() => {
-    timerRef.current = setInterval(() => {
+    console.log("useEffect triggered for question:", currentQuestionIndex);
+    setTimer(120); // Set to 5 seconds for testing (instead of 1200)
+    const intervalId = setInterval(() => {
       setTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current);
+        console.log("Timer tick:", prev);
+        if (prev <= 0) {
+          console.log("Timer reached zero");
+          clearInterval(intervalId);
           handleTimerTimeout();
-          return 120000;
+          return 5; // Reset for next question
         }
         return prev - 1;
       });
     }, 1000);
-    return () => clearInterval(timerRef.current);
+
+    return () => {
+      console.log("Cleaning up timer for question:", currentQuestionIndex);
+      clearInterval(intervalId);
+    };
   }, [currentQuestionIndex]);
 
   const handleDragStart = (number) => setDraggedNumber(number);
@@ -144,6 +152,18 @@ const SubtractionGroup = () => {
       `Result: ${isCorrect ? "Correct (1 mark)" : "Incorrect (0 marks)"}`
     );
 
+    // Calculate and log total marks and Z-scores for all grades
+    const totalMarks = newResults.reduce((sum, mark) => sum + mark, 0);
+    const zScoreGrade3 = (totalMarks - 10.11) / 4.78;
+    const zScoreGrade4 = (totalMarks - 15.68) / 9.98;
+    const zScoreGrade5 = (totalMarks - 30.36) / 13.12;
+
+    console.log("Updated Results:", newResults);
+    console.log("Total Marks:", totalMarks);
+    console.log("Grade 3 Z-Score:", zScoreGrade3.toFixed(2));
+    console.log("Grade 4 Z-Score:", zScoreGrade4.toFixed(2));
+    console.log("Grade 5 Z-Score:", zScoreGrade5.toFixed(2));
+
     return isCorrect;
   };
 
@@ -162,13 +182,19 @@ const SubtractionGroup = () => {
       const totalInPart = partResults[part].length;
       console.log(`${part}: ${partScore}/${totalInPart}`);
     });
-    console.log(
-      "Total Score:",
-      results.reduce((a, b) => a + b, 0),
-      `/${totalQuestions}`
-    );
-  };
 
+    const totalScore = results.reduce((a, b) => a + b, 0);
+    console.log("Total Score:", totalScore, `/${totalQuestions}`);
+
+    // Calculate and log Z-scores for all grades
+    const zScoreGrade3 = (totalScore - 10.11) / 4.78;
+    const zScoreGrade4 = (totalScore - 15.68) / 9.98;
+    const zScoreGrade5 = (totalScore - 30.36) / 13.12;
+
+    console.log("Grade 3 Z-Score:", zScoreGrade3.toFixed(2));
+    console.log("Grade 4 Z-Score:", zScoreGrade4.toFixed(2));
+    console.log("Grade 5 Z-Score:", zScoreGrade5.toFixed(2));
+  };
   const handleTimerTimeout = () => {
     const newResults = [...results];
     newResults[currentQuestionIndex] = 0;
@@ -374,10 +400,8 @@ const SubtractionGroup = () => {
         </div>
         <div className="flex">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
-            <span className="text-black text-xl font-bold">
-              {studentName}
-            </span>
-            <span className="ml-1 text-gray-600 text-md font-bold">
+            <span className="text-black text-md font-bold">{studentName}</span>
+            <span className="ml-1 text-black text-md font-bold">
               : اسم الطالب
             </span>
           </div>

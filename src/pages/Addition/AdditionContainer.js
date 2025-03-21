@@ -39,7 +39,7 @@ const ArabicMathQuiz = () => {
   const [carries, setCarries] = useState([]);
   const [draggedNumber, setDraggedNumber] = useState(null);
   const [feedback, setFeedback] = useState("");
-  const [timer, setTimer] = useState(120000);
+  const [timer, setTimer] = useState(120);
   const [partIncorrect, setPartIncorrect] = useState({
     part1: 0, // q1, q2 (index 0-1)
     part2: 0, // q3, q4, q5 (index 2-4)
@@ -73,19 +73,26 @@ const ArabicMathQuiz = () => {
 
   // Timer effect
   useEffect(() => {
-    timerRef.current = setInterval(() => {
+    console.log("useEffect triggered for question:", currentQuestionIndex);
+    setTimer(120); // Set to 5 seconds for testing (instead of 1200)
+    const intervalId = setInterval(() => {
       setTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current);
+        console.log("Timer tick:", prev);
+        if (prev <= 0) {
+          console.log("Timer reached zero");
+          clearInterval(intervalId);
           handleTimerTimeout();
-          return 120000;
+          return 5; // Reset for next question
         }
         return prev - 1;
       });
     }, 1000);
-    return () => clearInterval(timerRef.current);
-  }, [currentQuestionIndex]);
 
+    return () => {
+      console.log("Cleaning up timer for question:", currentQuestionIndex);
+      clearInterval(intervalId);
+    };
+  }, [currentQuestionIndex]);
   // Handle drag and drop
   const handleDragStart = (number) => setDraggedNumber(number);
   const handleAnswerDrop = (index) => {
@@ -151,11 +158,43 @@ const ArabicMathQuiz = () => {
       `Result: ${isCorrect ? "Correct (1 mark)" : "Incorrect (0 marks)"}`
     );
 
-    return isCorrect;
-  };
+    // Log the updated results array
+    console.log("Updated Results:", newResults);
 
+    // Calculate total marks (X) and Z-score with hardcoded Grade 3
+    const X = newResults.reduce((sum, mark) => sum + mark, 0);
+    const gradeLevel = 5; // Hardcoded to Grade 3
+    let zScore;
+
+    switch (gradeLevel) {
+      case 3:
+        zScore = (X - 10.11) / 4.78;
+        console.log("Grade 3 Total Marks:", X);
+        console.log("Grade 3 Z-Score:", zScore.toFixed(2));
+        break;
+      // Other cases remain but won't be used due to hardcoding
+      case 4:
+        zScore = (X - 15.68) / 9.98;
+        console.log("Grade 4 Total Marks:", X);
+        console.log("Grade 4 Z-Score:", zScore.toFixed(2));
+
+        break;
+      case 5:
+        zScore = (X - 30.36) / 13.12;
+        console.log("Grade 5 Total Marks:", X);
+        console.log("Grade 5 Z-Score:", zScore.toFixed(2));
+
+        break;
+    }
+
+    return {
+      isCorrect: isCorrect,
+      totalMarks: X,
+      zScore: zScore ? zScore.toFixed(2) : null,
+    };
+  };
   // Log results by part
-  const logResultsByPart = () => {
+  const logResultsByPart = (gradeLevel) => {
     const partResults = {
       part1: results.slice(0, 2), // q1, q2
       part2: results.slice(2, 5), // q3, q4, q5
@@ -170,62 +209,73 @@ const ArabicMathQuiz = () => {
       const totalInPart = partResults[part].length;
       console.log(`${part}: ${partScore}/${totalInPart}`);
     });
-    console.log(
-      "Total Score:",
-      results.reduce((a, b) => a + b, 0),
-      `/${totalQuestions}`
-    );
+
+    const totalScore = results.reduce((a, b) => a + b, 0);
+    console.log("Total Score:", totalScore, `/${totalQuestions}`);
+
+    // Calculate Z-score based on grade level
+    let zScore;
+    switch (gradeLevel) {
+      case 3:
+        zScore = (totalScore - 10.11) / 4.78;
+        console.log("Grade 3 Z-Score:", zScore.toFixed(2));
+        break;
+      case 4:
+        zScore = (totalScore - 15.68) / 9.98;
+        console.log("Grade 4 Z-Score:", zScore.toFixed(2));
+        break;
+      case 5:
+        zScore = (totalScore - 30.36) / 13.12;
+        console.log("Grade 5 Z-Score:", zScore.toFixed(2));
+        break;
+      default:
+        console.log("Invalid grade level - No Z-Score calculated");
+    }
   };
 
   // Handle timer timeout
   const handleTimerTimeout = () => {
+    console.log("handleTimerTimeout called");
     const newResults = [...results];
-    newResults[currentQuestionIndex] = 0;
+    newResults[currentQuestionIndex] = 0; // Mark as wrong
     setResults(newResults);
     console.log(
       `Question ${currentQuestionIndex + 1} Result: Incorrect (Timer, 0 marks)`
     );
 
     const { part, maxIncorrect } = getPartForQuestion(currentQuestionIndex);
-    const newIncorrectAttempts = (currentQuestion.incorrectAttempts || 0) + 1;
-    questions[currentQuestionIndex].incorrectAttempts = newIncorrectAttempts;
+    setPartIncorrect((prev) => {
+      const newPartIncorrect = { ...prev, [part]: prev[part] + 1 };
+      console.log(`Incorrect Attempts in ${part}:`, newPartIncorrect[part]);
 
-    if (newIncorrectAttempts === 1) {
-      setPartIncorrect((prev) => {
-        const newPartIncorrect = { ...prev, [part]: prev[part] + 1 };
-        console.log(`Incorrect Attempts in ${part}:`, newPartIncorrect[part]);
-
-        if (newPartIncorrect[part] >= maxIncorrect) {
-          setFeedback(
-            "لقد أجبت على عدد كافٍ من الأسئلة بشكل غير صحيح في هذا الجزء، سيتم إعادة توجيهك..."
-          );
-          setEndTime(new Date());
-          console.log("Test End Time (Redirect):", new Date().toLocaleString());
-          logResultsByPart();
-          setTimeout(() => navigate("/dashboard/testselection"), 1000);
-          return newPartIncorrect;
-        }
-
+      if (newPartIncorrect[part] >= maxIncorrect) {
+        console.log("Max incorrect reached, redirecting...");
+        setFeedback(
+          "لقد أجبت على عدد كافٍ من الأسئلة بشكل غير صحيح في هذا الجزء، سيتم إعادة توجيهك..."
+        );
+        setEndTime(new Date());
+        console.log("Test End Time (Redirect):", new Date().toLocaleString());
+        logResultsByPart();
+        setTimeout(() => navigate("/dashboard/testselection"), 1000);
+      } else {
         moveToNextQuestion();
-        return newPartIncorrect;
-      });
-    } else {
-      moveToNextQuestion();
-    }
+      }
+      return newPartIncorrect;
+    });
   };
 
-  // Move to next question helper with reset logic
+  // Move to next question
   const moveToNextQuestion = () => {
+    console.log("moveToNextQuestion called");
     if (currentQuestionIndex < questions.length - 1) {
       const nextIndex = currentQuestionIndex + 1;
       const currentPart = getPartForQuestion(currentQuestionIndex).part;
       const nextPart = getPartForQuestion(nextIndex).part;
 
-      // Reset incorrect attempts if moving to a new part
       if (currentPart !== nextPart) {
         setPartIncorrect((prev) => ({
           ...prev,
-          [nextPart]: 0, // Reset the next part's incorrect count
+          [nextPart]: 0,
         }));
         console.log(`Reset incorrect attempts for ${nextPart}`);
       }
@@ -234,8 +284,8 @@ const ArabicMathQuiz = () => {
       setUserAnswers([]);
       setCarries([]);
       setFeedback("");
-      setTimer(120000);
     } else {
+      console.log("Quiz completed");
       setFeedback("أحسنت! لقد أكملت جميع الأسئلة");
       setEndTime(new Date());
       console.log("Test End Time:", new Date().toLocaleString());
@@ -388,8 +438,8 @@ const ArabicMathQuiz = () => {
         </div>
         <div className="flex">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
-            <span className="text-black text-xl font-bold">{studentName}</span>
-            <span className="ml-1 text-gray-600 text-md font-bold">
+            <span className="text-black text-md font-bold">{studentName}</span>
+            <span className="ml-1 text-black text-md font-bold">
               : اسم الطالب
             </span>
           </div>
@@ -413,7 +463,6 @@ const ArabicMathQuiz = () => {
                 <img src={resetBtn} alt="" />
               </button>
             </div>
-
             <div className="relative w-[60%] h-[400px] px-4 py-10 justify-center transform translate-y-20 items-center">
               <div className="mx-auto my-auto">
                 <div className="border-4 border-yellow-400 bg-[#F3F4F6] flex justify-center h-72 my-auto rounded-lg p-6">
@@ -424,7 +473,7 @@ const ArabicMathQuiz = () => {
                           {currentQuestion.dropzones.map((dropzone, i) => (
                             <div
                               key={`answer-${i}`}
-                              className="w-12 h-12 border-2 border-gray-400 text-green-700 rounded flex items-center justify-center text-5xl"
+                              className="w-12 h-12 border-2 border-gray-400 bg-white text-green-700 rounded flex items-center justify-center text-5xl"
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleAnswerDrop(i)}
                             >
@@ -503,14 +552,16 @@ const ArabicMathQuiz = () => {
                 </div>
               </div>
             </div>
-
             <div className="border-4 w-[15%] ml-20 border-yellow-400 rounded-lg p-4">
               <div className="grid grid-cols-1 gap-2">
                 {Array.from({ length: 10 }, (_, rowIndex) => {
                   const startNum = rowIndex * 2;
                   const endNum = startNum + 1;
                   return (
-                    <div key={rowIndex} className="flex justify-between">
+                    <div
+                      key={rowIndex}
+                      className="flex justify-between flex-row-reverse"
+                    >
                       <div
                         className="w-20 h-14 flex text-4xl items-center justify-center border-2 border-yellow-400 rounded bg-gray-100 cursor-grab"
                         draggable
@@ -535,7 +586,7 @@ const ArabicMathQuiz = () => {
                   );
                 })}
               </div>
-            </div>
+            </div>{" "}
           </div>
         </div>
         <button onClick={nextQuestion} className="-mt-96 ml-44">

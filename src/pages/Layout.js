@@ -83,7 +83,7 @@ const Layout = () => {
           <div className="p-4 border-b border-gray-600 flex justify-end items-center">
             <span className="font-bold">
               <Link to="/dashboard" className="text-xl text-white">
-                نظام عصر العمليات الحسابية
+                نظام عسر العمليات الحسابية
               </Link>
               <i className="fas fa-home ml-2"></i>
             </span>
@@ -165,8 +165,11 @@ const Layout = () => {
 
               <li className="p-2  rounded flex items-center justify-start flex-row-reverse gap-2">
                 <i className="fas fa-clip"></i>
-                <Link to="/dashboard/studentselections" className="text-white  text-xl">
-                للإختبارات
+                <Link
+                  to="/dashboard/studentselections"
+                  className="text-white  text-xl"
+                >
+                  للإختبارات
                 </Link>
               </li>
 

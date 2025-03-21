@@ -191,22 +191,22 @@ const AnxietyTest = () => {
     playInstructionSequence();
   }, []);
 
-  useEffect(() => {
-    if (!isIntroComplete || loading || currentQuestion >= questions.length)
-      return;
+  // useEffect(() => {
+  //   if (!isIntroComplete || loading || currentQuestion >= questions.length)
+  //     return;
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          handleNextQuestion();
-          return 120;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  //   const timer = setInterval(() => {
+  //     setTimeLeft((prev) => {
+  //       if (prev <= 1) {
+  //         handleNextQuestion();
+  //         return 120;
+  //       }
+  //       return prev - 1;
+  //     });
+  //   }, 1000);
 
-    return () => clearInterval(timer);
-  }, [currentQuestion, isIntroComplete, loading]);
+  //   return () => clearInterval(timer);
+  // }, [currentQuestion, isIntroComplete, loading]);
 
   useEffect(() => {
     if (isIntroComplete && currentQuestion < questions.length) {
@@ -215,13 +215,13 @@ const AnxietyTest = () => {
       playAudioFile(questionAudios[currentQuestion]).then(() => {
         setAudioPlayed(true);
         setLoading(false);
+        // no repeating audio for now
+        // const repeatTimer = setInterval(() => {
+        //   if (audioRef.current && !audioRef.current.paused) return;
+        //   playAudioFile(questionAudios[currentQuestion]);
+        // }, 450000);
 
-        const repeatTimer = setInterval(() => {
-          if (audioRef.current && !audioRef.current.paused) return;
-          playAudioFile(questionAudios[currentQuestion]);
-        }, 450000);
-
-        return () => clearInterval(repeatTimer);
+        // return () => clearInterval(repeatTimer);
       });
     }
   }, [currentQuestion, isIntroComplete]);
@@ -304,12 +304,24 @@ const AnxietyTest = () => {
     ).length;
 
     const score = agreeCount * 1 + disagreeCount * -1 + skipCount * 0;
+    let grade=5;
+    let zScore;
+    if (grade === 3) {
+      zScore = (-6.02 - score) / 9.32;
+    } else if (grade === 4) {
+      zScore = (-10.62 - score) / 9.62;
+    } else if (grade === 5) {
+      zScore = (-11.41 - score) / 8.72;
+    } else {
+      zScore = null; // Handle invalid grade if needed
+    }
 
     console.log(`After Question ${updatedAnswers.length}:`);
     console.log(`- Agree (موافق): ${agreeCount}`);
     console.log(`- Disagree (غير موافق): ${disagreeCount}`);
     console.log(`- Skip (غير متأكد): ${skipCount}`);
     console.log(`- Current Score: ${score}`);
+    console.log(`- Maths Anxiety Z-Score (Grade ${grade}): ${zScore !== null ? zScore.toFixed(2) : "N/A"}`);
     console.log("-------------------");
   };
 
@@ -398,8 +410,8 @@ const AnxietyTest = () => {
         </div>
         <div className="flex">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
-            <span className="text-black text-xl font-bold">{studentName}</span>
-            <span className="ml-1 text-gray-600 text-md font-bold">
+            <span className="text-black text-md font-bold">{studentName}</span>
+            <span className="ml-1 text-black text-md font-bold">
               : اسم الطالب
             </span>
           </div>
@@ -412,15 +424,15 @@ const AnxietyTest = () => {
             <span className="text-black text-md font-bold">
               اختبار فرز عسر الحساب
             </span>
-            <span className="mr-4 text-black text-md font-bold">
+            {/* <span className="mr-4 text-black text-md font-bold">
               الوقت المتبقي: {formatTime(timeLeft)}
-            </span>
+            </span> */}
           </div>
         </div>
       </div>
 
       <div className="flex-grow flex flex-col items-center justify-between">
-        <div className="flex flex-row-reverse mt-10 gap-4">
+        <div className="flex flex-row-reverse mt-28 gap-4">
           <div className="bg-[#FDF6EA] shadow-md rounded-xl p-8 w-[1200px] mt-8 border-2 border-yellow-400 transition-all hover:shadow-lg">
             <p className="text-4xl md:text-7xl leading-tight text-gray-800 font-medium text-right">
               {questions[currentQuestion]?.question || ""}
@@ -437,7 +449,7 @@ const AnxietyTest = () => {
           </button>
         </div>
 
-        <div className="w-full flex items-center justify-center mt-32 bg-[#757575]">
+        <div className="w-full flex items-center justify-center mt-44 bg-[#757575]">
           <div className="grid grid-cols-1 max-w-4xl md:grid-cols-4 gap-4 ml-44 md:gap-6">
             <button
               onClick={() => handleAnswer("غير متأكد")}

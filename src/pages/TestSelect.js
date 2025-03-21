@@ -1,12 +1,27 @@
-import React, { useState, useRef } from "react";
-import { Link } from "react-router";
+import React, { useState, useRef, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Updated import
 
 const TestSelect = () => {
   const [currentTest, setCurrentTest] = useState(1);
   const [videoUrl, setVideoUrl] = useState(
     "https://www.youtube.com/embed/O_hXv67BmHg"
   );
+  const [completedTests, setCompletedTests] = useState([]);
   const videoRef = useRef(null);
+  const navigate = useNavigate(); // Added for programmatic navigation
+
+  // Load completed tests from localStorage on component mount
+  useEffect(() => {
+    const savedCompletedTests = JSON.parse(
+      localStorage.getItem("completedTests") || "[]"
+    );
+    setCompletedTests(savedCompletedTests);
+  }, []);
+
+  // Save to localStorage whenever completedTests changes
+  useEffect(() => {
+    localStorage.setItem("completedTests", JSON.stringify(completedTests));
+  }, [completedTests]);
 
   const tests = [
     {
@@ -83,7 +98,7 @@ const TestSelect = () => {
   };
 
   const handleRestartVideo = () => {
-    setVideoUrl(""); // Force re-render
+    setVideoUrl("");
     setTimeout(() => {
       setVideoUrl(tests.find((test) => test.id === currentTest)?.video || "");
     }, 100);
@@ -91,13 +106,34 @@ const TestSelect = () => {
 
   const handleStartTest = () => {
     console.log("Starting test", currentTest);
+    // Mark test as completed
+    if (!completedTests.includes(currentTest)) {
+      setCompletedTests([...completedTests, currentTest]);
+    }
+    // Navigate to the test page
+    const currentTestData = tests.find((test) => test.id === currentTest);
+    if (currentTestData) {
+      navigate(`/${currentTestData.url}`);
+    }
   };
+
+  const handleTestButtonClick = (testId, testUrl) => {
+    // Select the test (update video)
+    handleTestSelect(testId);
+    // Mark test as completed
+    if (!completedTests.includes(testId)) {
+      setCompletedTests([...completedTests, testId]);
+    }
+    // Navigate to the test page
+    navigate(`/${testUrl}`);
+  };
+
+  const isTestCompleted = (testId) => completedTests.includes(testId);
 
   return (
     <div className="p-4">
       <div className="max-w-8xl flex mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-4 w-full">
-          {/* Video Player Column */}
           <div>
             <div className="rounded-xl overflow-hidden border-4 border-colPrime shadow-md">
               <div className="relative pb-[76.25%]">
@@ -111,10 +147,9 @@ const TestSelect = () => {
                 ></iframe>
               </div>
             </div>
-            {/* Video Control Buttons */}
             <div className="flex justify-around p-3">
               <button
-                className="bg-colPrime h-16  text-white px-6 py-2 rounded-md flex items-center space-x-2 hover:bg-colSec transition duration-200"
+                className="bg-colPrime h-16 text-white px-6 py-2 rounded-md flex items-center space-x-2 hover:bg-colSec transition duration-200"
                 onClick={handleStartTest}
               >
                 <svg
@@ -152,49 +187,47 @@ const TestSelect = () => {
               </button>
             </div>
           </div>
-          {/* Test Selection Column */}
           <div>
             <div className="rounded-md border-2 border-colPrime">
-              {tests.map((test, index) => (
-                <Link
-                  to={`/${test.url}`} // Ensure all paths are prefixed with "/"
-                  key={test.id}
-                  className={`flex justify-between rounded-md items-center h-12 ${
-                    index % 2 === 1 ? "bg-white" : "bg-[#F1F6D6]"
-                  } overflow-hidden border hover:border-colPrime cursor-pointer`}
-                >
-                  <button
-                    className="bg-colPrime text-white px-4 py-2 h-12 flex items-center"
-                    onClick={() => handleTestSelect(test.id)}
+              {tests.map((test, index) => {
+                const completed = isTestCompleted(test.id);
+                return (
+                  <div
+                    key={test.id}
+                    className={`flex justify-between rounded-md items-center h-12 ${
+                      index % 2 === 1 ? "bg-white" : "bg-[#F1F6D6]"
+                    } overflow-hidden border hover:border-colPrime cursor-pointer`}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-12 w-12 mr-2"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
+                    <button
+                      className={`${
+                        completed
+                          ? "bg-gray-400 w-44 text-center text-white px-4 py-2 h-12 flex items-center justify-center cursor-not-allowed"
+                          : "bg-colPrime w-44 text-center text-white px-4 py-2 h-12 flex items-center justify-center hover:bg-colSec"
+                      }`}
+                      onClick={() =>
+                        !completed && handleTestButtonClick(test.id, test.url)
+                      }
+                      disabled={completed}
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span className="text-xl">إبدأ الإختبار</span>
-                  </button>
 
-                  <div className="flex items-center px-4">
-                    <span
-                      className="text-xl font-lg font-extrabold ml-3"
-                      dir="rtl"
-                    >
-                      {test.title}
-                    </span>
-                    <div className="bg-colPrime ml-2 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                      {test.id}
+                      <span className="text-xl">
+                        {completed ? "انتهى الاختبار" : "إبدأ الإختبار"}
+                      </span>
+                    </button>
+                    <div className="flex items-center px-4">
+                      <span
+                        className="text-xl font-lg font-extrabold ml-3"
+                        dir="rtl"
+                      >
+                        {test.title}
+                      </span>
+                      <div className="bg-colPrime ml-2 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                        {test.id}
+                      </div>
                     </div>
                   </div>
-                </Link>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
