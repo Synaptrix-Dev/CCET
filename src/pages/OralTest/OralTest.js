@@ -6,19 +6,21 @@ import Instruction01 from "./Audios/RapidNaming_Instruction01.wav";
 import Instruction02 from "./Audios/RapidNaming_Instruction02.wav";
 import Instruction03 from "./Audios/RapidNaming_Instruction03.wav";
 
-const OralTest = () => {
+const OralTest = ({ grade = 3 }) => {
   const questions = [
-    { number: "٣ ١ ٦ ٠ ٩ ٧ ٢ ٨ ٤ ٥", audio: "#APP_FILES#audio1.wav" },
-    { number: "٦ ٨ ٥ ٧ ٤ ٣ ٠ ١ ٢ ٩", audio: "#APP_FILES#audio1.wav" },
-    { number: "١ ٦ ٨ ٢ ٠ ٩ ٧ ٤ ٥ ٣", audio: "#APP_FILES#audio2.wav" },
-    { number: "٥ ٧ ٩ ٤ ٢ ٠ ٣ ٦ ١ ٨", audio: "#APP_FILES#audio2.wav" },
+    {
+      number: "٣ ١ ٦ ٠ ٩ ٧ ٢ ٨ ٤ ٥ ٦ ٨ ٥ ٧ ٤ ٣ ٠ ١ ٢ ٩ ",
+      audio: "#APP_FILES#audio1.wav",
+    },
+    {
+      number: "١ ٦ ٨ ٢ ٠ ٩ ٧ ٤ ٥ ٣ ٥ ٧ ٩ ٤ ٢ ٠ ٣ ٦ ١ ٨ ",
+      audio: "#APP_FILES#audio2.wav",
+    },
   ];
 
   const audioFiles = [Instruction01, Instruction02, Instruction03];
-
   const navigate = useNavigate();
-  const [currentPairIndex, setCurrentPairIndex] = useState(0);
-  const [activeQuestion, setActiveQuestion] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [timingLogs, setTimingLogs] = useState([]);
@@ -33,9 +35,7 @@ const OralTest = () => {
   }, []);
 
   const updateProgress = () => {
-    const totalQuestions = questions.length;
-    const completedQuestions = currentPairIndex + activeQuestion + 1;
-    const newProgress = (completedQuestions / totalQuestions) * 100;
+    const newProgress = ((currentQuestionIndex + 1) / questions.length) * 100;
     setProgress(newProgress);
   };
 
@@ -62,7 +62,7 @@ const OralTest = () => {
   };
 
   const playQuestionAudio = () => {
-    const currentQuestion = questions[currentPairIndex + activeQuestion];
+    const currentQuestion = questions[currentQuestionIndex];
     if (currentQuestion.audio) {
       setIsPlaying(true);
       const audio = new Audio(currentQuestion.audio);
@@ -77,28 +77,16 @@ const OralTest = () => {
   const handleNext = () => {
     if (isPlaying) return;
 
-    if (activeQuestion === 0) {
-      setActiveQuestion(1);
+    if (currentQuestionIndex + 1 < questions.length) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
       updateProgress();
       playQuestionAudio();
-    } else if (currentPairIndex + 2 < questions.length) {
-      setCurrentPairIndex(currentPairIndex + 2);
-      setActiveQuestion(0);
-      updateProgress();
-      playQuestionAudio();
-    } else {
-      setProgress(100);
-      setTimeout(() => {
-        navigate("/dashboard/testselection"); // Absolute path with leading slash
-      }, 1000);
     }
   };
 
   const handleStartTimer = () => {
     setStartTime(new Date());
-    console.log(
-      `Started timing question ${currentPairIndex + activeQuestion + 1}`
-    );
+    console.log(`Started timing question ${currentQuestionIndex + 1}`);
   };
 
   const handleEndTimer = () => {
@@ -107,41 +95,89 @@ const OralTest = () => {
       const timeSpent = (endTime - startTime) / 1000;
       setTimingLogs([
         ...timingLogs,
-        { questionNumber: currentPairIndex + activeQuestion + 1, timeSpent },
+        { questionNumber: currentQuestionIndex + 1, timeSpent },
       ]);
       console.log(
-        `Question ${
-          currentPairIndex + activeQuestion + 1
-        } took ${timeSpent} seconds`
+        `Question ${currentQuestionIndex + 1} took ${timeSpent} seconds`
       );
       setStartTime(null);
     }
+    setShowModal(true);
   };
 
-  const handleSaveMark = () => {
-    const activeQuestionText =
-      questions[currentPairIndex + activeQuestion].number;
-    const newResults = [
-      ...results,
-      { question: activeQuestionText, answer: answerDetail },
-    ];
-    setResults(newResults);
+  const calculateZScore = (totalX) => {
+    const zScores = {
+      grade3: (17.21 - totalX) / 5.71,
+      grade4: (15.79 - totalX) / 5.5,
+      grade5: (12.89 - totalX) / 4.41,
+    };
 
-    updateProgress();
-    setShowModal(false);
-    setAnswerDetail("");
-
-    const totalQuestionsAnswered = newResults.length;
-    if (totalQuestionsAnswered === questions.length) {
-      setProgress(100);
-      setTimeout(() => {
-        navigate("/dashboard/testselection"); // Absolute path with leading slash
-      }, 1000);
-    } else {
-      handleNext();
-    }
+    return {
+      X: totalX,
+      grade3: zScores.grade3.toFixed(2),
+      grade4: zScores.grade4.toFixed(2),
+      grade5: zScores.grade5.toFixed(2),
+    };
   };
 
+
+
+
+const handleSaveMark = () => {
+  const currentQuestionText = questions[currentQuestionIndex].number;
+  const timeSpent = timingLogs[timingLogs.length - 1]?.timeSpent || 0;
+
+  const newResults = [
+    ...results,
+    {
+      question: currentQuestionText,
+      mistakes: answerDetail || "0", // Ensure we always have a string value
+      timeSpent: timeSpent,
+    },
+  ];
+  setResults(newResults);
+
+  setShowModal(false);
+  setAnswerDetail("");
+
+  const totalQuestionsAnswered = newResults.length;
+  if (totalQuestionsAnswered === questions.length) {
+    setProgress(100);
+    logFinalResults(newResults); // Pass the updated results directly
+    setTimeout(() => {
+      navigate("/dashboard/testselection");
+    }, 1000);
+  }
+};
+
+const logFinalResults = (finalResults) => {
+  const totalTime = timingLogs.reduce((sum, log) => sum + log.timeSpent, 0);
+  const totalMistakes = finalResults.reduce(
+    (sum, result) => sum + parseInt(result.mistakes || 0),
+    0
+  );
+  const totalX = totalTime + totalMistakes;
+  const zScoreResult = calculateZScore(totalX);
+
+  console.log(`Final Results for ${studentName}:`);
+  console.log(`Total Time: ${totalTime.toFixed(2)} seconds`);
+  console.log(`Total Mistakes: ${totalMistakes}`);
+  console.log(`Total X (Time + Mistakes): ${totalX}`);
+  console.log(`Grade 3 Z-Score: ${zScoreResult.grade3}`);
+  console.log(`Grade 4 Z-Score: ${zScoreResult.grade4}`);
+  console.log(`Grade 5 Z-Score: ${zScoreResult.grade5}`);
+};
+
+  const splitNumbers = (numberString) => {
+    const numbers = numberString.split(" ");
+    const topRow = numbers.slice(0, 10);
+    const bottomRow = numbers.slice(10, 20);
+    return { topRow, bottomRow };
+  };
+
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
+  // Rest of the JSX remains the same...
   return (
     <div className="">
       {/* Header Section */}
@@ -165,8 +201,8 @@ const OralTest = () => {
         </div>
         <div className="flex">
           <div className="px-1 py-2 border-l border-r border-gray-300 flex items-center justify-center">
-            <span className="text-black text-xl font-bold">{studentName}</span>
-            <span className="ml-1 text-gray-600 text-md font-bold">
+            <span className="text-black text-md font-bold">{studentName}</span>
+            <span className="ml-1 text-black text-md font-bold">
               : اسم الطالب
             </span>
           </div>
@@ -186,79 +222,85 @@ const OralTest = () => {
       {/* Action Buttons */}
       <div className="flex justify-end mt-6 gap-4 my-6">
         <button
-          onClick={() => setShowModal(true)}
-          className="bg-green-600 w-36 text-white px-6 py-3 rounded-lg text-lg hover:bg-blue-600 transition"
-        >
-          تسجيل الأخطاء{" "}
-        </button>
-        <button
           onClick={handleEndTimer}
-          className="bg-green-600 w-36 text-white px-6 py-3 rounded-lg text-lg hover:bg-red-600 transition"
+          disabled={startTime === null}
+          className={`w-44 text-white px-6 py-3 rounded-lg text-lg transition ${
+            startTime === null
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-red-600"
+          }`}
         >
-          نهاية التوقيت
+          إنتهاء توقيت القراءة
         </button>
         <button
           onClick={handleStartTimer}
-          className="bg-green-600 w-36 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition"
+          disabled={startTime !== null}
+          className={`w-48 text-white px-6 py-3 rounded-lg text-lg transition ${
+            startTime !== null
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-blue-600"
+          }`}
         >
-          بدء التوقيت
+          بدء توقيت القراْءة
         </button>
       </div>
 
       {/* Question Display */}
-      <div className="flex justify-center ">
+      <div className="flex justify-center">
         <div className="w-full max-w-5xl p-8 bg-[#F3F4F6] rounded-lg border-2 border-yellow-400 shadow-md">
-          {currentPairIndex < questions.length && (
+          {currentQuestionIndex < questions.length && (
             <div className="flex flex-col items-center gap-8">
-              {/* Active Question (Always on top with arrow) */}
-              <div className="flex items-center justify-center w-full">
-                <div className="text-4xl font-bold text-green-600 tracking-widest flex justify-center">
-                  {questions[currentPairIndex + activeQuestion].number
-                    .split(" ")
-                    .map((digit, idx) => (
-                      <span key={idx} className="mx-2 text-8xl">
-                        {digit}
+              {(() => {
+                const { topRow, bottomRow } = splitNumbers(
+                  questions[currentQuestionIndex].number
+                );
+                return (
+                  <>
+                    {/* Top Row */}
+                    <div className="flex items-center justify-center w-full">
+                      <div className="text-4xl font-bold text-green-600 tracking-widest flex justify-center">
+                        {topRow.map((digit, idx) => (
+                          <span key={idx} className="mx-2 text-8xl">
+                            {digit}
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-8xl font-bold -mt-5 text-green-700 -mr-10">
+                        ←
                       </span>
-                    ))}
-                </div>
-                <span className="text-7xl font-bold -mt-5 text-green-700 -mr-10">
-                  ←
-                </span>
-              </div>
-
-              {/* Paired Question (Always shown below) */}
-              {currentPairIndex + 1 < questions.length && (
-                <div className="flex items-center justify-center w-full">
-                  <div className="text-4xl font-bold text-green-600 tracking-widest flex justify-center">
-                    {questions[
-                      currentPairIndex + (activeQuestion === 0 ? 1 : 0)
-                    ].number
-                      .split(" ")
-                      .map((digit, idx) => (
-                        <span key={idx} className="mx-2 text-8xl">
-                          {digit}
-                        </span>
-                      ))}
-                  </div>
-                </div>
-              )}
+                    </div>
+                    {/* Bottom Row */}
+                    <div className="flex items-center justify-center w-full mr-12">
+                      <div className="text-4xl font-bold text-green-600 tracking-widest flex justify-center">
+                        {bottomRow.map((digit, idx) => (
+                          <span key={idx} className="mx-2 text-8xl">
+                            {digit}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           )}
         </div>
       </div>
 
-      {/* Next Button */}
-      <div className="flex justify-start ml-36 mt-4 items-center mx-auto max-w-3xl px-4">
-        <button
-          onClick={handleNext}
-          disabled={isPlaying}
-          className="flex items-center text-xl text-gray-600 hover:text-gray-800"
-        >
-          <div className="rounded-full p-2 mr-2">
-            <img src={NextBtn} alt="" />
-          </div>
-        </button>
-      </div>
+      {/* Next Button - Hide on last question */}
+      {!isLastQuestion && (
+        <div className="flex justify-start ml-36 mt-4 items-center mx-auto max-w-3xl px-4">
+          <button
+            onClick={handleNext}
+            disabled={isPlaying}
+            className="flex items-center text-xl text-gray-600 hover:text-gray-800"
+          >
+            <div className="rounded-full p-2 mr-2">
+              <img src={NextBtn} alt="" />
+            </div>
+          </button>
+        </div>
+      )}
 
       {/* Modal */}
       {showModal && (
@@ -287,11 +329,11 @@ const OralTest = () => {
               <h3 className="text-xl font-bold">تسجيل عدد الاخطاء</h3>
             </div>
             <input
-              type="text"
+              type="number"
               value={answerDetail}
               onChange={(e) => setAnswerDetail(e.target.value)}
               className="w-full p-3 border rounded-lg mb-4 text-right"
-              placeholder="أدخل عدد الأخطاء"
+              placeholder="0"
             />
             <button
               onClick={handleSaveMark}
