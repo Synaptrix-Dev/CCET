@@ -1,16 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Updated import
-
+import { Link, useNavigate } from "react-router-dom";
+import logo from '../assets/Logo.png';
 const TestSelect = () => {
-  const [currentTest, setCurrentTest] = useState(1);
-  const [videoUrl, setVideoUrl] = useState(
-    "https://www.youtube.com/embed/O_hXv67BmHg"
-  );
+  const [currentTest, setCurrentTest] = useState(null);
+  const [videoUrl, setVideoUrl] = useState("");
   const [completedTests, setCompletedTests] = useState([]);
   const videoRef = useRef(null);
-  const navigate = useNavigate(); // Added for programmatic navigation
+  const navigate = useNavigate();
 
-  // Load completed tests from localStorage on component mount
   useEffect(() => {
     const savedCompletedTests = JSON.parse(
       localStorage.getItem("completedTests") || "[]"
@@ -18,7 +15,6 @@ const TestSelect = () => {
     setCompletedTests(savedCompletedTests);
   }, []);
 
-  // Save to localStorage whenever completedTests changes
   useEffect(() => {
     localStorage.setItem("completedTests", JSON.stringify(completedTests));
   }, [completedTests]);
@@ -26,7 +22,7 @@ const TestSelect = () => {
   const tests = [
     {
       id: 1,
-      title: "إستبيان فى التحصيل",
+      title: "استبانة قلق التحصيل",
       video: "https://www.youtube.com/embed/O_hXv67BmHg",
       url: "dashboard/testselection/assessment-test",
       description: "تقييم شامل للمهارات الأساسية",
@@ -105,12 +101,11 @@ const TestSelect = () => {
   };
 
   const handleStartTest = () => {
+    if (!currentTest) return;
     console.log("Starting test", currentTest);
-    // Mark test as completed
     if (!completedTests.includes(currentTest)) {
       setCompletedTests([...completedTests, currentTest]);
     }
-    // Navigate to the test page
     const currentTestData = tests.find((test) => test.id === currentTest);
     if (currentTestData) {
       navigate(`/${currentTestData.url}`);
@@ -118,121 +113,137 @@ const TestSelect = () => {
   };
 
   const handleTestButtonClick = (testId, testUrl) => {
-    // Select the test (update video)
     handleTestSelect(testId);
-    // Mark test as completed
-    if (!completedTests.includes(testId)) {
-      setCompletedTests([...completedTests, testId]);
-    }
-    // Navigate to the test page
-    navigate(`/${testUrl}`);
   };
 
   const isTestCompleted = (testId) => completedTests.includes(testId);
+  const studentName = "مهند داوود كمال";
 
   return (
-    <div className="p-4">
-      <div className="max-w-8xl flex mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-4 w-full">
-          <div>
-            <div className="rounded-xl overflow-hidden border-4 border-colPrime shadow-md">
-              <div className="relative pb-[76.25%]">
-                <iframe
-                  ref={videoRef}
-                  className="absolute top-0 left-0 w-full h-full"
-                  src={videoUrl}
-                  title="YouTube video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
-            </div>
-            <div className="flex justify-around p-3">
-              <button
-                className="bg-colPrime h-16 text-white px-6 py-2 rounded-md flex items-center space-x-2 hover:bg-colSec transition duration-200"
-                onClick={handleStartTest}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-10 w-10"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="mr-2 text-2xl">إبدأ الإختبار</span>
-              </button>
-
-              <button
-                className="bg-colPrime text-white px-6 py-2 rounded-md flex items-center space-x-2 hover:bg-colSec transition duration-200"
-                onClick={handleRestartVideo}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-10 w-10"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="mr-2 text-2xl">أعد المشاهدة</span>
-              </button>
-            </div>
-          </div>
-          <div>
-            <div className="rounded-md border-2 border-colPrime">
-              {tests.map((test, index) => {
-                const completed = isTestCompleted(test.id);
-                return (
-                  <div
-                    key={test.id}
-                    className={`flex justify-between rounded-md items-center h-12 ${
-                      index % 2 === 1 ? "bg-white" : "bg-[#F1F6D6]"
-                    } overflow-hidden border hover:border-colPrime cursor-pointer`}
-                  >
-                    <button
-                      className={`${
-                        completed
-                          ? "bg-gray-400 w-44 text-center text-white px-4 py-2 h-12 flex items-center justify-center cursor-not-allowed"
-                          : "bg-colPrime w-44 text-center text-white px-4 py-2 h-12 flex items-center justify-center hover:bg-colSec"
-                      }`}
-                      onClick={() =>
-                        !completed && handleTestButtonClick(test.id, test.url)
-                      }
-                      disabled={completed}
-                    >
-
-                      <span className="text-xl">
-                        {completed ? "انتهى الاختبار" : "إبدأ الإختبار"}
-                      </span>
-                    </button>
-                    <div className="flex items-center px-4">
-                      <span
-                        className="text-xl font-lg font-extrabold ml-3"
-                        dir="rtl"
-                      >
-                        {test.title}
-                      </span>
-                      <div className="bg-colPrime ml-2 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                        {test.id}
-                      </div>
+    <>
+      <div className="flex flex-row-reverse w-full bg-[#F3F9D7]">
+        <h1 className="text-3xl p-2 bg-[#D8E885]">
+          :اختبارات فرز عسر الرياضيات للطالب / للطالبة{" "}
+        </h1>
+        <h1 className="text-3xl p-2">{studentName}</h1>
+      </div>
+      <div className="p-4">
+        <div className="max-w-8xl flex mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
+            {/* Video/Image section */}
+            <div className="lg:order-1">
+              {currentTest ? (
+                <div>
+                  <div className="rounded-xl overflow-hidden border-4 h-[370px] border-colPrime shadow-md">
+                    <div className="relative pb-[76.25%]">
+                      <iframe
+                        ref={videoRef}
+                        className="absolute top-0 left-0 w-full h-[370px]"
+                        src={videoUrl}
+                        title="YouTube video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
                     </div>
                   </div>
-                );
-              })}
+                  <div className="flex justify-around p-3">
+                    <button
+                      className="bg-colPrime h-16 text-white px-6 py-2 rounded-md flex items-center space-x-2 hover:bg-colSec transition duration-200"
+                      onClick={handleStartTest}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-10 w-10"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="mr-2 text-2xl">إبدأ الإختبار</span>
+                    </button>
+                    <button
+                      className="bg-colPrime text-white px-6 py-2 rounded-md flex items-center space-x-2 hover:bg-colSec transition duration-200"
+                      onClick={handleRestartVideo}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-10 w-10"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="mr-2 text-2xl">أعد المشاهدة</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="rounded-xl overflow-hidden ">
+                  <div className="relative pb-[76.25%]">
+                    <img
+                      src={logo}
+                      alt="Placeholder - Select a test"
+                      className="absolute top-0 left-0 w-[80%] h-[70%] object-contain"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* Test list section */}
+            <div className="lg:order-2">
+              <div className="rounded-md border-2 border-colPrime">
+                {tests.map((test, index) => {
+                  const completed = isTestCompleted(test.id);
+                  return (
+                    <div
+                      key={test.id}
+                      className={`flex justify-between rounded-md items-center h-12 ${
+                        index % 2 === 1 ? "bg-white" : "bg-[#F1F6D6]"
+                      } overflow-hidden border hover:border-colPrime cursor-pointer`}
+                    >
+                      <button
+                        className={`${
+                          completed
+                            ? "bg-gray-400 w-44 text-center text-white px-4 py-2 h-12 flex items-center justify-center cursor-not-allowed"
+                            : "bg-colPrime w-44 text-center text-white px-4 py-2 h-12 flex items-center justify-center hover:bg-colSec"
+                        }`}
+                        onClick={() =>
+                          !completed && handleTestButtonClick(test.id, test.url)
+                        }
+                        disabled={completed}
+                      >
+                        <span className="text-xl">
+                          {completed ? "انتهى الاختبار" : "إبدأ الإختبار"}
+                        </span>
+                      </button>
+                      <div className="flex items-center px-4">
+                        <span
+                          className="text-xl font-lg font-extrabold ml-3"
+                          dir="rtl"
+                        >
+                          {test.title}
+                        </span>
+                        <div className="bg-colPrime ml-2 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                          {test.id}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
