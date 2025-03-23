@@ -52,6 +52,7 @@ const NumberGuessComponent = () => {
     show75: false,
     showAll: false,
   });
+  const [redXPosition, setRedXPosition] = useState(null); // New state for red X position
   const [progress, setProgress] = useState(0);
   const [totalDifference, setTotalDifference] = useState(0);
   const audioRef = useRef(null);
@@ -60,63 +61,75 @@ const NumberGuessComponent = () => {
   const quarterSequence = [
     {
       audio: Show_Quarter_25,
-      action: () =>
+      action: () => {
         setVisibleQuarters({
           show25: true,
           show50: false,
           show75: false,
           showAll: false,
-        }),
+        });
+        setRedXPosition(25); // Show red X at 25
+      },
     },
     {
       audio: Hide_Quarter_25,
-      action: () =>
+      action: () => {
         setVisibleQuarters({
           show25: false,
           show50: false,
           show75: false,
           showAll: false,
-        }),
+        });
+        setRedXPosition(null); // Hide red X
+      },
     },
     {
       audio: Show_Quarter_50,
-      action: () =>
+      action: () => {
         setVisibleQuarters({
           show25: false,
           show50: true,
           show75: false,
           showAll: false,
-        }),
+        });
+        setRedXPosition(50); // Show red X at 50
+      },
     },
     {
       audio: Hide_Quarter_50,
-      action: () =>
+      action: () => {
         setVisibleQuarters({
           show25: false,
           show50: false,
           show75: false,
           showAll: false,
-        }),
+        });
+        setRedXPosition(null); // Hide red X
+      },
     },
     {
       audio: Show_All_Quarter,
-      action: () =>
+      action: () => {
         setVisibleQuarters({
           show25: true,
           show50: true,
           show75: true,
           showAll: true,
-        }),
+        });
+        setRedXPosition(75); // Show red X at 75 (or could cycle through all quarters)
+      },
     },
     {
       audio: Hide_All_Quarter,
-      action: () =>
+      action: () => {
         setVisibleQuarters({
           show25: false,
           show50: false,
           show75: false,
           showAll: false,
-        }),
+        });
+        setRedXPosition(null); // Hide red X
+      },
     },
   ];
 
@@ -179,9 +192,14 @@ const NumberGuessComponent = () => {
     if (!isMounted.current) return;
 
     for (let i = 0; i < audioInstructions.length && isMounted.current; i++) {
+      if (i === 1) setRedXPosition(0); // Show red X at 0 for 2nd instruction
+      else if (i === 3) setRedXPosition(100); // Show red X at 100 for 4th instruction
+      else setRedXPosition(null); // Hide red X for other instructions
+
       await playAudio(audioInstructions[i]);
       setCurrentAudioIndex(i + 1);
     }
+    setRedXPosition(null); // Clear red X after instructions
   };
 
   const playQuarterSequence = async () => {
@@ -388,6 +406,15 @@ const NumberGuessComponent = () => {
             <div
               className="absolute w-6 h-6 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
               style={{ left: `${100 - (clickValue / 100) * 100}%`, top: "50%" }}
+            >
+              <span className="text-red-700 font-bold">X</span>
+            </div>
+          )}
+
+          {redXPosition !== null && isPlayingInstructions && (
+            <div
+              className="absolute w-6 h-6 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
+              style={{ left: `${100 - (redXPosition / 100) * 100}%`, top: "50%" }}
             >
               <span className="text-red-700 font-bold">X</span>
             </div>
