@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from '../assets/Logo.png';
+import logo from "../assets/Logo.png";
+
 const TestSelect = () => {
   const [currentTest, setCurrentTest] = useState(null);
   const [videoUrl, setVideoUrl] = useState("");
@@ -8,16 +9,17 @@ const TestSelect = () => {
   const videoRef = useRef(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const savedCompletedTests = JSON.parse(
-      localStorage.getItem("completedTests") || "[]"
-    );
-    setCompletedTests(savedCompletedTests);
-  }, []);
+  // Commented out localStorage useEffect hooks
+  // useEffect(() => {
+  //   const savedCompletedTests = JSON.parse(
+  //     localStorage.getItem("completedTests") || "[]"
+  //   );
+  //   setCompletedTests(savedCompletedTests);
+  // }, []);
 
-  useEffect(() => {
-    localStorage.setItem("completedTests", JSON.stringify(completedTests));
-  }, [completedTests]);
+  // useEffect(() => {
+  //   localStorage.setItem("completedTests", JSON.stringify(completedTests));
+  // }, [completedTests]);
 
   const tests = [
     {
